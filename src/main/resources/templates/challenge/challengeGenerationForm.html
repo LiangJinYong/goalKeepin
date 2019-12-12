@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Goal Keepin</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../richtext.min.css">
+<style>
+#title {
+	font-size: 25px;
+}
+div {
+	margin: 20px 0 20px 0;
+}
+
+.name {
+	margin: 30px;
+}
+
+#thumbnailImg {
+	
+}
+
+#baseAuthDesc textarea {
+	width: 90%;
+	height: 100px;
+}
+
+#challengeName td {
+	width: 250px;
+} 
+
+#challengeName td input {
+	width: 200px;
+	height: 20px;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+#authMethod td {
+	height: 40px;
+}
+
+.validationError {
+	color: red;
+}
+</style>
+<body>
+	<div id="title">챌린지 생성하기</div>
+	
+	<!--  
+	-->
+	<form method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}">
+	<div th:if="${#fields.hasErrors()}">
+<span class="validationError">
+Please correct the problems below and resubmit. </span>
+</div>
+		<table id="challengeName">
+			<tr>
+				<td>
+					<span>챌린지 명(영문)</span><br /> <input type="text" name="baseNmEn" th:field="*{baseNmEn}">
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmEn')}"
+		              	th:errors="*{baseNmEn}">baseNmEn Error</span>
+				</td>
+				<td>
+					<span>챌린지 명(번체)</span><br /> <input type="text" name="baseNmTc" th:field="*{baseNmTc}">
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmTc')}"
+		              	th:errors="*{baseNmTc}">baseNmTc Error</span>
+				</td>
+				<td>
+					<span>챌린지 명(간체)</span><br /> <input type="text" name="baseNmSc" th:field="*{baseNmSc}">
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmSc')}"
+		              	th:errors="*{baseNmSc}">baseNmSc Error</span>
+				</td>
+			</tr>
+		</table>
+		<!-- 
+		<div id="thumbnailImg">
+			<span>썸네일 이미지</span> <input type="file" name="baseThumbnailUrl" />
+			<span class="validationError"
+					th:if="${#fields.hasErrors('baseThumbnailUrl')}"
+	              	th:errors="*{baseThumbnailUrl}">baseThumbnailUrl Error</span>
+		</div>
+		 -->
+		<div id="habitType">
+			<span>습관 타입</span><br />
+			<select multiple="multiple" style="width: 100px;" size="8" name="baseHabitTypeCd" th:field="*{baseHabitTypeCd}">
+				<option value="HT01">Health</option>
+				<option value="HT02">Lifestyle</option>
+				<option value="HT03">Relationships</option>
+				<option value="HT04">Ability</option>
+				<option value="HT05">Hobby</option>
+				<option value="HT06">Asset</option>
+				<option value="HT07">Event</option> 
+				<option value="HT08">Premium</option>
+			</select>
+			<span class="validationError"
+				th:if="${#fields.hasErrors('baseHabitTypeCd')}"
+              	th:errors="*{baseHabitTypeCd}">baseHabitTypeCd Error</span>
+		</div>
+
+		<div id="authMethod">
+			<table>
+				<tr>
+					<td>인증가능 요일</td>
+					<td>
+						<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" /><label for="baseAuthDateCd1">월-금</label>
+						<input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" /><label for="baseAuthDateCd2">토-일</label>
+						<input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" /><label for="baseAuthDateCd3">월-일</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthDateCd')}"
+			              	th:errors="*{baseAuthDateCd}">baseAuthDateCd Error</span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 빈도</td>
+					<td>주 <input type="text" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" /> 일 
+					<input type="checkbox" /> 매일
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthFrequency')}"
+			              	th:errors="*{baseAuthFrequency}">baseAuthFrequency Error</span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 가능 시간</td>
+					<td>
+						<input type="text" name="baseAuthFromTime" th:field="*{baseAuthFromTime}" />
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthFromTime')}"
+			              	th:errors="*{baseAuthFromTime}">baseAuthTime Error</span>
+			              	 ~ 
+						<input type="text" name="baseAuthToTime" th:field="*{baseAuthToTime}" />
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthToTime')}"
+			              	th:errors="*{baseAuthToTime}">baseAuthTime Error</span>
+						<input type="checkbox" /> 24시간
+						
+	              	</td>
+				</tr>
+				<tr>
+					<td>하루 인증 횟수</td>
+					<td><input type="text" name="baseAuthNumDaily"  th:field="*{baseAuthNumDaily}" /> 회
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthNumDaily')}"
+			              	th:errors="*{baseAuthNumDaily}">baseAuthNumDaily Error</span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증 방법</td>
+					<td>
+						<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" /><label for="photo">사진</label> 
+						<input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" /><label for="audio">음성</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthMethodCd')}"
+			              	th:errors="*{baseAuthMethodCd}">baseAuthMethodCd Error</span>
+						
+					</td>
+				</tr>
+				<tr>
+					<td>인증샷 공개 여부</td>
+					<td>
+						<input type="radio" name="baseAuthIsOpen" value="1" id="photoShown" th:field="*{baseAuthIsOpen}" /><label for="photoShown">공개</label> 
+						<input type="radio" name="baseAuthIsOpen" value="0" id="photoHidden" th:field="*{baseAuthIsOpen}" /><label for="photoHidden">비공개</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthIsOpen')}"
+			              	th:errors="*{baseAuthIsOpen}">baseAuthIsOpen Error</span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증샷 간격</td>
+					<td><input type="text" name="baseAuthInterval" th:field="*{baseAuthInterval}" /><label>시간</label>
+						<input type="checkbox" /><label>제한없음</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthInterval')}"
+			              	th:errors="*{baseAuthInterval}">baseAuthInterval Error</span>
+					</td>
+				</tr>
+				<tr>
+					<td>사진첩 사용 가능 여부</td>
+					<td>
+						<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumAvaliable">가능</label> 
+						<input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumNotavaliable">불가능</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthIsAlbum')}"
+			              	th:errors="*{baseAuthIsAlbum}">baseAuthIsAlbum Error</span>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<div  id="baseAuthDesc">
+				<div>
+					<span>상세 설명(영문)</span><br />
+					<textarea name="baseAuthDescEn" th:field="*{baseAuthDescEn}"></textarea>
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthDescEn')}"
+			              	th:errors="*{baseAuthDescEn}">baseAuthDescEn Error</span>
+				</div>
+				<div>
+					<span>상세 설명(번체)</span><br />
+					<textarea name="baseAuthDescTc" th:field="*{baseAuthDescTc}"></textarea>
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthDescTc')}"
+			              	th:errors="*{baseAuthDescTc}">baseAuthDescTc Error</span>
+				</div>
+				<div>
+					<span>상세 설명(간체)</span><br />
+					<textarea name="baseAuthDescSc" th:field="*{baseAuthDescSc}"></textarea>
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthDescSc')}"
+			              	th:errors="*{baseAuthDescSc}">baseAuthDescSc Error</span>
+				</div>
+			</div>
+			 
+			<hr />
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(영문)</span>
+				<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseDetailEn}"></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailEn')}"
+			              	th:errors="*{baseDetailEn}">baseDetailEn Error</span>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(번체)</span>
+				<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseDetailTc}"></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailTc')}"
+			              	th:errors="*{baseDetailTc}">baseDetailTc Error</span>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(간체)</span>
+				<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseDetailSc}"></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailSc')}"
+			              	th:errors="*{baseDetailSc}">baseDetailSc Error</span>
+			</div>
+			<div>
+				<input type="submit" value="생성하기" />
+			</div>
+	</form>
+	</div>
+	<script type="text/javascript" src="../jquery.js"></script>
+	<script type="text/javascript" src="../jquery.richtext.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			 $('.content1').richText();
+			 $('.content2').richText();
+			 $('.content3').richText();
+		});
+	</script>
+</body>
+</html>

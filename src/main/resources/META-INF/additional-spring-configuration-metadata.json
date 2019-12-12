@@ -1,0 +1,9 @@
+{
+	"properties": [
+		{
+			"name": "user.page-size",
+			"type": "java.lang.String",
+			"description": "Sets the maximum number of users to display in a list."
+		}
+	]
+}

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://makeitdbinstance.c0fr6ikoj44t.ap-northeast-2.rds.amazonaws.com:3306/DB_GOALKEEPIN?useSSL=false
+    username: makeIT
+    password: makeit12!
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  type-aliases-package: goalKeepin.model
+
+user:
+  page-size: 10
+
+  
+  

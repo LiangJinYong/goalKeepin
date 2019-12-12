@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.ChallengeMapper">
+	
+	<select id="getTotalRecordSize" resultType="int">
+    	/* selectBaseChallengeList */
+    	SELECT COUNT(*) totalRecordSize
+		<include refid="baseChallenge"></include>
+	</select>
+
+    <select id="selectBaseChallengeList" parameterType="int" resultType="hashmap">
+    	/* selectBaseChallengeList */
+        SELECT tt.TRANS_EN name
+			, (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH01' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) recruiting
+		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH02' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) ongoing
+		    , (SELECT count(*) from OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH03' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) expired
+		<include refid="baseChallenge"></include>
+		ORDER BY base_reg_dt DESC
+		limit ${startIndex}, 10
+    </select>
+    
+    <sql id="baseChallenge">
+    	FROM BASE_CHALLENGE_TB bct
+		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no  = tt.TRANS_NO
+    </sql>
+
+	<insert id="insertBaseChallenge" parameterType="BaseChallenge">
+		/* insertBaseChallenge */
+		INSERT INTO BASE_CHALLENGE_TB
+		(BASE_NM_T_NO, BASE_THUMBNAIL_URL, BASE_HABIT_TP_CD, BASE_AUTH_DATE_CD, BASE_AUTH_FREQ, BASE_AUTH_FROM_TIME, BASE_AUTH_TO_TIME, BASE_AUTH_NUM, BASE_AUTH_METHOD_CD, BASE_AUTH_IS_OPEN, BASE_AUTH_INTERVAL, BASE_AUTH_IS_ALBUM, BASE_AUTH_DESC_T_NO, BASE_DETAIL_T_NO, SEARCH_KEYWORD)
+		VALUES
+		(#{baseNmTransNo}, #{baseThumbnailUrl}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
+	</insert>
+	
+	<insert id="insertBaseNmTrans" parameterType="BaseChallenge"
+		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseNmTransNo">
+		/* insertBaseNmTrans */
+		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES (#{baseNmEn}, #{baseNmSc}, #{baseNmTc})
+	</insert>
+	
+	<insert id="insertBaseAuthDescTrans" parameterType="BaseChallenge"
+		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseAuthDescTransNo">
+		/* insertBaseAuthDescTrans */
+		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES (#{baseAuthDescEn}, #{baseAuthDescTc}, #{baseAuthDescSc})
+	</insert>
+	
+	<insert id="insertBaseDetailTrans" parameterType="BaseChallenge"
+		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseDetailTransNo">
+		/* insertBaseDetailTrans */
+		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES (#{baseDetailEn}, #{baseDetailTc}, #{baseDetailSc})
+	</insert>
+</mapper>
