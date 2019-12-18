@@ -5,15 +5,16 @@
 
 <mapper namespace="goalKeepin.data.ChallengeMapper">
 	
-	<select id="getTotalRecordSize" resultType="int">
-    	/* selectBaseChallengeList */
-    	SELECT COUNT(*) totalRecordSize
+	<select id="getTotalBaseChallengeNum" resultType="int">
+    	/* getTotalBaseChallengeNum */
+    	SELECT COUNT(*) totalBaseChallengeNum
 		<include refid="baseChallenge"></include>
 	</select>
 
     <select id="selectBaseChallengeList" parameterType="int" resultType="hashmap">
     	/* selectBaseChallengeList */
-        SELECT tt.TRANS_EN name
+        SELECT bct.BASE_NO baseNo
+        	, tt.TRANS_EN name
 			, (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH01' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) recruiting
 		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH02' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) ongoing
 		    , (SELECT count(*) from OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH03' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) expired
@@ -28,11 +29,11 @@
     </sql>
 
 	<insert id="insertBaseChallenge" parameterType="BaseChallenge">
-		/* insertBaseChallenge */
+		/* insertBaseChallenge   BASE_THUMBNAIL_URL, */
 		INSERT INTO BASE_CHALLENGE_TB
-		(BASE_NM_T_NO, BASE_THUMBNAIL_URL, BASE_HABIT_TP_CD, BASE_AUTH_DATE_CD, BASE_AUTH_FREQ, BASE_AUTH_FROM_TIME, BASE_AUTH_TO_TIME, BASE_AUTH_NUM, BASE_AUTH_METHOD_CD, BASE_AUTH_IS_OPEN, BASE_AUTH_INTERVAL, BASE_AUTH_IS_ALBUM, BASE_AUTH_DESC_T_NO, BASE_DETAIL_T_NO, SEARCH_KEYWORD)
+		(BASE_NM_T_NO, BASE_HABIT_TP_CD, BASE_AUTH_DATE_CD, BASE_AUTH_FREQ, BASE_AUTH_FROM_TIME, BASE_AUTH_TO_TIME, BASE_AUTH_NUM, BASE_AUTH_METHOD_CD, BASE_AUTH_IS_OPEN, BASE_AUTH_INTERVAL, BASE_AUTH_IS_ALBUM, BASE_AUTH_DESC_T_NO, BASE_DETAIL_T_NO, SEARCH_KEYWORD)
 		VALUES
-		(#{baseNmTransNo}, #{baseThumbnailUrl}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
+		(#{baseNmTransNo}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
 	</insert>
 	
 	<insert id="insertBaseNmTrans" parameterType="BaseChallenge"
@@ -55,4 +56,86 @@
 		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
 		VALUES (#{baseDetailEn}, #{baseDetailTc}, #{baseDetailSc})
 	</insert>
+	
+	<select id="selectModifiable" parameterType="long" resultType="int">
+		/* selectModifiable */
+		SELECT COUNT(*) = 0 FROM OPERATED_CHALLENGE_TB WHERE challenge_base_no = #{baseNo}
+	</select>
+	
+	<select id="selectBaseChallengeByNo" parameterType="long" resultType="BaseChallenge">
+		/* selectBaseChallengeByNo */
+		SELECT bct.base_no baseNo
+		, bct.base_nm_t_no baseNmTransNo
+		, (SELECT TRANS_EN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
+		, (SELECT TRANS_T_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
+		, (SELECT TRANS_S_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
+		, bct.base_thumbnail_url baseThumbnailUrl
+		, bct.base_habit_tp_cd baseHabitTypeCd
+		, bct.base_auth_date_cd baseAuthDateCd
+		, bct.base_auth_freq baseAuthFrequency
+		, bct.base_auth_from_time baseAuthFromTime
+		, bct.base_auth_to_time baseAuthToTime
+		, bct.base_auth_num baseAuthNumDaily
+		, bct.base_auth_method_cd baseAuthMethodCd
+		, bct.base_auth_is_open baseAuthIsOpen
+		, bct.base_auth_interval baseAuthInterval
+		, bct.base_auth_is_album baseAuthIsAlbum
+		, bct.base_auth_desc_t_no baseAuthDescTransNo
+		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescEn
+		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescTc
+		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescSc
+		, bct.base_detail_t_no baseDetailTransNo
+		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailEn
+		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailTc
+		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailSc
+		, bct.base_reg_dt baseRegDate
+		, bct.search_keyword searchKeyword
+		FROM BASE_CHALLENGE_TB bct
+		WHERE base_no = #{baseNo}
+	</select>
+	
+	<select id="selectCategoryList" resultType="hashmap">
+		/* selectCategoryList */
+		SELECT ct.category_no categoryNo, tt.trans_en categoryContent
+		FROM CATEGORY_TB ct
+		INNER JOIN TRANSLATION_TB tt
+		ON ct.category_nm_t_no = tt.trans_no
+		ORDER BY category_no
+	</select>
+	
+	<insert id="insertChallengeDetailInfo" parameterType="ChallengeDetail">
+		/* insertChallengeDetailInfo */
+		INSERT INTO OPERATED_CHALLENGE_TB 
+		(challenge_base_no, challenge_category_no, challenge_grade_cd, challenge_min_fee, challenge_max_fee, challenge_start_dt, challenge_end_dt, challenge_st_cd)
+		VALUES
+		(#{baseChallengeNo}, #{categoryNo}, #{gradeCd}, #{minFee}, #{maxFee}, #{startDate}, #{endDate}, 'CH01')
+	</insert>
+	
+	<sql id="detailChallenge">
+		FROM BASE_CHALLENGE_TB bct
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
+		WHERE bct.base_no = #{baseNo}
+	</sql>
+	
+	<select id="getTotalDetailChallengeNumByBase" parameterType="long" resultType="int">
+		/* getTotalDetailChallengeNumByBase */
+		SELECT COUNT(*) totalDetailChallengeNum
+		<include refid="detailChallenge" />
+	</select>
+	
+	<select id="selectChallengeListByBaseNo" parameterType="map" resultType="hashmap">
+		/* selectChallengeListByBaseNo */
+		SELECT oct.challenge_no challengeDetailNo, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum, oct.challenge_st_cd statusCd
+		<include refid="detailChallenge" />
+		ORDER BY oct.challenge_no DESC
+		LIMIT ${startIndex}, 10
+	</select>
+	
+	<select id="selectBaseChallengeNmEn" parameterType="long" resultType="string">
+		/* selectBaseChallengeNmEn */
+		SELECT tt.trans_en
+		FROM BASE_CHALLENGE_TB bct
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
+		WHERE bct.base_no = #{baseNo}
+	</select>
 </mapper>

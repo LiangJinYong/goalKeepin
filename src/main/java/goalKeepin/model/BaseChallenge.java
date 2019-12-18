@@ -1,12 +1,10 @@
 package goalKeepin.model;
 
-import java.util.List;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
+import java.util.Date;
 import lombok.Data;
 
 @Data
@@ -26,7 +24,7 @@ public class BaseChallenge {
 	private String baseNmSc;
 	
 //	@NotEmpty(message="Required")
-	private String baseThumbnailUrl;
+//	private byte[] baseThumbnailUrl;
 	
 	@NotEmpty(message="Required")
 	private String baseHabitTypeCd;
@@ -85,6 +83,8 @@ public class BaseChallenge {
 	@NotEmpty(message="Required")
 	private String baseDetailSc;
 	
-//	@NotEmpty(message="Required")
+	private Date baseRegDate;
+	
+	@NotEmpty(message="Required")
 	private String searchKeyword;
 }

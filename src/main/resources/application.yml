@@ -4,6 +4,13 @@ spring:
     username: makeIT
     password: makeit12!
     driver-class-name: com.mysql.jdbc.Driver
+    
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      location: images
+      
 
 mybatis:
   type-aliases-package: goalKeepin.model

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Goal Keepin</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../richtext.min.css">
+<style>
+div {
+	margin: 20px 0 20px 0;
+}
+
+.name {
+	margin: 30px;
+}
+
+#thumbnailImg {
+	
+}
+
+#baseAuthDesc textarea {
+	width: 90%;
+	height: 100px;
+}
+
+#challengeName td {
+	width: 250px;
+} 
+
+#challengeName td input {
+	width: 200px;
+	height: 20px;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+#authMethod td {
+	height: 40px;
+}
+
+.validationError {
+	color: red;
+}
+
+form input[type=text], form input[type=number] {
+	width: 40px;
+}
+
+form input + label {
+	margin-left: 3px;
+	margin-right: 15px;
+}
+
+select[multiple] {
+  background:none;
+  width:auto;
+  height:auto;
+  padding:10px;
+  margin:10px;
+  border-width: 1px;
+  border-style: inset;
+  -moz-appearance: menulist;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+  font-size: 15px;
+}
+
+#thumbnailImg img {
+	width: 100px;
+	height: 100px;
+}
+
+.image-upload>input {
+  /* display: none; */
+}
+
+textarea {
+	font-size: 1em;
+}
+
+#topButton a {
+	background-color: gray;
+	font-size: 15px;
+	color: #fff;
+	padding: 10px;
+	text-decoration: none;
+}
+
+ .forRecruiting {
+ 	display: none;
+ }
+</style>
+
+<body>
+	<h1>챌린지 생성하기</h1>
+	<div th:if="*{baseNo != null}" id="topButton">
+		<a id="showChallengeList" href="#">등록한 챌린지 목록</a>
+		<a id="startRecruiting" href="#">모집 시작하기</a>
+		<a th:if="*{modifiable == 1}" href="#"id="modifyChallengeDetail">수정하기</a>
+	</div>
+	<form method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}" enctype="multipart/form-data">
+		<input th:if="*{baseNo != null}" type="hidden" id="baseNo" name="baseNo" th:value="*{baseNo}"  />
+		
+		<div th:if="${#fields.hasErrors()}">
+		<span class="validationError">
+		Please correct the problems below and resubmit. </span>
+		</div>
+		<table id="challengeName">
+			<tr>
+				<td>
+					<span>챌린지 명(영문)</span><br />
+					<input type="text" name="baseNmEn" th:field="*{baseNmEn}" class="add" required />
+					<div th:text="*{baseNmEn}" class="view"></div>
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmEn')}"
+		              	th:errors="*{baseNmEn}">baseNmEn Error</span>
+				</td>
+				<td>
+					<span>챌린지 명(번체)</span><br />
+					<input th:if="*{baseNo == null}" type="text" name="baseNmTc" th:field="*{baseNmTc}" required />
+					<div th:if="*{baseNo != null}" th:text="*{baseNmTc}"></div>
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmTc')}"
+		              	th:errors="*{baseNmTc}">baseNmTc Error</span>
+				</td>
+				<td>
+					<span>챌린지 명(간체)</span><br />
+					<input th:if="*{baseNo == null}" type="text" name="baseNmSc" th:field="*{baseNmSc}" required />
+					<div th:if="*{baseNo != null}" th:text="*{baseNmSc}"></div>
+					<span class="validationError"
+						th:if="${#fields.hasErrors('baseNmSc')}"
+		              	th:errors="*{baseNmSc}">baseNmSc Error</span>
+				</td>
+				<td th:if="*{baseNo != null}">
+					<span>등록일시</span> <span th:text="*{#dates.format(baseRegDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+				</td>
+			</tr>
+		</table>
+		<!-- 
+		<div class="image-upload" id="thumbnailImg">
+			<span style="margin-right: 20px;">썸네일 이미지</span>
+			<label for="file-input">
+			  <img src="../images/thumbnail_upload.png"/>
+			</label>
+			<input id="file-input" type="file" required />
+			<span class="validationError"
+					th:if="${#fields.hasErrors('baseThumbnailUrl')}"
+	              	th:errors="*{baseThumbnailUrl}">baseThumbnailUrl Error</span>
+		</div>
+		<div id="thumbnailImg">
+			<span>썸네일 이미지</span>
+			<input th:if="*{baseNo == null}" type="file" name="baseThumbnailUrl" required />
+			<img th:if="*{baseNo != null}" alt="demo" src="http://www.allitebooks.org/wp-content/uploads/1442/0755fc710a9234d.jpeg">
+		</div>
+		 -->
+		 <table>
+		 	<tr>
+		 		<td id="thumbnailImg">
+		 			<span>썸네일 이미지</span>
+					<input th:if="*{baseNo == null}" type="file" name="baseThumbnailUrl" required />
+					<img th:if="*{baseNo != null}" alt="demo" src="http://www.allitebooks.org/wp-content/uploads/1442/0755fc710a9234d.jpeg">
+		 		</td>
+		 		<td class="forRecruiting" style="width: 20%">
+		 			<h4>카테고리 설정</h4>
+		 			<select name="categoryNo" id="categoryNo">
+		 				<option th:each="category : ${categoryList}" th:value="${category.categoryNo}" th:utext="${category.categoryContent}">
+		 			</select>
+		 		</td>
+		 		<td class="forRecruiting" style="padding-left: 100px;">
+		 			<h4>제한 등급</h4>
+		 			<select id="gradeCd" name="gradeCd">
+		 				<option value="LV00">제한 없음</option>
+		 				<option value="LV01">Iron</option>
+		 				<option value="LV02">Bronze</option>
+		 				<option value="LV03">Silver</option>
+		 				<option value="LV04">Gold</option>
+		 				<option value="LV05">Platinum</option>
+		 				<option value="LV06">Diamond</option>
+		 				<option value="LV07">Master</option>
+		 				<option value="LV08">Goalkeeper</option>
+		 			</select>
+		 		</td>
+		 	</tr>
+		 </table>
+		 <hr>
+		 <table class="forRecruiting">
+		 	<tr>
+		 		<td>
+		 			<span>최소 참가비</span><br />
+		 			<input type="number" name="minFee" id="minFee" style="width: 100px;" value="1000" required />
+		 		</td>
+		 		<td>
+		 			<span>최대 참가비</span><br />
+		 			<input type="number" name="maxFee" id="maxFee" style="width: 100px;" value="10000" required />
+		 		</td>
+		 	</tr>
+		 	<tr class="forRecruiting">
+		 		<td>
+		 			<span>시작일</span><br />
+		 			<input type="date" name="startDate" id="startDate" value="2019-12-16" required />
+		 		</td>
+		 		<td>
+		 			<span>종료일</span><br />
+		 			<input type="date" name="endDate" id="endDate" value="2020-01-31" required />
+		 		</td>
+		 	</tr>
+		 </table>
+		<div id="habitType">
+			<span>습관 타입</span><br />
+			<select th:if="*{baseNo == null}" multiple="multiple" style="width: 100px;" size="8" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" required>
+				<option value="HT01">Health</option>
+				<option value="HT02">Lifestyle</option>
+				<option value="HT03">Relationships</option>
+				<option value="HT04">Ability</option>
+				<option value="HT05">Hobby</option>
+				<option value="HT06">Asset</option>
+				<option value="HT07">Event</option> 
+				<option value="HT08">Premium</option>
+			</select>
+			<div th:if="*{baseNo != null}" th:text="*{searchKeyword}">
+			</div>
+			<span class="validationError"
+				th:if="${#fields.hasErrors('baseHabitTypeCd')}"
+	             	th:errors="*{baseHabitTypeCd}">baseHabitTypeCd Error</span>
+	           <input type="hidden" name="searchKeyword" id="searchKeyword" />
+		</div>
+
+		<div id="authMethod">
+			<h3>인증 방법</h3>
+			<table>
+				<tr>
+					<td>인증가능 요일</td>
+					<td th:if="*{baseNo == null}">
+						<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" required /><label for="baseAuthDateCd1">월-금</label>
+						<input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" required /><label for="baseAuthDateCd2">토-일</label>
+						<input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" required /><label for="baseAuthDateCd3">월-일</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthDateCd')}"
+			              	th:errors="*{baseAuthDateCd}">baseAuthDateCd Error</span>
+					</td>
+					<td th:if="*{baseNo != null}">
+						<span th:if="*{baseAuthDateCd == 'AD01'}" th:text="'월/화/수/목/금'"></span>
+						<span th:if="*{baseAuthDateCd == 'AD02'}" th:text="'토/일'"></span>
+						<span th:if="*{baseAuthDateCd == 'AD03'}" th:text="'월/화/수/목/금/토/일'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 빈도</td>
+					<td th:if="*{baseNo == null}">주 <input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required /> 일 
+					<input type="checkbox" id="everyday" /> <label for="everyday">매일</label>
+					<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthFrequency')}"
+			              	th:errors="*{baseAuthFrequency}">baseAuthFrequency Error</span>
+					</td>
+					<td th:if="*{baseNo != null}">
+						<span th:text="*{baseAuthFrequency}"></span>
+						<span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
+									or (baseAuthDateCd == 'AD02' and baseAuthFrequency == 2)
+									or (baseAuthDateCd == 'AD03' and baseAuthFrequency == 7)}"
+						 th:text="'(매일)'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 가능 시간</td>
+					<td th:if="*{baseNo == null}">
+						<input type="time" name="baseAuthFromTime" th:field="*{baseAuthFromTime}" required />
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthFromTime')}"
+			              	th:errors="*{baseAuthFromTime}">baseAuthTime Error</span>
+			              	 ~ 
+						<input type="time" name="baseAuthToTime" th:field="*{baseAuthToTime}" />
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthToTime')}"
+			              	th:errors="*{baseAuthToTime}">baseAuthTime Error</span>
+						<input type="checkbox" id="allHours" /> <label for="allHours">24시간</label>
+	              	</td>
+	              	<td th:if="*{baseNo != null}">
+	              		<span th:text="*{baseAuthFromTime}"></span> ~
+	              		<span th:text="*{baseAuthToTime}"></span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>하루 인증 횟수</td>
+					<td th:if="*{baseNo == null}">
+						<input type="number" name="baseAuthNumDaily"  th:field="*{baseAuthNumDaily}" required /> 회
+						<span class="validationError"
+								th:if="${#fields.hasErrors('baseAuthNumDaily')}"
+				              	th:errors="*{baseAuthNumDaily}">baseAuthNumDaily Error</span>
+	              	</td>
+	              	<td th:if="*{baseNo != null}">
+	              		<span th:text="*{baseAuthNumDaily}"></span>회
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증 방법</td>
+					<td th:if="*{baseNo == null}">
+						<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required /><label for="photo">사진</label> 
+						<input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required /><label for="audio">음성</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthMethodCd')}"
+			              	th:errors="*{baseAuthMethodCd}">baseAuthMethodCd Error</span>
+						
+					</td>
+					<td th:if="*{baseNo != null}">
+						<span th:if="*{baseAuthMethodCd == 'AU01'}" th:text="'사진'"></span>
+						<span th:if="*{baseAuthMethodCd == 'AU02'}" th:text="'음성'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증샷 공개 여부</td>
+					<td th:if="*{baseNo == null}">
+						<input type="radio" name="baseAuthIsOpen" value="1" id="photoShown" th:field="*{baseAuthIsOpen}" required /><label for="photoShown">공개</label> 
+						<input type="radio" name="baseAuthIsOpen" value="0" id="photoHidden" th:field="*{baseAuthIsOpen}" required /><label for="photoHidden">비공개</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthIsOpen')}"
+			              	th:errors="*{baseAuthIsOpen}">baseAuthIsOpen Error</span>
+	              	</td>
+	              	<td th:if="*{baseNo != null}">
+	              		<span th:if="*{baseAuthIsOpen == 1}" th:text="'공개'"></span>
+						<span th:if="*{baseAuthIsOpen == 0}" th:text="'불공개'"></span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증샷 간격</td>
+					<td th:if="*{baseNo == null}">
+						<input type="number" name="baseAuthInterval" th:field="*{baseAuthInterval}" required /><label>시간</label>
+						<input type="checkbox" id="noLimit" /><label for="noLimit">제한없음</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthInterval')}"
+			              	th:errors="*{baseAuthInterval}">baseAuthInterval Error</span>
+					</td>
+					<td th:if="*{baseNo != null}">
+						<span th:if="*{baseAuthInterval != 0}" th:text="*{baseAuthInterval} + '시간'"></span>
+						<span th:if="*{baseAuthInterval == 0}" th:text="'제한없음'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>사진첩 사용 가능 여부</td>
+					<td th:if="*{baseNo == null}">
+						<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" required /><label for="albumAvaliable">가능</label> 
+						<input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" required /><label for="albumNotavaliable">불가능</label>
+						<span class="validationError"
+							th:if="${#fields.hasErrors('baseAuthIsAlbum')}"
+			              	th:errors="*{baseAuthIsAlbum}">baseAuthIsAlbum Error</span>
+					</td>
+					<td th:if="*{baseNo != null}">
+						<span th:if="*{baseAuthIsAlbum == 1}" th:text="'가능'"></span>
+						<span th:if="*{baseAuthIsAlbum == 0}" th:text="'불가능'"></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div  id="baseAuthDesc">
+			<div>
+				<span><label for="baseAuthDescEn">상세 설명(영문)</label></span><br />
+				<textarea th:if="*{baseNo == null}" name="baseAuthDescEn" th:field="*{baseAuthDescEn}" id="baseAuthDescEn" placeholder="Please fill in the content."  required ></textarea>
+				<div th:if="*{baseNo != null}" th:text="*{baseAuthDescEn}"></div>
+				<span class="validationError"
+						th:if="${#fields.hasErrors('baseAuthDescEn')}"
+		              	th:errors="*{baseAuthDescEn}">baseAuthDescEn Error</span>
+			</div>
+			<div>
+				<span><label for="baseAuthDescTc">상세 설명(번체)</label></span><br />
+				<textarea th:if="*{baseNo == null}" name="baseAuthDescTc" th:field="*{baseAuthDescTc}" id="baseAuthDescTc" placeholder="Please fill in the content." required ></textarea>
+				<div th:if="*{baseNo != null}" th:text="*{baseAuthDescTc}"></div>
+				<span class="validationError"
+						th:if="${#fields.hasErrors('baseAuthDescTc')}"
+		              	th:errors="*{baseAuthDescTc}">baseAuthDescTc Error</span>
+			</div>
+			<div>
+				<span><label for="baseAuthDescSc">상세 설명(간체)</label></span><br />
+				<textarea th:if="*{baseNo == null}" name="baseAuthDescSc" th:field="*{baseAuthDescSc}" id="baseAuthDescSc" placeholder="Please fill in the content." required ></textarea>
+				<div th:if="*{baseNo != null}" th:text="*{baseAuthDescSc}"></div>
+				<span class="validationError"
+						th:if="${#fields.hasErrors('baseAuthDescSc')}"
+		              	th:errors="*{baseAuthDescSc}">baseAuthDescSc Error</span>
+			</div>
+		</div>
+			 
+		<hr />
+		<div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(영문)</span>
+				<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseDetailEn}" required  ></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailEn')}"
+			              	th:errors="*{baseDetailEn}">baseDetailEn Error</span>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(번체)</span>
+				<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseDetailTc}" required ></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailTc')}"
+			              	th:errors="*{baseDetailTc}">baseDetailTc Error</span>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(간체)</span>
+				<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseDetailSc}" required ></textarea>
+				<span class="validationError"
+							th:if="${#fields.hasErrors('baseDetailSc')}"
+			              	th:errors="*{baseDetailSc}">baseDetailSc Error</span>
+			</div>
+		</div>
+		<div>
+			<input th:if="*{baseNo == null}" type="submit" value="생성하기" />
+		</div>
+		<div id="startRecruitingButton">
+			<input id="createChallengeDetail" type="button" class="forRecruiting" value="모집 시작" />
+		</div>
+		
+	</form>
+	<script type="text/javascript" src="../jquery.js"></script>
+	<script type="text/javascript" src="../jquery.richtext.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			 $('.content1').richText();
+			 $('.content2').richText();
+			 $('.content3').richText();
+			 
+			 var isEditable = [[*{baseNo == null}]];
+			 
+			 if(!isEditable) {
+				 $('.richText-editor').attr('contenteditable', false);
+			 }
+			 
+			 $('#modifyChallengeDetail').click(function() {
+				 $('.richText-editor').attr('contenteditable', true);
+			 });
+			 
+			 // 상단 '모집 시작하기' 버튼 처리
+			 $('#startRecruiting').click(function() {
+				 $('.forRecruiting').fadeIn('slow');
+				 
+				 $('<a href="#">모집 시작 취소</a>')
+				 .appendTo('#topButton')
+				 .siblings('a')
+				 .hide()
+				 .end()
+				 .click(function() {
+					 $(this)
+					 	.siblings('a')
+					 	.show()
+					 	.end()
+					 	.remove();
+					 $('.forRecruiting').hide();
+				 });
+			 });
+	
+			 // everyday checkbox
+			 $('#everyday').change(function() {
+				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
+				 if(dateCount == 0) {
+					 alert('우선 인증가능 요일을 선택하세요.');
+					 $(this).prop('checked', false);
+				 } else {
+					if($(this).prop('checked')) {
+						
+						var daysArr = [5, 2, 7];
+						for(var i=0; i<daysArr.length; i++) {
+							if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
+								 $('#baseAuthFrequency').val(daysArr[i]);
+							}	
+						}
+						
+						$('#baseAuthFrequency').attr('readonly', true);
+					} else {
+						$('#baseAuthFrequency').attr('readonly', false);
+					}
+				 }
+			 });
+			 
+			 $('input[name=baseAuthDateCd]').change(function() {
+			 	
+				var daysArr = [5, 2, 7];
+				for(var i=0; i<daysArr.length; i++) {
+					if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
+						if($('#everyday').prop('checked')) {
+							$('#baseAuthFrequency').val(daysArr[i]);
+						}
+					}	
+				}
+			 });
+			 
+			 $('#baseAuthFrequency').blur(function() {
+				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
+				 var frequencyVal = parseInt($(this).val());
+				 
+				 if(!isNaN(frequencyVal) && dateCount != 0) {
+					 var daysArr = [5, 2, 7];
+						for(var i=0; i<daysArr.length; i++) {
+							if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
+								 $(this).val(daysArr[i]);
+							}	
+						}
+				 }
+			 });
+			 
+			 $('#baseHabitTypeCd').change(function() {
+				var textArr = [];
+				$(this).children(':selected').each(function(index, element) {
+					textArr.push($(element).text());
+				});
+				
+				$('#searchKeyword').val(textArr.join(','));
+			 });
+			 
+			 // 하단 모집 시작하기 버튼 처리
+			 $('#createChallengeDetail').click(function() {
+				 $.post('/challenge/createNewChallenge', {
+					 baseChallengeNo: $('#baseNo').val(),
+					 categoryNo: $('#categoryNo').val(),
+					 gradeCd: $('#gradeCd').val(),
+					 minFee: $('#minFee').val(),
+					 maxFee: $('#maxFee').val(),
+					 startDate: $('#startDate').val(),
+					 endDate: $('#endDate').val()
+				 }, function() {
+					 window.location = '/challenge/showChallengeList/1?baseNo=' + $('#baseNo').val();
+				 });
+			 });
+			 
+			 // 등록한 챌린지 목록 버튼 처리
+			 $('#showChallengeList').click(function() {
+				 window.location = '/challenge/showChallengeList/1?baseNo=' + $('#baseNo').val();
+			 });
+		});
+	</script>
+</body>
+</html>

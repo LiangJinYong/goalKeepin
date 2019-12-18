@@ -1,0 +1,13 @@
+#pagination {
+	text-align: center;
+}
+
+#pagination span {
+	margin: 10px;
+	background: #ccc;
+	padding: 10px;
+}
+
+#pagination a {
+	text-decoration: none;
+}

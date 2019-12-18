@@ -1,0 +1,27 @@
+
+.dataTable {
+	/* margin: 40px; */
+	/* position: relative;
+	left: 40px; */
+	width: 90%;
+	border-collapse: collapse;
+	margin-left: 30px;
+}
+
+.dataTable thead {
+	background-color: #eee;
+	font-size: 23px;
+}
+
+.dataTable th {
+
+	border-bottom: 2px solid black;
+	padding: 20px;
+	text-align: center;
+}
+
+.dataTable td {
+	border-bottom: 1px solid black;
+	padding: 10px;
+	text-align: center;
+}

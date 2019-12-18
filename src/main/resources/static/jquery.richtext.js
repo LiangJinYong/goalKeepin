@@ -5,7 +5,6 @@
         // set default options
         // and merge them with the parameter options
         var settings = $.extend({
-            
             // text formatting
             bold: true,
             italic: true,
