@@ -13,7 +13,7 @@
 	 top: 80px; */ 
 }
 
-#header a {
+.header a {
 	float: right;
 	background-color: gray;
 	font-size: 20px;
@@ -22,7 +22,7 @@
 	text-decoration: none;
 }
 
-h1 {
+.header h1 {
 	display: inline;
 }
 
@@ -32,11 +32,11 @@ h1 {
 }
 </style>
 <body>
-	<div id="header">
+	<div class="header">
 		<h1>챌린지 기본정보 관리</h1> 
-		<a id="generateChallenge" href="/challenge/showChallengeGenerationForm">챌린지 생성하기</a>
+		<a id="generateChallenge" href="/challenge/showBaseChallengeDetailForm">챌린지 생성하기</a>
 	</div>
-	<div id="baseContent" class="dataTable">
+	<div id="baseContent">
 		<table id="baseTable" class="dataTable">
 			<thead>
 				<th>NO</th>
@@ -66,9 +66,8 @@ h1 {
 	<script type="text/javascript">
 		$(function() {
 			$('#baseTable tr:gt(0)').click(function() {
-				window.location = '/challenge/showChallengeDetail?baseNo=' + $(this).attr('id');
+				window.location = '/challenge/showBaseChallengeDetail?baseNo=' + $(this).attr('id');
 			});
-			
 		});
 	</script>
 

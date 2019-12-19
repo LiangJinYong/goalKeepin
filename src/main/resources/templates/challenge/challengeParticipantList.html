@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Challenge Participant List</title>
+<link rel="stylesheet" href="../../dataTable.css" />
+<link rel="stylesheet" href="../../pagination.css" />
+<style type="text/css">
+	.header a {
+	float: right;
+	background-color: gray;
+	font-size: 20px;
+	color: #fff;
+	padding: 10px;
+	text-decoration: none;
+}
+
+.header h1 {
+	display: inline;
+}
+</style>
+</head>
+<body>
+	<div class="header">
+		<h1>참여자 목록</h1> 
+		<a href="/challenge/showAllProofShots">전체 인증샷 모아보기</a>
+	</div>
+	<div id="baseContent">
+		<table id="baseTable" class="dataTable">
+			<thead>
+				<th>NO</th>
+				<th>아이디</th>
+				<th>참가비(원)</th>
+				<th>참여 일자</th>
+				<th>달성률(%)</th>
+			</thead>
+			<tr th:each="participantEntry: ${participantEntryList}" style="cursor: pointer;" th:id="${participantEntry.entryNo}">
+				<td th:text="${participantEntry.entryNo}">NO</td>
+				<td th:text="${participantEntry.participant.userId}">User Id</td>
+				<td th:text="${participantEntry.entryFee}">Entry Fee</td>
+				<td th:text="*{#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</td>
+				<td th:text="${participantEntry.entryResult}">Entry Result</td>
+			</tr>
+		</table>
+		<div id="pagination" th:if="${paging.totalPages > 1}">
+			<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}"> <a
+				th:href="@{'/challenge/baseManagement/' + ${i}}" th:text="${i}"></a>
+			</span>
+		</div>
+	</div>	
+</body>
+</html>

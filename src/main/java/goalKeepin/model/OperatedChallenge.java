@@ -5,9 +5,9 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class ChallengeDetail {
+public class OperatedChallenge {
 
-	private Long challengeDetailNo;
+	private Long operatedChallengeNo;
 
 	private Long baseChallengeNo;
 	
@@ -32,5 +32,6 @@ public class ChallengeDetail {
 	private Date regDate;
 	
 	private BaseChallenge baseChallenge;
+	
 }
    

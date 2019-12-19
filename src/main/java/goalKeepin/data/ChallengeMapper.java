@@ -7,7 +7,8 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import goalKeepin.model.BaseChallenge;
-import goalKeepin.model.ChallengeDetail;
+import goalKeepin.model.OperatedChallenge;
+import goalKeepin.model.ParticipantEntry;
 
 @Mapper
 public interface ChallengeMapper {
@@ -16,27 +17,35 @@ public interface ChallengeMapper {
 
 	int getTotalBaseChallengeNum();
 
-	void insertBaseChallenge(BaseChallenge baseChallenge);
+	void insertOrUpdateBaseChallenge(BaseChallenge baseChallenge);
 
-	void insertBaseNmTrans(BaseChallenge baseChallenge);
+	void insertOrUpdateBaseNmTrans(BaseChallenge baseChallenge);
 
-	void insertBaseAuthDescTrans(BaseChallenge baseChallenge);
+	void insertOrUpdateBaseAuthDescTrans(BaseChallenge baseChallenge);
 
-	void insertBaseDetailTrans(BaseChallenge baseChallenge);
+	void insertOrUpdateBaseDetailTrans(BaseChallenge baseChallenge);
 
 	BaseChallenge selectBaseChallengeByNo(Long baseNo);
 
 	List<Map<Integer, String>> selectCategoryList();
 
-	void insertChallengeDetailInfo(ChallengeDetail challengeDetail);
+	void insertOperatedChallengeInfo(OperatedChallenge challengeDetail);
 
-	List<ChallengeDetail> selectChallengeListByBaseNo(Map<String, Object> paramMap);
+	List<OperatedChallenge> selectOperatedChallengeListByBaseNo(Map<String, Object> paramMap);
 
 	String selectBaseChallengeNmEn(Long baseNo);
 
-	int getTotalDetailChallengeNumByBase(Long baseNo);
+	int getOperatedChallengeCountByBase(Long baseNo);
 
 	int selectModifiable(Long baseNo);
+
+	OperatedChallenge selectOperatedChallengeByNo(Long operatedNo);
+
+	int getPaticipantCountByChallenge(Long operatedNo);
+
+	List<ParticipantEntry> selectParticipantEntryList(int startIndex);
+
+	List<ParticipantEntry> selectParticipantEntryList(Map<String, Object> paramMap);
 	
 	
 }

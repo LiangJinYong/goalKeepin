@@ -1,12 +1,14 @@
 package goalKeepin.model;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Data
-@RequiredArgsConstructor
 public class User {
 
-	private final long id;
-	private final String name;
+	private long userNo;
+	private String userId;
+	private String loginTypeCd;
+	private String nickName;
+	private List<OperatedChallenge> challenges;
 }

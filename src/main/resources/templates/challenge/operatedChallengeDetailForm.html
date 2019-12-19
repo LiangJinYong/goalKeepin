@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Goal Keepin</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../richtext.min.css">
+<style>
+div {
+	margin: 20px 0 20px 0;
+}
+
+.name {
+	margin: 30px;
+}
+
+#thumbnailImg {
+	
+}
+
+#baseAuthDesc textarea {
+	width: 90%;
+	height: 100px;
+}
+
+#challengeName td {
+	width: 250px;
+} 
+
+#challengeName td input {
+	width: 200px;
+	height: 20px;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+#authMethod td {
+	height: 40px;
+}
+
+form input[type=text], form input[type=number] {
+	width: 40px;
+}
+
+form input + label {
+	margin-left: 3px;
+	margin-right: 15px;
+}
+
+select[multiple] {
+  background:none;
+  width:auto;
+  height:auto;
+  padding:10px;
+  margin:10px;
+  border-width: 1px;
+  border-style: inset;
+  -moz-appearance: menulist;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+  font-size: 15px;
+}
+
+#thumbnailImg img {
+	width: 100px;
+	height: 100px;
+}
+
+.image-upload>input {
+  /* display: none; */
+}
+
+textarea {
+	font-size: 1em;
+}
+
+.topButton a {
+	background-color: gray;
+	font-size: 15px;
+	color: #fff;
+	padding: 10px;
+	text-decoration: none;
+}
+
+ .forRecruiting, .forModifying {
+ 	display: none;
+ }
+ 
+ .statusBtn {
+ 	border-radius: 5px;
+ 	font-size: 1.5em;
+ 	color: white;
+ 	padding: 5px;
+ 	margin-left: 20px;
+ }
+ 
+ .recruiting {
+ 	background: blue;
+ }
+ 
+ .ongoing {
+ 	background: green;
+ }
+ 
+ .expried {
+ 	background: red;
+ }
+</style>
+
+<body>
+	<h1>챌린지 상세정보</h1>
+	<div class="topButton">
+		<a id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}">참여자 목록보기</a>
+		<a id="showProofShotList" href="#">인증샷 모아보기</a>
+		<a id="showReviewList" href="#">리뷰 목록보기</a>
+	</div>
+	<div th:object="${operatedChallenge}">
+		<table id="challengeName">
+			<tr>
+				<td>
+					<span>챌린지 명(영문)</span><br />
+					<span th:text="*{baseChallenge.baseNmEn}" class="view"></span>
+					<button th:if="*{statusCd == 'CH01'}" th:text="Recruiting" class="statusBtn recruiting"></button>
+					<button th:if="*{statusCd == 'CH02'}" th:text="Ongoing" class="statusBtn ongoing"></button>
+					<button th:if="*{statusCd == 'CH03'}" th:text="Expired" class="statusBtn expired"></button>
+				</td>
+				<td>
+					<span>등록일시</span> <span th:text="*{#dates.format(regDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+				</td>
+			</tr>
+		</table>
+		 <div id="habitType">
+			<span>습관 타입</span><br />
+		</div>
+		<div th:text="*{baseChallenge.searchKeyword}" class="view">
+		</div>
+		 <table>
+		 	<tr>
+		 		<td id="thumbnailImg">
+		 			<span>썸네일 이미지</span>
+					<img alt="demo" src="http://www.allitebooks.org/wp-content/uploads/1442/0755fc710a9234d.jpeg" class="view">
+		 		</td>
+		 		<td style="width: 20%">
+		 			<h4>카테고리 설정</h4>
+		 			<div th:text="*{categoryNo}"></div>
+		 		</td>
+		 		<td style="padding-left: 100px;">
+		 			<h4>제한 등급</h4>
+		 			<div th:text="*{gradeCd}"></div>
+		 		</td>
+		 	</tr>
+		 </table>
+		 <table>
+		 	<tr>
+		 		<td>
+		 			<span>최소 참가비</span><br />
+		 			<div th:text="*{minFee}"></div>
+		 		</td>
+		 		<td>
+		 			<span>최대 참가비</span><br />
+		 			<div th:text="*{maxFee}"></div>
+		 		</td>
+		 	</tr>
+		 	<tr>
+		 		<td>
+		 			<span>시작일</span><br />
+		 			<div th:text="*{startDate}"></div>
+		 		</td>
+		 		<td>
+		 			<span>종료일</span><br />
+		 			<div th:text="*{startDate}"></div>
+		 		</td>
+		 	</tr>
+		 </table>
+
+		<div id="authMethod">
+			<h3>인증 방법</h3>
+			<table>
+				<tr>
+					<td>인증가능 요일</td>
+					<td class="view">
+						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD01'}" th:text="'월/화/수/목/금'"></span>
+						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD02'}" th:text="'토/일'"></span>
+						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD03'}" th:text="'월/화/수/목/금/토/일'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 빈도</td>
+					<td class="view">
+						<span th:text="*{baseChallenge.baseAuthFrequency}"></span>
+						<span th:if="*{(baseChallenge.baseAuthDateCd == 'AD01' and baseChallenge.baseAuthFrequency == 5)
+									or (baseChallenge.baseAuthDateCd == 'AD02' and baseChallenge.baseAuthFrequency == 2)
+									or (baseChallenge.baseAuthDateCd == 'AD03' and baseChallenge.baseAuthFrequency == 7)}"
+						 th:text="'(매일)'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증 가능 시간</td>
+	              	<td class="view">
+	              		<span th:text="*{baseChallenge.baseAuthFromTime}"></span> ~
+	              		<span th:text="*{baseChallenge.baseAuthToTime}"></span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>하루 인증 횟수</td>
+	              	<td class="view">
+	              		<span th:text="*{baseChallenge.baseAuthNumDaily}"></span>회
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증 방법</td>
+					<td class="view">
+						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU01'}" th:text="'사진'"></span>
+						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU02'}" th:text="'음성'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>인증샷 공개 여부</td>
+	              	<td class="view">
+	              		<span th:if="*{baseChallenge.baseAuthIsOpen == 1}" th:text="'공개'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsOpen == 0}" th:text="'불공개'"></span>
+	              	</td>
+				</tr>
+				<tr>
+					<td>인증샷 간격</td>
+					<td class="view">
+						<span th:if="*{baseChallenge.baseAuthInterval != 0}" th:text="*{baseChallenge.baseAuthInterval} + '시간'"></span>
+						<span th:if="*{baseChallenge.baseAuthInterval == 0}" th:text="'제한없음'"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>사진첩 사용 가능 여부</td>
+					<td class="view">
+						<span th:if="*{baseChallenge.baseAuthIsAlbum == 1}" th:text="'가능'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsAlbum == 0}" th:text="'불가능'"></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div  id="baseAuthDesc">
+			<div>
+				<span>상세 설명(영문)</span><br />
+				<div th:text="*{baseChallenge.baseAuthDescEn}" class="view"></div>
+			</div>
+			<div>
+				<span>상세 설명(번체)</span><br />
+				<div th:text="*{baseChallenge.baseAuthDescTc}" class="view"></div>
+			</div>
+			<div>
+				<span>상세 설명(간체)</span><br />
+				<div th:text="*{baseChallenge.baseAuthDescSc}" class="view"></div>
+			</div>
+		</div>
+			 
+		<hr />
+		<div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(영문)</span>
+				<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseChallenge.baseDetailEn}" required  ></textarea>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(번체)</span>
+				<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseChallenge.baseDetailTc}" required ></textarea>
+			</div>
+			<div class="page-wrapper box-content">
+				<span>챌린지 상세 설명(간체)</span>
+				<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseChallenge.baseDetailSc}" required ></textarea>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../jquery.js"></script>
+	<script type="text/javascript" src="../jquery.richtext.js"></script>
+	<script th:inline="javascript" th:if="*{baseChallenge != null}">
+    	var baseHabitTypeCd = /*[[*{baseChallenge.baseHabitTypeCd}]]*/ null;
+    	var baseDetailEn = /*[[*{baseChallenge.baseDetailEn}]]*/ null;
+    	var baseDetailTc = /*[[*{baseChallenge.baseDetailTc}]]*/ null;
+    	var baseDetailSc = /*[[*{baseChallenge.baseDetailSc}]]*/ null;
+	</script>
+	
+	<script th:inline="javascript" th:if="*{operatedChallenge != null}">
+    	var baseHabitTypeCd = /*[[*{operatedChallenge.baseChallenge.baseHabitTypeCd}]]*/ null;
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			 $('.content1').richText();
+			 $('.content2').richText();
+			 $('.content3').richText();
+			 
+			 $('.richText-editor').attr('contenteditable', false);
+		});
+	</script>
+</body>
+</html>

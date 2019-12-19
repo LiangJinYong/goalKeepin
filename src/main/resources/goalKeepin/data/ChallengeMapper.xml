@@ -4,6 +4,70 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="goalKeepin.data.ChallengeMapper">
+
+	<resultMap type="BaseChallenge" id="BaseChallenge">
+		<id property="baseNo" column="baseNo" />
+		<result property="baseNmTransNo" column="baseNmTransNo" />
+		<result property="baseNmEn" column="baseNmEn" />
+		<result property="baseNmTc" column="baseNmTc" />
+		<result property="baseNmSc" column="baseNmSc" />
+		<result property="baseThumbnailUrl" column="baseThumbnailUrl" />
+		<result property="baseHabitTypeCd" column="baseHabitTypeCd" />
+		<result property="baseAuthDateCd" column="baseAuthDateCd" />
+		<result property="baseAuthFrequency" column="baseAuthFrequency" />
+		<result property="baseAuthFromTime" column="baseAuthFromTime" />
+		<result property="baseAuthToTime" column="baseAuthToTime" />
+		<result property="baseAuthNumDaily" column="baseAuthNumDaily" />
+		<result property="baseAuthMethodCd" column="baseAuthMethodCd" />
+		<result property="baseAuthIsOpen" column="baseAuthIsOpen" />
+		<result property="baseAuthInterval" column="baseAuthInterval" />
+		<result property="baseAuthIsAlbum" column="baseAuthIsAlbum" />
+		<result property="baseAuthDescTransNo" column="baseAuthDescTransNo" />
+		<result property="baseAuthDescEn" column="baseAuthDescEn" />
+		<result property="baseAuthDescTc" column="baseAuthDescTc" />
+		<result property="baseAuthDescSc" column="baseAuthDescSc" />
+		<result property="baseDetailTransNo" column="baseDetailTransNo" />
+		<result property="baseDetailEn" column="baseDetailEn" />
+		<result property="baseDetailTc" column="baseDetailTc" />
+		<result property="baseDetailSc" column="baseDetailSc" />
+		<result property="baseRegDate" column="baseRegDate" />
+		<result property="searchKeyword" column="searchKeyword" />
+	</resultMap>
+	
+	<resultMap type="OperatedChallenge" id="OperatedChallenge">
+		<id property="operatedChallengeNo" column="operatedChallengeNo" />
+		<result property="baseChallengeNo" column="baseChallengeNo" />
+		<result property="categoryNo" column="categoryNo" />
+		<result property="gradeCd" column="gradeCd" />
+		<result property="minFee" column="minFee" />
+		<result property="maxFee" column="maxFee" />
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="statusCd" column="statusCd" />
+		<result property="entryNum" column="entryNum" />
+		<result property="totalFee" column="totalFee" />
+		<result property="regDate" column="regDate" />
+		<association property="baseChallenge" resultMap="BaseChallenge"></association>
+	</resultMap>
+	
+	<resultMap type="User" id="User">
+		<id property="userNo" column="userNo" />
+		<result property="userId" column="userId" />
+		<result property="loginTypeCd" column="loginTypeCd" />
+		<result property="nickName" column="nickName" />
+		<collection property="challenges" resultMap="OperatedChallenge"></collection>
+	</resultMap>
+	
+	<resultMap type="ParticipantEntry" id="ParticipantEntry">
+		<id property="entryNo" column="entryNo" />
+		<result property="entryFee" column="entryFee" />
+		<result property="entryResult" column="entryResult" />
+		<result property="entryRegDate" column="entryRegDate" />
+		<result property="entryYear" column="entryYear" />
+		<result property="entryQuarter" column="entryQuarter" />
+		<association property="participant" resultMap="User"></association>
+		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
+	</resultMap>
 	
 	<select id="getTotalBaseChallengeNum" resultType="int">
     	/* getTotalBaseChallengeNum */
@@ -28,33 +92,42 @@
 		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no  = tt.TRANS_NO
     </sql>
 
-	<insert id="insertBaseChallenge" parameterType="BaseChallenge">
-		/* insertBaseChallenge   BASE_THUMBNAIL_URL, */
+	<insert id="insertOrUpdateBaseChallenge" parameterType="BaseChallenge">
+		/* insertOrUpdateBaseChallenge   BASE_THUMBNAIL_URL, */
 		INSERT INTO BASE_CHALLENGE_TB
-		(BASE_NM_T_NO, BASE_HABIT_TP_CD, BASE_AUTH_DATE_CD, BASE_AUTH_FREQ, BASE_AUTH_FROM_TIME, BASE_AUTH_TO_TIME, BASE_AUTH_NUM, BASE_AUTH_METHOD_CD, BASE_AUTH_IS_OPEN, BASE_AUTH_INTERVAL, BASE_AUTH_IS_ALBUM, BASE_AUTH_DESC_T_NO, BASE_DETAIL_T_NO, SEARCH_KEYWORD)
+		(base_no, base_nm_t_no, base_habit_tp_cd, base_auth_date_cd, base_auth_freq, base_auth_from_time, base_auth_to_time, base_auth_num, base_auth_method_cd, base_auth_is_open, base_auth_interval, base_auth_is_album, base_auth_desc_t_no, base_detail_t_no, search_keyword)
 		VALUES
-		(#{baseNmTransNo}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
+		(#{baseNo}, #{baseNmTransNo}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
+		ON DUPLICATE KEY UPDATE base_habit_tp_cd = #{baseHabitTypeCd}, base_auth_date_cd = #{baseAuthDateCd}, base_auth_freq = #{baseAuthFrequency}, base_auth_from_time = #{baseAuthFromTime}, base_auth_to_time = #{baseAuthToTime}, base_auth_num = #{baseAuthNumDaily}, base_auth_method_cd = #{baseAuthMethodCd}, base_auth_is_open = #{baseAuthIsOpen}, base_auth_interval = #{baseAuthInterval}, base_auth_is_album = #{baseAuthIsAlbum}, search_keyword = #{searchKeyword}  
+						 
 	</insert>
 	
-	<insert id="insertBaseNmTrans" parameterType="BaseChallenge"
+	<insert id="insertOrUpdateBaseNmTrans" parameterType="BaseChallenge"
 		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseNmTransNo">
-		/* insertBaseNmTrans */
-		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
-		VALUES (#{baseNmEn}, #{baseNmSc}, #{baseNmTc})
+		/* insertOrUpdateBaseNmTrans */
+		INSERT INTO TRANSLATION_TB 
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES 
+		(#{baseNmTransNo}, #{baseNmEn}, #{baseNmSc}, #{baseNmTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{baseNmEn}, trans_s_cn = #{baseNmSc}, trans_t_cn = #{baseNmTc}
 	</insert>
 	
-	<insert id="insertBaseAuthDescTrans" parameterType="BaseChallenge"
+	<insert id="insertOrUpdateBaseAuthDescTrans" parameterType="BaseChallenge"
 		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseAuthDescTransNo">
-		/* insertBaseAuthDescTrans */
-		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
-		VALUES (#{baseAuthDescEn}, #{baseAuthDescTc}, #{baseAuthDescSc})
+		/* insertOrUpdateBaseAuthDescTrans */
+		INSERT INTO TRANSLATION_TB 
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES (#{baseAuthDescTransNo}, #{baseAuthDescEn}, #{baseAuthDescTc}, #{baseAuthDescSc})
+		ON DUPLICATE KEY UPDATE trans_en = #{baseAuthDescEn}, trans_s_cn = #{baseAuthDescSc}, trans_t_cn = #{baseAuthDescTc}
 	</insert>
 	
-	<insert id="insertBaseDetailTrans" parameterType="BaseChallenge"
+	<insert id="insertOrUpdateBaseDetailTrans" parameterType="BaseChallenge"
 		useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="baseDetailTransNo">
-		/* insertBaseDetailTrans */
-		INSERT INTO TRANSLATION_TB (TRANS_EN, TRANS_S_CN, TRANS_T_CN)
-		VALUES (#{baseDetailEn}, #{baseDetailTc}, #{baseDetailSc})
+		/* insertOrUpdateBaseDetailTrans */
+		INSERT INTO TRANSLATION_TB 
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES (#{baseDetailTransNo}, #{baseDetailEn}, #{baseDetailSc}, #{baseDetailTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{baseDetailEn}, trans_s_cn = #{baseDetailSc}, trans_t_cn = #{baseDetailTc}
 	</insert>
 	
 	<select id="selectModifiable" parameterType="long" resultType="int">
@@ -103,30 +176,30 @@
 		ORDER BY category_no
 	</select>
 	
-	<insert id="insertChallengeDetailInfo" parameterType="ChallengeDetail">
-		/* insertChallengeDetailInfo */
+	<insert id="insertOperatedChallengeInfo" parameterType="OperatedChallenge">
+		/* insertOperatedChallengeInfo */
 		INSERT INTO OPERATED_CHALLENGE_TB 
 		(challenge_base_no, challenge_category_no, challenge_grade_cd, challenge_min_fee, challenge_max_fee, challenge_start_dt, challenge_end_dt, challenge_st_cd)
 		VALUES
 		(#{baseChallengeNo}, #{categoryNo}, #{gradeCd}, #{minFee}, #{maxFee}, #{startDate}, #{endDate}, 'CH01')
 	</insert>
 	
-	<sql id="detailChallenge">
+	<sql id="operatedChallenge">
 		FROM BASE_CHALLENGE_TB bct
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
 		WHERE bct.base_no = #{baseNo}
 	</sql>
 	
-	<select id="getTotalDetailChallengeNumByBase" parameterType="long" resultType="int">
-		/* getTotalDetailChallengeNumByBase */
-		SELECT COUNT(*) totalDetailChallengeNum
-		<include refid="detailChallenge" />
+	<select id="getOperatedChallengeCountByBase" parameterType="long" resultType="int">
+		/* getOperatedChallengeCountByBase */
+		SELECT COUNT(*) operatedChallengeCount
+		<include refid="operatedChallenge" />
 	</select>
 	
-	<select id="selectChallengeListByBaseNo" parameterType="map" resultType="hashmap">
-		/* selectChallengeListByBaseNo */
-		SELECT oct.challenge_no challengeDetailNo, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum, oct.challenge_st_cd statusCd
-		<include refid="detailChallenge" />
+	<select id="selectOperatedChallengeListByBaseNo" parameterType="map" resultType="hashmap">
+		/* selectOperatedChallengeListByBaseNo */
+		SELECT oct.challenge_no operatedChallengeNo, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum, oct.challenge_st_cd statusCd
+		<include refid="operatedChallenge" />
 		ORDER BY oct.challenge_no DESC
 		LIMIT ${startIndex}, 10
 	</select>
@@ -137,5 +210,62 @@
 		FROM BASE_CHALLENGE_TB bct
 		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
 		WHERE bct.base_no = #{baseNo}
+	</select>
+	
+	<select id="selectOperatedChallengeByNo" parameterType="long" resultMap="OperatedChallenge">
+		/* selectOperatedChallengeByNo */
+		SELECT bct.base_no baseNo
+		, bct.base_nm_t_no baseNmTransNo
+		, (SELECT TRANS_EN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
+		, (SELECT TRANS_T_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
+		, (SELECT TRANS_S_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
+		, bct.base_thumbnail_url baseThumbnailUrl
+		, bct.base_habit_tp_cd baseHabitTypeCd
+		, bct.base_auth_date_cd baseAuthDateCd
+		, bct.base_auth_freq baseAuthFrequency
+		, bct.base_auth_from_time baseAuthFromTime
+		, bct.base_auth_to_time baseAuthToTime
+		, bct.base_auth_num baseAuthNumDaily
+		, bct.base_auth_method_cd baseAuthMethodCd
+		, bct.base_auth_is_open baseAuthIsOpen
+		, bct.base_auth_interval baseAuthInterval
+		, bct.base_auth_is_album baseAuthIsAlbum
+		, bct.base_auth_desc_t_no baseAuthDescTransNo
+		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescEn
+		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescTc
+		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescSc
+		, bct.base_detail_t_no baseDetailTransNo
+		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailEn
+		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailTc
+		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailSc
+		, bct.base_reg_dt baseRegDate
+		, bct.search_keyword searchKeyword
+        , oct.CHALLENGE_NO operatedChallengeNo
+        , oct.CHALLENGE_CATEGORY_NO categoryNo
+        , oct.CHALLENGE_GRADE_CD gradeCd
+        , oct.CHALLENGE_MIN_FEE minFee
+        , oct.CHALLENGE_MAX_FEE maxFee
+        , oct.CHALLENGE_START_DT startDate
+        , oct.CHALLENGE_END_DT endDate
+        , oct.CHALLENGE_ST_CD statusCd
+        , oct.CHALLENGE_REG_DT regDate
+		FROM BASE_CHALLENGE_TB bct
+        inner join OPERATED_CHALLENGE_TB oct on bct.BASE_NO = oct.CHALLENGE_BASE_NO
+        where oct.CHALLENGE_NO = #{operatedNo}
+	</select>
+	
+	<select id="getPaticipantCountByChallenge" parameterType="long" resultType="int">
+		/* getPaticipantCountByChallenge */
+		SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = #{operatedNo}
+	</select>
+	
+	<select id="selectParticipantEntryList" parameterType="map" resultMap="ParticipantEntry">
+		/* selectParticipantEntryList */
+		SELECT cet.entry_no entryNo, ut.user_id userId, cet.entry_fee entryFee, cet.entry_reg_dt entryRegDate, cet.entry_result entryResult
+        FROM CHALLENGE_ENTRY_TB cet
+        INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
+        WHERE cet.entry_challenge_no = #{operatedNo}
+        ORDER BY cet.entry_reg_dt DESC
+        LIMIT ${startIndex}, 10
 	</select>
 </mapper>
