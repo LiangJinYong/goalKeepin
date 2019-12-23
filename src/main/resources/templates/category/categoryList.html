@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Category List</title>
+<link rel="stylesheet" href="../../dataTable.css" />
+<link rel="stylesheet" href="../../pagination.css" />
+</head>
+<body>
+	<div class="header">
+		<h1>
+			카테고리 관리
+		</h1>
+		<a th:href="@{/category/createNewCategory}">생성하기</a>
+	</div>
+	<table class="dataTable" id="detailTable">
+		<thead>
+			<tr>
+				<th>NO</th>
+				<th>카테고리 명</th>
+				<th>챌린지 수</th>
+			</tr>
+		</thead>
+	
+		<tr th:each="category: ${categoryList}">
+			<td th:text="${category.categoryNo}">NO</td>
+			<td th:text="${category.categoryNmEn}">Category Name</td>
+			<td th:text="${category.challengeNum}">Challenge Num</td>
+		</tr>
+	</table>
+	
+	<div id="pagination" th:if="${paging.totalPages > 1}">
+		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
+			<a th:href="@{'/category/showCategoryList/' + ${i}}" th:text="${i}"></a>
+		</span>
+	</div>
+	
+	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript">
+		$(function() {
+					
+		});
+	</script>
+</body>
+</html>

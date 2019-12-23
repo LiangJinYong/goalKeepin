@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Operated Challenge List</title>
+<link rel="stylesheet" href="../../../dataTable.css" />
+<link rel="stylesheet" href="../../../pagination.css" />
+</head>
+<body>
+	<div class="header">
+		<h1>
+			챌린지 관리 -
+			<span th:if="*{statusCd == 'CH01'}">모집중인 챌린지</span>
+			<span th:if="*{statusCd == 'CH02'}">진행중인 챌린지</span>
+			<span th:if="*{statusCd == 'CH03'}">완료된 챌린지</span>
+		</h1>
+		<select name="baseHabitTypeCd" id="baseHabitTypeCd">
+				<option value="HT00">ALL</option>
+				<option value="HT01">Health</option>
+				<option value="HT02">Lifestyle</option>
+				<option value="HT03">Relationships</option>
+				<option value="HT04">Ability</option>
+				<option value="HT05">Hobby</option>
+				<option value="HT06">Asset</option>
+				<option value="HT07">Event</option> 
+				<option value="HT08">Premium</option>
+			</select>
+	</div>
+	<table class="dataTable" id="detailTable">
+		<thead>
+			<tr>
+				<th>NO</th>
+				<th>챌린지 명</th>
+				<th>시작일</th>
+				<th>종료일</th>
+				<th>참여자 수</th>
+			</tr>
+		</thead>
+	
+		<tr th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
+			<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
+			<td th:text="${operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</td>
+			<td th:text="${operatedChallenge.startDate}">Start Date</td>
+			<td th:text="${operatedChallenge.endDate}">End Date</td>
+			<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
+		</tr>
+	</table>
+	
+	<div id="pagination" th:if="${paging.totalPages > 1}">
+		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
+			<a th:if="*{statusCd == 'CH01'}" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${i}}" th:text="${i}"></a>
+			<a th:if="*{statusCd == 'CH02'}" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${i}}" th:text="${i}"></a>
+			<a th:if="*{statusCd == 'CH03'}" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${i}}" th:text="${i}"></a>
+		</span>
+	</div>
+	
+	<script type="text/javascript" src="../../../jquery.js"></script>
+	<script type="text/javascript" src="../../../dataTable.js"></script>
+	<script th:inline="javascript">
+		var statusCd = /*[[*{statusCd}]]*/;
+		var status;
+		if(statusCd == 'CH01') {
+			status = 'recruiting';
+		} else if(statusCd == 'CH02') {
+			status = 'ongoing';
+		} else {
+			status = 'expired';
+		}
+		
+		var selectedHabitTypeCd = /*[[*{habitTypeCd}]]*/;
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			$('#baseHabitTypeCd').val(selectedHabitTypeCd);
+			$('#detailTable tr:gt(0)').click(function() {
+				window.location = '/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
+			});
+			
+			$('#baseHabitTypeCd').change(function() {
+				window.location = '/challenge/showOperatedChallengeListByStatus/' + status + '/1?habitTypeCd=' + $(this).val();
+			});
+		});
+	</script>
+</body>
+</html>

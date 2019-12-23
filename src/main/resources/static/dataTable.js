@@ -1,4 +1,4 @@
-$('.dataTable tr:gt(0)').hover(function() {
+$('.dataTable tbody tr').hover(function() {
 	$(this).css('backgroundColor', 'whiteSmoke');
 }, function() {
 	$(this).css('backgroundColor', 'white');

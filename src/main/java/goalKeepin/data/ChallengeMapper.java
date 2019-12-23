@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import goalKeepin.model.BaseChallenge;
 import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.ParticipantEntry;
+import goalKeepin.model.Review;
 
 @Mapper
 public interface ChallengeMapper {
@@ -46,6 +47,18 @@ public interface ChallengeMapper {
 	List<ParticipantEntry> selectParticipantEntryList(int startIndex);
 
 	List<ParticipantEntry> selectParticipantEntryList(Map<String, Object> paramMap);
+
+	ParticipantEntry selectEntryInfoByParticipant(Long entryNo);
+
+	OperatedChallenge selectOperatedChallengeInfo(Long operatedNo);
+
+	int getReviewCountByChallenge(Long operatedNo);
+
+	List<Review> selectReviewListByChallenge(Map<String, Object> paramMap);
+
+	int getAllOperatedChallengeCount(Map<String, Object> paramMap);
+
+	List<OperatedChallenge> selectAllOperatedChallengeList(Map<String, Object> paramMap);
 	
 	
 }

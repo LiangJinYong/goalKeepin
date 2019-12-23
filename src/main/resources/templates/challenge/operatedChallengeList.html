@@ -36,7 +36,7 @@
 		</tr>
 	</table>
 	
-	<div id="pagination" th:if="${paging.totalPages > 0}">
+	<div id="pagination" th:if="${paging.totalPages > 1}">
 		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
 			<a th:href="@{'/challenge/showOperatedChallengeList/' + ${i} + '?baseNo=' + ${baseNo}}" th:text="${i}"></a>
 		</span>

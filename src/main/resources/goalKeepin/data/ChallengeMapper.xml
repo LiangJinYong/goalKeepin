@@ -69,6 +69,14 @@
 		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
 	</resultMap>
 	
+	<resultMap type="Review" id="Review">
+		<id property="reviewNo" column="reviewNo" />
+		<result property="reviewContent" column="reviewContent" />
+		<result property="reviewRegDate" column="reviewRegDate" />
+		<association property="user" resultMap="User"></association>
+		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
+	</resultMap>
+	
 	<select id="getTotalBaseChallengeNum" resultType="int">
     	/* getTotalBaseChallengeNum */
     	SELECT COUNT(*) totalBaseChallengeNum
@@ -267,5 +275,63 @@
         WHERE cet.entry_challenge_no = #{operatedNo}
         ORDER BY cet.entry_reg_dt DESC
         LIMIT ${startIndex}, 10
+	</select>
+
+	<select id="selectEntryInfoByParticipant" parameterType="long" resultMap="ParticipantEntry">
+		/* selectParticipantEntryList */
+		SELECT tt.trans_en baseNmEn, ut.user_id userId, cet.entry_fee entryFee, cet.entry_result entryResult, cet.entry_reg_dt entryRegDate, bct.base_auth_method_cd baseAuthMethodCd
+        FROM CHALLENGE_ENTRY_TB cet
+        INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON cet.entry_challenge_no = oct.challenge_no
+        INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+        INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
+        WHERE cet.entry_no = #{entryNo}
+	</select>
+	
+	<select id="selectOperatedChallengeInfo" parameterType="long" resultMap="OperatedChallenge">
+		/* selectOperatedChallengeInfo */
+		SELECT tt.trans_en baseNmEn, oct.challenge_reg_dt regDate, oct.challenge_entry_num entryNum, oct.challenge_total_fee totalFee, bct.base_auth_method_cd baseAuthMethodCd
+		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
+		WHERE oct.challenge_no = #{operatedNo}	
+	</select>
+	
+	<select id="getReviewCountByChallenge" parameterType="long" resultType="int">
+		/* getReviewCountByChallenge */
+		SELECT COUNT(*)
+		FROM CHALLENGE_REVIEW_TB
+		WHERE review_c_no = #{operatedNo}
+	</select>
+	
+	<select id="selectReviewListByChallenge" parameterType="long" resultMap="Review">
+		/* selectReviewListByChallenge */
+		SELECT crt.review_no reviewNo, ut.user_id userId, ut.user_nickname nickName, crt.review_txt reviewContent, crt.review_reg_dt reviewRegDate
+		FROM CHALLENGE_REVIEW_TB crt INNER JOIN USER_TB ut ON crt.review_user_no = ut.user_no
+		WHERE crt.review_c_no = #{operatedNo}
+	</select>
+	
+	<select id="getAllOperatedChallengeCount" parameterType="map" resultType="int">
+		/* getAllOperatedChallengeCount */
+		 SELECT COUNT(*) 
+		 FROM OPERATED_CHALLENGE_TB oct 
+		 INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		 WHERE oct.challenge_st_cd = #{statusCd}
+		 <if test="habitTypeCd != 'HT00'">
+		 	AND LOCATE(#{habitTypeCd}, bct.base_habit_tp_cd) > 0
+		 </if>
+	</select>
+	
+	<select id="selectAllOperatedChallengeList" parameterType="map" resultMap="OperatedChallenge">
+		/* selectAllOperatedChallengeList */
+		SELECT oct.challenge_no operatedChallengeNo, tt.trans_en baseNmEn, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum
+		FROM BASE_CHALLENGE_TB bct
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
+        INNER JOIN TRANSLATION_TB tt on tt.trans_no = bct.base_nm_t_no
+		WHERE oct.challenge_st_cd = #{statusCd}
+		<if test="habitTypeCd != 'HT00'">
+			AND LOCATE(#{habitTypeCd}, bct.base_habit_tp_cd) > 0
+		</if>
+		ORDER BY bct.base_no DESC, oct.challenge_no DESC
+		LIMIT ${startIndex}, 10
 	</select>
 </mapper>

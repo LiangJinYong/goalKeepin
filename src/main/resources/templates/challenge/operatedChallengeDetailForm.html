@@ -105,7 +105,7 @@ textarea {
  	background: green;
  }
  
- .expried {
+ .expired {
  	background: red;
  }
 </style>
@@ -114,8 +114,8 @@ textarea {
 	<h1>챌린지 상세정보</h1>
 	<div class="topButton">
 		<a id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}">참여자 목록보기</a>
-		<a id="showProofShotList" href="#">인증샷 모아보기</a>
-		<a id="showReviewList" href="#">리뷰 목록보기</a>
+		<a id="showProofShotList" th:href="@{/challenge/showAllProofShotsByChallenge(operatedNo=*{operatedChallenge.operatedChallengeNo})}">인증샷 모아보기</a> 
+		<a th:if="*{operatedChallenge.statusCd == 'CH03'}" th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}">리뷰 목록보기</a>
 	</div>
 	<div th:object="${operatedChallenge}">
 		<table id="challengeName">

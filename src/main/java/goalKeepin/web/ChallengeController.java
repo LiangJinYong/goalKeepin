@@ -1,9 +1,17 @@
 package goalKeepin.web;
 
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +32,7 @@ import goalKeepin.model.BaseChallenge;
 import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.Paging;
 import goalKeepin.model.ParticipantEntry;
+import goalKeepin.model.Review;
 
 @Controller
 @RequestMapping("/challenge")
@@ -56,19 +65,45 @@ public class ChallengeController {
 		return "challenge/baseManagement";
 	}
 
-	@GetMapping("/recruiting")
-	public String recruiting() {
-		return "challenge/recruiting";
-	}
+	@GetMapping("/showOperatedChallengeListByStatus/{status}/{pageNum}")
+	public String showOperatedChallengeListByStatus(@RequestParam(value="habitTypeCd", required=false) String habitTypeCd, @PathVariable("status") String status, @PathVariable("pageNum") Integer pageNum, Model model) {
+		Paging paging = new Paging();
 
-	@GetMapping("/ongoing")
-	public String onGoing() {
-		return "challenge/ongoing";
-	}
+		if (pageNum == null) {
+			pageNum = 1;
+		}
 
-	@GetMapping("/expired")
-	public String expired() {
-		return "challenge/expired";
+		paging.setCurrentPageNum(pageNum);
+		
+		String statusCd;
+		if ("recruiting".equals(status)) {
+			statusCd = "CH01";
+		} else if ("ongoing".equals(status)) {
+			statusCd = "CH02";
+		} else {
+			statusCd = "CH03";
+		}
+		
+		if (habitTypeCd == null) {
+			habitTypeCd = "HT00";
+		}
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("statusCd", statusCd);
+		paramMap.put("habitTypeCd", habitTypeCd);
+		int operatedChallengeCount = challengerMapper.getAllOperatedChallengeCount(paramMap);
+		paging.setTotalRecords(operatedChallengeCount);
+		
+		int startIndex = (pageNum - 1) * 10;
+		paramMap.put("startIndex", startIndex);
+		
+		List<OperatedChallenge> operatedChallengeList = challengerMapper.selectAllOperatedChallengeList(paramMap);
+		model.addAttribute("operatedChallengeList", operatedChallengeList);
+		model.addAttribute("statusCd", statusCd);
+		model.addAttribute("paging", paging);
+		model.addAttribute("habitTypeCd", habitTypeCd);
+		
+		return "challenge/operatedChallengeListByStatus";
 	}
 
 	@GetMapping("/showBaseChallengeDetailForm")
@@ -177,7 +212,6 @@ public class ChallengeController {
 		paging.setTotalRecords(participantCount);
 
 		int startIndex = (pageNum - 1) * 10;
-		
 		paging.setCurrentPageNum(pageNum);
 		
 		Map<String, Object> paramMap = new HashMap<>();
@@ -186,8 +220,103 @@ public class ChallengeController {
 		
 		List<ParticipantEntry> participantEntryList = challengerMapper.selectParticipantEntryList(paramMap);
 		model.addAttribute("participantEntryList", participantEntryList);
+		model.addAttribute("operatedNo", operatedNo);
 		model.addAttribute("paging", paging);
 		
 		return "challenge/challengeParticipantList";
 	}
+	
+	@GetMapping("/showParticipantProofInfo")
+	public String showParticipantProofInfo(@RequestParam("entryNo") Long entryNo, Model model) {
+		
+		ParticipantEntry participantEntry = challengerMapper.selectEntryInfoByParticipant(entryNo);
+		System.out.println("====>" + participantEntry);
+		model.addAttribute("participantEntry", participantEntry);
+		String baseAuthMethodCd = participantEntry.getOperatedChallenge().getBaseChallenge().getBaseAuthMethodCd();
+		
+		if ("AU01".equals(baseAuthMethodCd)) {
+			// Photo
+			// need photo url, proof date
+		} else {
+			// Audio
+			// need audio url, proof date, file name
+		}
+			
+		List<Map<String, String>> proofList = new ArrayList();
+		Map<String, String> map = new HashMap<>();
+		map.put("proofUrl", "http://localhost:8080/challenge/download/b.mp3");
+		map.put("proofDate", "2019.11.02 12:00:00");
+		map.put("fileName", "b.mp3");
+		proofList.add(map);
+		
+		map = new HashMap<>();
+		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+		map.put("proofDate", "2019.11.01 13:00:00");
+		map.put("fileName", "bbb.jpg");
+		proofList.add(map);
+		
+		model.addAttribute("proofList", proofList);
+		return "challenge/participantProofInfo";
+	}
+	
+	@GetMapping("/showAllProofShotsByChallenge")
+	public String showAllProofShotsByChallenge(@RequestParam("operatedNo") Long operatedNo, Model model) {
+		OperatedChallenge operatedChallenge = challengerMapper.selectOperatedChallengeInfo(operatedNo);
+		String baseAuthMethodCd = operatedChallenge.getBaseChallenge().getBaseAuthMethodCd();
+		
+		model.addAttribute("operatedChallenge", operatedChallenge);
+		model.addAttribute("baseAuthMethodCd", baseAuthMethodCd);
+		return "challenge/participantProofInfo";
+	}
+	
+	@GetMapping("/download/{fileName:.+}")
+	public void downloadAudioProofFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("fileName") String fileName) {
+		String dataDirectory = request.getServletContext().getRealPath("/WEB-INF/downloads/");
+		Path file = Paths.get(dataDirectory, fileName);
+		
+		
+		if (Files.exists(file)) {
+			String mimeType = URLConnection.guessContentTypeFromName(fileName);
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			
+			response.setContentType(mimeType);
+			response.addHeader("Content-Disposition", String.format("attachment;filename=" + fileName));
+			
+			try {
+				Files.copy(file, response.getOutputStream());
+				response.getOutputStream().flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@GetMapping("/showReviewListByChallenge/{pageNum}")
+	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
+		Paging paging = new Paging();
+
+		if (pageNum == null) {
+			pageNum = 1;
+		}
+		
+		int reviewCount = challengerMapper.getReviewCountByChallenge(operatedNo);
+		paging.setTotalRecords(reviewCount);
+
+		int startIndex = (pageNum - 1) * 10;
+		paging.setCurrentPageNum(pageNum);
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("operatedNo", operatedNo);
+		paramMap.put("startIndex", startIndex);
+		
+		List<Review> reviewList = challengerMapper.selectReviewListByChallenge(paramMap);
+		System.out.println(reviewList);
+		model.addAttribute("reviewList", reviewList);
+		model.addAttribute("paging", paging);
+		model.addAttribute("operatedNo", operatedNo);
+		return "challenge/challengeReviewList";
+	}
+	
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.CategoryMapper">
+
+	<resultMap type="Category" id="Category">
+		<id property="categoryNo" column="categoryNo" />
+ 		<result property="categoryNmEn" column="categoryNmEn" />
+ 		<result property="challengeNum" column="challengeNum" />
+	</resultMap>
+	
+	<select id="getTotalCategoryCount" resultType="int">
+		/* getTotalCategoryCount */	
+		SELECT COUNT(*) 
+		FROM CATEGORY_TB
+	</select>
+	
+	<select id="selectCategoryList" parameterType="int" resultMap="Category">
+		/* selectCategoryList */
+		SELECT ct.category_no categoryNo, tt.trans_en categoryNmEn,
+			(SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB WHERE challenge_category_no = ct.category_no) challengeNum
+		FROM CATEGORY_TB ct INNER JOIN TRANSLATION_TB tt ON ct.category_nm_t_no = tt.trans_no
+		ORDER BY category_no DESC
+		LIMIT ${startIndex}, 10
+	</select>
+	
+	<insert id="insertCategoryNmTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="categoryNmTransNo">
+		/* insertCategoryNmTrans */
+		INSERT INTO TRANSLATION_TB
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES
+		(#{categoryNmTransNo}, #{categoryNmEn}, #{categoryNmSC}, #{categoryNmTc})
+	</insert>
+	
+	<insert id="insertCategoryDescriptionTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="categoryDescriptionTransNo">
+		/* insertCategoryDescriptionTrans */
+		INSERT INTO TRANSLATION_TB
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES
+		(#{categoryDescriptionTransNo}, #{categoryDescriptionEn}, #{categoryDescriptionSC}, #{categoryDescriptionTc})
+	</insert>
+	
+	<insert id="insertNewCategory" parameterType="Category">
+		/* insertNewCategory */
+		INSERT INTO CATEGORY_TB
+		(category_nm_t_no, category_txt_t_no)
+		VALUES
+		(#{categoryNmTransNo}, #{categoryDescriptionTransNo})
+	</insert>
+</mapper>

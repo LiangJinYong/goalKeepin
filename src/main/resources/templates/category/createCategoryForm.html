@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Category List</title>
+<style type="text/css">
+	.wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-auto-rows: minmax(100px, auto);
+		width: 80%;
+	}
+	
+	.wrapper input {
+		width: 250px;
+	}
+</style>
+</head>
+<body>
+	<div class="header">
+		<h1>
+			카테고리 생성하기
+		</h1>
+	</div>
+	<form method="post" th:action="@{/category/processCagegoryCreation}" th:object="${category}">
+		<div class="wrapper">
+			<div>
+				<span>카테고리 명(영문)</span><br />
+				<input type="text" name="categoryNmEn" placeholder="내용을 입력해주세요" required="required" /> 
+			</div>
+			<div>
+				<span>카테고리 명(번체)</span><br />
+				<input type="text" name="categoryNmTc" placeholder="내용을 입력해주세요" required="required" /> 
+			</div>
+			<div>
+				<span>카테고리 명(간체)</span><br />
+				<input type="text" name="categoryNmSC" placeholder="내용을 입력해주세요" required="required" /> 
+			</div>
+			<div>
+				<span>카테고리 한줄 설명(영문)</span><br />
+				<textarea rows="5" cols="70" name="categoryDescriptionEn" placeholder="내용을 입력해주세요" required="required"></textarea>
+			</div>
+			<div>
+				<span>카테고리 한줄 설명(번체)</span><br />
+				<textarea rows="5" cols="70" name="categoryDescriptionEn" placeholder="내용을 입력해주세요" required="required"></textarea>
+			</div>
+			<div>
+				<span>카테고리 한줄 설명(간체)</span><br />
+				<textarea rows="5" cols="70" name="categoryDescriptionEn" placeholder="내용을 입력해주세요" required="required"></textarea>
+			</div>
+		</div>
+		<div>
+			<input type="submit" value="생성" />
+		</div>
+	</form>
+	
+	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript">
+		$(function() {
+					
+		});
+	</script>
+</body>
+</html>
