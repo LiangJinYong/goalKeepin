@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Offer List</title>
+<link rel="stylesheet" href="../../dataTable.css" />
+<link rel="stylesheet" href="../../pagination.css" />
+<style type="text/css">
+	.waiting {
+		color: red;
+	}
+	
+	.voting {
+		color: green;
+	}
+	
+	.voted {
+		color: blue;
+	}
+</style>
+</head>
+<body>
+	<div class="header">
+		<h1>
+			챌린지 제안
+		</h1>
+		<select id="offerStatusCd">
+			<option value="VO00">전제보기</option>
+			<option value="VO01">대기중</option>
+			<option value="VO02">투표중</option>
+			<option value="VO03">투표 완료</option>
+		</select>
+	</div>
+	<table class="dataTable" id="offerTable">
+		<thead>
+			<tr>
+				<th>NO</th>
+				<th>유저 아이디</th>
+				<th>주제</th>
+				<th>상태</th>
+				<th>좋아요</th>
+			</tr>
+		</thead>
+		
+		<tr th:each="offer: ${offerList}" style="cursor: pointer;" th:id="${offer.offerNo}">
+			<td th:text="${offer.offerNo}">NO</td>
+			<td th:text="${offer.user.userId}">User Id</td>
+			<td th:text="${offer.offerTitle}"></td>
+			<td th:if="*{offer.offerStatusCd == 'VO01'}" class="waiting" th:text="'대기중'"></td>
+			<td th:if="*{offer.offerStatusCd == 'VO02'}" class="voting" th:text="'투표중'"></td>
+			<td th:if="*{offer.offerStatusCd == 'VO03'}" class="voted" th:text="'투표 완료'"></td>
+			<td th:text="${offer.offerLikeNum}"></td>
+		</tr>
+	</table>
+	
+	<div id="pagination" th:if="${paging.totalPages > 1}">
+		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
+			<a th:href="@{'/offer/showOfferList/' + ${i} + '?offerStatusCd=' + ${offerStatusCd}}" th:text="${i}"></a>
+		</span>
+	</div>
+	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script th:inline="javascript">
+		var selectedOfferStatusCd = /*[[*{offerStatusCd}]]*/ null;
+	</script>
+	<script type="text/javascript">
+		$('#offerStatusCd').val(selectedOfferStatusCd);
+		
+		$(function() {
+			$('#offerStatusCd').change(function() {
+				window.location = '/offer/showOfferList/1?offerStatusCd=' + $(this).val();
+			});
+			
+			$('#offerTable tbody tr').click(function() {
+				window.location = '/offer/showOfferDetail?offerNo=' + $(this).attr('id');
+			});
+		});
+	</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import lombok.Data;
 public class Category {
 
 	private Long categoryNo;
+	
 	private Long categoryNmTransNo;
 	private String categoryNmEn;
 	private String categoryNmTc;

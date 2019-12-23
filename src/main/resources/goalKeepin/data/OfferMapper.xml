@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.OfferMapper">
+	
+	<resultMap type="Offer" id="Offer">
+		<id property="offerNo" column="offerNo" />
+		<result property="offerTitle" column="offerTitle" />
+		<result property="offerAuthInfo" column="offerAuthInfo" />
+		<result property="offerTitleTransNo" column="offerTitleTransNo" />
+		<result property="offerTitleEn" column="offerTitleEn" />
+		<result property="offerTitleTc" column="offerTitleTc" />
+		<result property="offerTitleSc" column="offerTitleSc" />
+		<result property="offerAuthInfoTransNo" column="offerAuthInfoTransNo" />
+		<result property="offerAuthInfoEn" column="offerAuthInfoEn" />
+		<result property="offerAuthInfoTc" column="offerAuthInfoTc" />
+		<result property="offerAuthInfoSc" column="offerAuthInfoSc" />
+		<result property="offerStatusCd" column="offerStatusCd" />
+		<result property="offerRegDate" column="offerRegDate" />
+		<result property="offerStartDate" column="offerStartDate" />
+		<result property="offerLikeNum" column="offerLikeNum" />
+		<association property="user" resultMap="goalKeepin.data.ChallengeMapper.User"></association>
+	</resultMap>
+	
+	<select id="getTotalOfferCount" parameterType="map" resultType="int">
+		/* getTotalOfferCount */
+		SELECT COUNT(*) totalOfferCount
+		FROM CHALLENGE_OFFER_TB
+		<if test="offerStatusCd != 'VO00'">
+			WHERE offer_st_cd = #{offerStatusCd}
+		</if>
+	</select>
+	
+	<select id="selectOfferList" parameterType="map" resultMap="Offer">
+		/* selectOfferList */
+		SELECT *
+		FROM 
+		(
+			SELECT cot.OFFER_NO offerNo, ut.USER_ID userId, (CASE WHEN cot.offer_st_cd = 'VO01' THEN cot.offer_title ELSE tt.trans_en END) offerTitle, cot.offer_st_cd offerStatusCd, cot.offer_like_num offerLikeNum, cot.offer_reg_dt offerRegDate
+			FROM CHALLENGE_OFFER_TB cot INNER JOIN USER_TB ut ON cot.offer_user_no = ut.user_no
+			LEFT JOIN TRANSLATION_TB tt ON cot.OFFER_TITLE_T_NO = tt.TRANS_NO
+			<if test="offerStatusCd != 'VO00'">
+				WHERE cot.offer_st_cd = #{offerStatusCd}
+			</if>
+			UNION ALL
+			SELECT cot.OFFER_NO offerNo, 'admin' userId, tt.trans_en offerTitle, cot.offer_st_cd offerStatusCd, cot.offer_like_num offerLikeNum, cot.offer_reg_dt offerRegDate
+			FROM CHALLENGE_OFFER_TB cot INNER JOIN TRANSLATION_TB tt ON cot.offer_title_t_no = tt.trans_no
+			WHERE cot.offer_user_no IS NULL
+			<if test="offerStatusCd != 'VO00'">
+				AND cot.offer_st_cd = #{offerStatusCd}
+			</if>
+		) offer
+		ORDER BY offer.offerRegDate DESC
+		LIMIT ${startIndex}, 10
+	</select>
+	
+	<insert id="insertOfferTitleTrans" parameterType="Offer" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="offerTitleTransNo">
+		/* insertOfferTitleTrans */
+		INSERT INTO TRANSLATION_TB
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES
+		(#{offerTitleTransNo}, #{offerTitleEn}, #{offerTitleSc}, #{offerTitleTc})
+	</insert>
+	
+	<insert id="insertOfferAuthInfoTrans" parameterType="Offer" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="offerAuthInfoTransNo">
+		/* insertOfferAuthInfoTrans */
+		INSERT INTO TRANSLATION_TB
+		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		VALUES
+		(#{offerAuthInfoTransNo}, #{offerAuthInfoEn}, #{offerAuthInfoSc}, #{offerAuthInfoTc})
+	</insert>
+	
+	<insert id="insertNewOffer" parameterType="Offer">
+		/* insertNewOffer */
+		INSERT INTO CHALLENGE_OFFER_TB
+		(offer_title_t_no, offer_auth_info_t_no, offer_st_cd, offer_start_dt)
+		VALUES
+		(#{offerTitleTransNo}, #{offerAuthInfoTransNo}, 'VO02', CURDATE())
+	</insert>
+	
+	<select id="selectOfferDetail" parameterType="long" resultMap="Offer">
+		/* selectOfferDetail */
+		SELECT (CASE WHEN ut.user_id IS NOT NULL THEN ut.user_id ELSE 'admin' END) userId
+		, (CASE WHEN ut.user_nickname IS NOT NULL THEN ut.user_nickname ELSE 'admin' END) nickName
+		, cot.offer_title offerTitle, cot.offer_auth_info offerAuthInfo
+		, (SELECT trans_en FROM TRANSLATION_TB WHERE trans_no = cot.offer_title_t_no) offerTitleEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB WHERE trans_no = cot.offer_title_t_no) offerTitleTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB WHERE trans_no = cot.offer_title_t_no) offerTitleSc
+		, (SELECT trans_en FROM TRANSLATION_TB WHERE trans_no = cot.offer_auth_info_t_no) offerAuthInfoEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB WHERE trans_no = cot.offer_auth_info_t_no) offerAuthInfoTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB WHERE trans_no = cot.offer_auth_info_t_no) offerAuthInfoSc
+		, cot.offer_st_cd offerStatusCd, cot.offer_like_num offerLikeNum
+		FROM CHALLENGE_OFFER_TB cot LEFT JOIN USER_TB ut ON cot.offer_user_no = ut.user_no
+		WHERE cot.offer_no = #{offerNo}
+	</select>
+</mapper>

@@ -59,7 +59,7 @@
 	<script type="text/javascript" src="../../../jquery.js"></script>
 	<script type="text/javascript" src="../../../dataTable.js"></script>
 	<script th:inline="javascript">
-		var statusCd = /*[[*{statusCd}]]*/;
+		var statusCd = /*[[*{statusCd}]]*/ null;
 		var status;
 		if(statusCd == 'CH01') {
 			status = 'recruiting';
@@ -69,7 +69,7 @@
 			status = 'expired';
 		}
 		
-		var selectedHabitTypeCd = /*[[*{habitTypeCd}]]*/;
+		var selectedHabitTypeCd = /*[[*{habitTypeCd}]]*/ null;
 	</script>
 	<script type="text/javascript">
 		$(function() {
