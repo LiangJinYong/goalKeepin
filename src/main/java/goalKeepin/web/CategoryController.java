@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import goalKeepin.data.CategoryMapper;
 import goalKeepin.model.Category;
 import goalKeepin.model.Paging;
+import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/category")
@@ -24,16 +25,8 @@ public class CategoryController {
 	@GetMapping("/showCategoryList/{pageNum}")
 	public String showCategoryList(@PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
-
-		paging.setCurrentPageNum(pageNum);
-
 		int totalCategoryCount = categoryMapper.getTotalCategoryCount();
-		paging.setTotalRecords(totalCategoryCount);
+		Paging paging = PagingUtils.getPaging(pageNum, totalCategoryCount);
 		
 		int startIndex = (pageNum - 1) * 10;
 

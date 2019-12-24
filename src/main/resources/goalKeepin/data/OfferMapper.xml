@@ -75,14 +75,16 @@
 	<insert id="insertNewOffer" parameterType="Offer">
 		/* insertNewOffer */
 		INSERT INTO CHALLENGE_OFFER_TB
-		(offer_title_t_no, offer_auth_info_t_no, offer_st_cd, offer_start_dt)
+		(offer_no, offer_title_t_no, offer_auth_info_t_no, offer_st_cd, offer_start_dt)
 		VALUES
-		(#{offerTitleTransNo}, #{offerAuthInfoTransNo}, 'VO02', CURDATE())
+		(#{offerNo}, #{offerTitleTransNo}, #{offerAuthInfoTransNo}, 'VO02', CURDATE())
+		ON DUPLICATE KEY UPDATE offer_title_t_no = #{offerTitleTransNo}, offer_auth_info_t_no = #{offerAuthInfoTransNo}, offer_st_cd = 'VO02', offer_start_dt = CURDATE() 
+		
 	</insert>
 	
 	<select id="selectOfferDetail" parameterType="long" resultMap="Offer">
 		/* selectOfferDetail */
-		SELECT (CASE WHEN ut.user_id IS NOT NULL THEN ut.user_id ELSE 'admin' END) userId
+		SELECT cot.offer_no offerNo, (CASE WHEN ut.user_id IS NOT NULL THEN ut.user_id ELSE 'admin' END) userId
 		, (CASE WHEN ut.user_nickname IS NOT NULL THEN ut.user_nickname ELSE 'admin' END) nickName
 		, cot.offer_title offerTitle, cot.offer_auth_info offerAuthInfo
 		, (SELECT trans_en FROM TRANSLATION_TB WHERE trans_no = cot.offer_title_t_no) offerTitleEn
@@ -95,4 +97,10 @@
 		FROM CHALLENGE_OFFER_TB cot LEFT JOIN USER_TB ut ON cot.offer_user_no = ut.user_no
 		WHERE cot.offer_no = #{offerNo}
 	</select>
+	
+	<update id="updateOfferToVoted" parameterType="Offer">
+		UPDATE CHALLENGE_OFFER_TB
+		SET offer_st_cd = 'VO03'
+		WHERE offer_no = #{offerNo}
+	</update>
 </mapper>

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +32,7 @@ import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.Paging;
 import goalKeepin.model.ParticipantEntry;
 import goalKeepin.model.Review;
+import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/challenge")
@@ -44,19 +44,10 @@ public class ChallengeController {
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
-
-		paging.setCurrentPageNum(pageNum);
-
 		int totalBaseChallengeNum = challengerMapper.getTotalBaseChallengeNum();
-		paging.setTotalRecords(totalBaseChallengeNum);
-		
-		int startIndex = (pageNum - 1) * 10;
+		Paging paging = PagingUtils.getPaging(pageNum, totalBaseChallengeNum);
 
+		int startIndex = (pageNum - 1) * 10;
 		List<Map<String, Object>> list = challengerMapper.selectBaseChallengeList(startIndex);
 		
 		model.addAttribute("challengeList", list);
@@ -67,13 +58,6 @@ public class ChallengeController {
 
 	@GetMapping("/showOperatedChallengeListByStatus/{status}/{pageNum}")
 	public String showOperatedChallengeListByStatus(@RequestParam(value="habitTypeCd", required=false) String habitTypeCd, @PathVariable("status") String status, @PathVariable("pageNum") Integer pageNum, Model model) {
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
-
-		paging.setCurrentPageNum(pageNum);
 		
 		String statusCd;
 		if ("recruiting".equals(status)) {
@@ -92,7 +76,7 @@ public class ChallengeController {
 		paramMap.put("statusCd", statusCd);
 		paramMap.put("habitTypeCd", habitTypeCd);
 		int operatedChallengeCount = challengerMapper.getAllOperatedChallengeCount(paramMap);
-		paging.setTotalRecords(operatedChallengeCount);
+		Paging paging = PagingUtils.getPaging(pageNum, operatedChallengeCount);
 		
 		int startIndex = (pageNum - 1) * 10;
 		paramMap.put("startIndex", startIndex);
@@ -117,10 +101,6 @@ public class ChallengeController {
 	public String processChallengeGeneration(@Valid BaseChallenge baseChallenge, Errors errors, @RequestParam("baseThumbnailUrl") MultipartFile multipartFile) {
 		
 		if (errors.hasErrors()) {
-			List<ObjectError> allErrors = errors.getAllErrors();
-			for(ObjectError error : allErrors) {
-				System.out.println("!!!!!" + error.toString());
-			}
 			return "challenge/challengeDetailForm";
 		}
 		
@@ -163,18 +143,10 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/showOperatedChallengeList/{pageNum}")
-	public String showChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
-		
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
-
-		paging.setCurrentPageNum(pageNum);
+	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
 		int operatedChallengeCount = challengerMapper.getOperatedChallengeCountByBase(baseNo);
-		paging.setTotalRecords(operatedChallengeCount);
+		Paging paging = PagingUtils.getPaging(pageNum, operatedChallengeCount);
 		
 		int startIndex = (pageNum - 1) * 10;
 		Map<String, Object> paramMap = new HashMap<>();
@@ -202,17 +174,11 @@ public class ChallengeController {
 	
 	@GetMapping("/showParticipantList/{pageNum}")
 	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
 		
 		int participantCount = challengerMapper.getPaticipantCountByChallenge(operatedNo);
-		paging.setTotalRecords(participantCount);
+		Paging paging = PagingUtils.getPaging(pageNum, participantCount);
 
 		int startIndex = (pageNum - 1) * 10;
-		paging.setCurrentPageNum(pageNum);
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
@@ -230,7 +196,6 @@ public class ChallengeController {
 	public String showParticipantProofInfo(@RequestParam("entryNo") Long entryNo, Model model) {
 		
 		ParticipantEntry participantEntry = challengerMapper.selectEntryInfoByParticipant(entryNo);
-		System.out.println("====>" + participantEntry);
 		model.addAttribute("participantEntry", participantEntry);
 		String baseAuthMethodCd = participantEntry.getOperatedChallenge().getBaseChallenge().getBaseAuthMethodCd();
 		
@@ -274,7 +239,6 @@ public class ChallengeController {
 		String dataDirectory = request.getServletContext().getRealPath("/WEB-INF/downloads/");
 		Path file = Paths.get(dataDirectory, fileName);
 		
-		
 		if (Files.exists(file)) {
 			String mimeType = URLConnection.guessContentTypeFromName(fileName);
 			if (mimeType == null) {
@@ -295,24 +259,17 @@ public class ChallengeController {
 
 	@GetMapping("/showReviewListByChallenge/{pageNum}")
 	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
 		
 		int reviewCount = challengerMapper.getReviewCountByChallenge(operatedNo);
-		paging.setTotalRecords(reviewCount);
-
+		Paging paging = PagingUtils.getPaging(pageNum, reviewCount);
+		
 		int startIndex = (pageNum - 1) * 10;
-		paging.setCurrentPageNum(pageNum);
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
 		paramMap.put("startIndex", startIndex);
 		
 		List<Review> reviewList = challengerMapper.selectReviewListByChallenge(paramMap);
-		System.out.println(reviewList);
 		model.addAttribute("reviewList", reviewList);
 		model.addAttribute("paging", paging);
 		model.addAttribute("operatedNo", operatedNo);

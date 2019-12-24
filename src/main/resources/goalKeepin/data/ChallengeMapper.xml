@@ -308,6 +308,8 @@
 		SELECT crt.review_no reviewNo, ut.user_id userId, ut.user_nickname nickName, crt.review_txt reviewContent, crt.review_reg_dt reviewRegDate
 		FROM CHALLENGE_REVIEW_TB crt INNER JOIN USER_TB ut ON crt.review_user_no = ut.user_no
 		WHERE crt.review_c_no = #{operatedNo}
+		ORDER BY crt.review_no desc
+		LIMIT ${startIndex}, 10
 	</select>
 	
 	<select id="getAllOperatedChallengeCount" parameterType="map" resultType="int">

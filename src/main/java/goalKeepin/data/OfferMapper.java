@@ -22,4 +22,6 @@ public interface OfferMapper {
 
 	Offer selectOfferDetail(Long offerNo);
 
+	void updateOfferToVoted(Offer offer);
+
 }

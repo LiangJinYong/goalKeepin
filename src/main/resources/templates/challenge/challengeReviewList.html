@@ -27,7 +27,7 @@
 			<td th:text="${review.reviewNo}">NO</td>
 			<td th:text="${review.user.userId}">User Id</td>
 			<td th:text="${review.user.nickName}">Nick Name</td>
-			<td th:text="${review.reviewContent}">Review Content</td>
+			<td th:text="${review.reviewContent}" style="width: 400px;">Review Content</td>
 			<td th:text="*{#dates.format(review.reviewRegDate, 'yyyy.MM.dd HH:mm:ss')}">Review Reg Date</td>
 		</tr>
 	</table>

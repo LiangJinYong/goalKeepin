@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import goalKeepin.data.OfferMapper;
 import goalKeepin.model.Offer;
 import goalKeepin.model.Paging;
+import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/offer")
@@ -27,14 +28,6 @@ public class OfferController {
 	@GetMapping("/showOfferList/{pageNum}")
 	public String showOfferList(@RequestParam("offerStatusCd") String offerStatusCd, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		Paging paging = new Paging();
-
-		if (pageNum == null) {
-			pageNum = 1;
-		}
-
-		paging.setCurrentPageNum(pageNum);
-		
 		Map<String, Object> paramMap = new HashMap<>();
 		
 		if (offerStatusCd == null) {
@@ -43,7 +36,7 @@ public class OfferController {
 		paramMap.put("offerStatusCd", offerStatusCd);
 
 		int totalOfferCount = offerMapper.getTotalOfferCount(paramMap);
-		paging.setTotalRecords(totalOfferCount);
+		Paging paging = PagingUtils.getPaging(pageNum, totalOfferCount);
 		
 		int startIndex = (pageNum - 1) * 10;
 		paramMap.put("startIndex", startIndex);
@@ -64,10 +57,20 @@ public class OfferController {
 	
 	@PostMapping("/processOfferCreation")
 	public String processOfferCreation(Offer offer) {
-		offerMapper.insertOfferTitleTrans(offer);
-		offerMapper.insertOfferAuthInfoTrans(offer);
-		offerMapper.insertNewOffer(offer);
-		return "redirect:/offer/showOfferList/1?offerStatusCd=VO02";
+		
+		String offerStatusCd = offer.getOfferStatusCd();
+		
+		// 투표 종료하기
+		if ("VO02".equals(offerStatusCd)) {
+			offerMapper.updateOfferToVoted(offer);
+			return "redirect:/offer/showOfferList/1?offerStatusCd=VO03";
+		} else {
+			// 관리자 제안등록하기, 일반 유저 제안 등록하기
+			offerMapper.insertOfferTitleTrans(offer);
+			offerMapper.insertOfferAuthInfoTrans(offer);
+			offerMapper.insertNewOffer(offer);
+			return "redirect:/offer/showOfferList/1?offerStatusCd=VO02";
+		}
 	}
 	
 	@GetMapping("/showOfferDetail")
