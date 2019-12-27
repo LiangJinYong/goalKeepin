@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.CashReportMapper">
+	<resultMap type="CashReport" id="CashReport">
+		<id property="cashReportNo" column="cashReportNo" />
+		<result property="reportTypeCd" column="reportTypeCd" />
+		<result property="reportStatusCd" column="reportStatusCd" />
+		<result property="reportCashAmount" column="reportCashAmount" />
+		<result property="reportRegDate" column="reportRegDate" />
+		<association property="user" resultMap="goalKeepin.data.ChallengeMapper.User"></association>
+	</resultMap>
+	
+	<select id="getTotalCashReportCount" parameterType="map" resultType="int">
+		/* getTotalCashReportCount */
+		SELECT COUNT(*)
+		<include refid="cashReport" />
+	</select>
+	
+	<select id="selectCashReportList" parameterType="map" resultMap="CashReport">
+		/* selectCashReportList */
+		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ut.user_account userAccount, ucrt.report_reg_dt reportRegDate, ucrt.report_st_cd reportStatusCd
+		<include refid="cashReport" />
+		ORDER BY ucrt.report_reg_dt DESC
+		LIMIT ${startIndex}, 10
+	</select>
+	
+	<sql id="cashReport">
+		FROM USER_CASH_REPORT_TB ucrt
+		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
+		WHERE ucrt.report_tp_cd = 'CA03'
+		AND ut.user_nationality_cd = #{nationalityCd}
+		<if test="bank != null and bank != ''">
+			AND ut.user_bank = #{bank}
+		</if>
+		<if test="reportStatusCd != null and reportStatusCd != 'CT00'">
+			AND ucrt.report_st_cd = #{reportStatusCd}
+		</if>
+		<if test="reportRegDate != null and reportRegDate != ''">
+			AND date_format(ucrt.report_reg_dt, '%Y-%m-%d') = #{reportRegDate}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND ut.user_id LIKE CONCAT('%', #{userId}, '%')
+		</if>
+		
+	</sql>
+	
+	<select id="selectBankList" parameterType="string" resultType="CashReport">
+		/* selectBankList */
+		SELECT DISTINCT user_bank
+		FROM USER_TB
+		WHERE user_nationality_cd = #{nationalityCd}
+	</select>
+	
+	<update id="updateCashReportStatus" parameterType="list">
+		UPDATE USER_CASH_REPORT_TB 
+		SETd = 'CT02' 
+		WHERE cash_report_no IN 
+		<foreach collection="list" item="cashReportNo" open="(" separator="," close=")">
+			#{cashReportNo}
+		</foreach>
+	</update>
+	
+	<select id="selectCashReportForDownload" parameterType="string" resultType="hashmap">
+		/* selectCashReportForDownload */
+		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ut.user_account userAccount, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN '대기중' ELSE '완료' END reportStatusCd
+		FROM USER_CASH_REPORT_TB ucrt
+		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
+		WHERE ucrt.report_tp_cd = 'CA03'
+		AND ut.user_nationality_cd = #{nationalityCd}
+		ORDER BY ucrt.report_reg_dt DESC
+	</select>
+</mapper>

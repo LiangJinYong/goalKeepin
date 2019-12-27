@@ -55,6 +55,9 @@
 		<result property="userId" column="userId" />
 		<result property="loginTypeCd" column="loginTypeCd" />
 		<result property="nickName" column="nickName" />
+		<result property="nationalityCd" column="nationalityCd" />
+		<result property="userAccount" column="userAccount" />
+		<result property="userRegDate" column="userRegDate" />
 		<collection property="challenges" resultMap="OperatedChallenge"></collection>
 	</resultMap>
 	

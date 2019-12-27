@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Category List</title>
+<link rel="stylesheet" href="../../../dataTable.css" />
+<link rel="stylesheet" href="../../../pagination.css" />
+<style type="text/css">
+	.waiting {
+		color: red;
+	}
+	
+	.finished {
+		color: green;
+	}
+</style>
+</head>
+<body>
+	<form id="cashReportForm" method="get" th:action="@{/cashReport/showCashReportList/} + ${country} + '/1'">
+		<div class="header">
+			<h1>
+				출금 내역 관리
+			</h1>
+			<span>
+				<label>은행</label>
+				<select name="bank" id="bank">
+					<option value="">전체보기</option>
+					<option th:each="bank: ${bankList}" th:value="${bank}" th:text="${bank}"></option>
+				</select>
+				<label>처리상태</label>
+				<select name="reportStatusCd" id="reportStatusCd">
+					<option value="CT00">전체보기</option>
+					<option th:each="reportStatus : ${T(goalKeepin.constants.CashReportStatus).values()}"
+	        			th:value="${reportStatus}" th:text="${reportStatus.statusName}"></option>
+				</select>
+			</span>
+		</div>
+		<table class="dataTable" id="cashReportTable">
+			<thead>
+				<tr>
+					<th>
+						<input type="checkbox" id="selectAll">
+					</th>
+					<th>NO</th>
+					<th>아이디</th>
+					<th>요청 금액</th>
+					<th>출근 계좌</th>
+					<th>날짜</th>
+					<th>처리상태</th>
+				</tr>
+			</thead>
+		
+			<tr th:each="cashReport: ${cashReportList}" th:id="${cashReport.cashReportNo}">
+				<td>
+					<input th:if="${cashReport.reportStatusCd == 'CT01'}" type="checkbox" th:value="${cashReport.reportStatusCd}"  />
+					<input th:if="${cashReport.reportStatusCd == 'CT02'}" type="checkbox" th:value="${cashReport.reportStatusCd}" checked="checked" onclick="return false;" />
+				</td>
+				<td th:text="${cashReport.cashReportNo}">NO</td>
+				<td th:text="${cashReport.user.userId}">User Id</td>
+				<td th:text="${cashReport.reportCashAmount}">Report Cash Amount</td>
+				<td th:text="${cashReport.user.userAccount}">User Account</td>
+				<td th:text="*{#dates.format(cashReport.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}">Report Cash Date</td>
+				<td th:if="${cashReport.reportStatusCd == 'CT01'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT01.statusName}" class="waiting">Report Status Name</td>
+				<td th:if="${cashReport.reportStatusCd == 'CT02'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT02.statusName}" class="finished">Report Status Name</td>
+			</tr>
+		</table>
+		
+		<div id="pagination" th:if="${paging.totalPages > 1}">
+			<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
+				<a th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${i}}" th:text="${i}"></a>
+			</span>
+		</div>
+		<div style="float: right; margin-right: 10%;">
+			<input type="date" name="reportRegDate" id="reportRegDate" placeholder="날짜 검색" />
+			<input type="submit" value="검색" /> <br />
+			<input type="text" name="userId" id="userId" placeholder="아이디 검색" />
+			<input type="submit" value="검색" />
+		</div>
+	</form>
+	<div style="clear: both; text-align: center; margin-top: 50px">
+		<a id="downloadExcel" th:href="@{/cashReport/excelDownload/} + ${country}" style="border: 2px solid black;">전체Excel다운</a>
+		<button id="processCashReport" style="border: 2px solid black;">선택한 요청 출금 처리</button>
+	</div>
+	<script type="text/javascript" src="../../../jquery.js"></script>
+	<script type="text/javascript" src="../../../data	Table.js"></script>
+	<script th:inline="javascript">
+	var bank = /*[[*{bank}]]*/ null;
+	var reportStatusCd = /*[[*{reportStatusCd}]]*/ null;
+	var reportRegDate = /*[[*{reportRegDate}]]*/ null;
+	var userId = /*[[*{userId}]]*/ null;
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			
+			if(bank != null)
+				$('#bank').val(bank);
+			
+			if(reportStatusCd != null)
+				$('#reportStatusCd').val(reportStatusCd);
+			
+			if(reportRegDate != null)
+				$('#reportRegDate').val(reportRegDate);
+			
+			if(userId != null)
+				$('#userId').val(userId);
+			
+			$('#bank, #reportStatusCd').change(function() {
+				$('#cashReportForm').submit();
+			});
+			
+			$('#selectAll').change(function() {
+				
+				var isChecked = $(this).is(':checked');
+				$('#cashReportTable input[value="CT01"]').prop('checked', isChecked);
+			});
+			
+			$('#processCashReport').click(function() {
+				var $checkedItems = $('#cashReportTable tr:has(input:checked[value="CT01"])');
+				var length = $checkedItems.length;
+
+				if(length == 0) {
+					alert('처리할 출금 내역을 선택하세요.');
+				} else {
+					var idArr = [];
+					$checkedItems.each(function(index, item) {
+						idArr.push($(item).attr('id'));
+					});
+					
+					$.post('/cashReport/processCashReport',
+						{cashReportIdList: idArr},
+						function(data) {
+							if(data == 'success') {
+								alert('출금 처리되었습니다.');
+								$checkedItems.each(function(index, item) {
+									$(item).find('input').val('CT02').change(function(e) {
+										$(this).val('CT02').prop('checked', true);
+									});
+									
+									$(item).children().last().text('완료').attr('class', 'finished');
+								});
+							} else {
+								alert('출금 처리 실패했습니다.');
+							}
+						}, 'text');
+				}
+			});
+		});
+	</script>
+</body>
+</html>

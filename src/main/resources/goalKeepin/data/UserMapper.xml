@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.UserMapper">
+	
+	<select id="getTotalUserCount" parameterType="string" resultType="int">
+		/* getTotalUserCount */
+		SELECT COUNT(*) totalUserCount
+		FROM USER_TB 
+		WHERE user_nationality_cd = #{nationalityCd}
+	</select>
+	
+	<select id="selectUserList" parameterType="map" resultMap="goalKeepin.data.ChallengeMapper.User">
+		/* selectUserList */
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, user_reg_dt userRegDate
+		FROM USER_TB
+		WHERE user_nationality_cd = #{nationalityCd}
+		ORDER BY user_no DESC
+		LIMIT ${startIndex}, 10
+	</select>
+</mapper>

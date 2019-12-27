@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>User List</title>
+<link rel="stylesheet" href="../../../dataTable.css" />
+<link rel="stylesheet" href="../../../pagination.css" />
+<style type="text/css">
+	
+</style>
+</head>
+<body>
+	<div class="header">
+		<h1>
+			회원관리
+		</h1>
+	</div>
+	<table class="dataTable" id="userTable">
+		<thead>
+			<tr>
+				<th>NO</th>
+				<th>아이디</th>
+				<th>국가</th>
+				<th>닉네임</th>
+				<th>로그인 타입</th>
+				<th>가입 일자</th>
+			</tr>
+		</thead>
+		
+		<tr th:each="user: ${userList}">
+			<td th:text="${user.userNo}">NO</td>
+			<td th:text="${user.userId}">User Id</td>
+			<!-- 
+			th:if="${widget.color == T(com.baeldung.thymeleaf.model.Color).RED}"
+			 -->
+			<td th:if="${user.nationalityCd == 'NA01'}" th:text="${T(goalKeepin.constants.Country).NA01.countryName}">Country</td>
+			<td th:if="${user.nationalityCd == 'NA02'}" th:text="${T(goalKeepin.constants.Country).NA02.countryName}">Country</td>
+			<td th:text="${user.nickName}">Nickname</td>
+			<td th:if="${user.loginTypeCd == 'LT01'}" th:text="${T(goalKeepin.constants.LoginType).LT01.loginTypeName}">Login Type</td>
+			<td th:if="${user.loginTypeCd == 'LT02'}" th:text="${T(goalKeepin.constants.LoginType).LT02.loginTypeName}">Login Type</td>
+			<td th:if="${user.loginTypeCd == 'LT03'}" th:text="${T(goalKeepin.constants.LoginType).LT03.loginTypeName}">Login Type</td>
+			<td th:if="${user.loginTypeCd == 'LT04'}" th:text="${T(goalKeepin.constants.LoginType).LT04.loginTypeName}">Login Type</td>
+			<td th:if="${user.loginTypeCd == 'LT05'}" th:text="${T(goalKeepin.constants.LoginType).LT05.loginTypeName}">Login Type</td>
+			<td th:text="*{#dates.format(user.userRegDate, 'yyyy-MM-dd HH:mm:ss')}">User Reg Date</td>
+		</tr>
+	</table>
+	
+	<div id="pagination" th:if="${paging.totalPages > 1}">
+		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
+			<a th:href="@{'/user/showUserList/' + *{country} + '/' + ${i}}" th:text="${i}"></a>
+		</span>
+	</div>
+	<script type="text/javascript" src="../../../jquery.js"></script>
+	<script type="text/javascript" src="../../../dataTable.js"></script>
+	<script type="text/javascript">
+	</script>
+</body>
+</html>
