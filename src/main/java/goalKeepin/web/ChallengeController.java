@@ -5,14 +5,16 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,7 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
+	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/";
 
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -98,13 +101,37 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/processChallengeGeneration")
-	public String processChallengeGeneration(@Valid BaseChallenge baseChallenge, Errors errors, @RequestParam("baseThumbnailUrl") MultipartFile multipartFile) {
-		
+	public String processChallengeGeneration(BaseChallenge baseChallenge, Errors errors, @RequestParam("baseThumbnailUrl") MultipartFile file) {
+		/*
 		if (errors.hasErrors()) {
-			return "challenge/challengeDetailForm";
+			List<FieldError> fieldErrors = errors.getFieldErrors();
+			for(FieldError error: fieldErrors) {
+				System.out.println("===>" + error.getField());
+			}
+			return "challenge/baseChallengeDetailForm";
 		}
+		*/
 		
-		challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
+		String fileName = file.getOriginalFilename();
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        
+		// generate file name
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        Random r = new Random();
+        StringBuilder tempName = new StringBuilder();
+        tempName.append(sdf.format(new Date())).append(r.nextInt(100)).append(suffixName);
+        String newFileName = tempName.toString();
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(FILE_UPLOAD_PATH + newFileName);
+            Files.write(path, bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        baseChallenge.setBaseThumbnailUrl("/files/" + newFileName);
+        
+        challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseAuthDescTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseDetailTrans(baseChallenge);
 		
@@ -119,7 +146,6 @@ public class ChallengeController {
 	public String showBaseChallengeDetail(@RequestParam("baseNo") Long baseNo, Model model) {
 		
 		BaseChallenge baseChallenge = challengerMapper.selectBaseChallengeByNo(baseNo);
-		
 		model.addAttribute("baseChallenge", baseChallenge);
 		
 		List<Map<Integer, String>> categoryList = challengerMapper.selectCategoryList();

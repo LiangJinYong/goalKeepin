@@ -23,8 +23,7 @@ public class BaseChallenge {
 	@NotEmpty(message="Required")
 	private String baseNmSc;
 	
-//	@NotEmpty(message="Required")
-//	private byte[] baseThumbnailUrl;
+	private String baseThumbnailUrl;
 	
 	@NotEmpty(message="Required")
 	private String baseHabitTypeCd;

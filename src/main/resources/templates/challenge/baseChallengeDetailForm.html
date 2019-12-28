@@ -69,8 +69,9 @@ select[multiple] {
 }
 
 #thumbnailImg img {
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
+	border: 2px solid black;
 }
 
 .image-upload>input {
@@ -142,24 +143,7 @@ textarea {
 				</td>
 			</tr>
 		</table>
-		<!-- 
-		<div class="image-upload" id="thumbnailImg">
-			<span style="margin-right: 20px;">썸네일 이미지</span>
-			<label for="file-input">
-			  <img src="../images/thumbnail_upload.png"/>
-			</label>
-			<input id="file-input" type="file" required />
-			<span class="validationError"
-					th:if="${#fields.hasErrors('baseThumbnailUrl')}"
-	              	th:errors="*{baseThumbnailUrl}">baseThumbnailUrl Error</span>
-		</div>
-		<div id="thumbnailImg">
-			<span>썸네일 이미지</span>
-			<input th:if="*{baseNo == null}" type="file" name="baseThumbnailUrl" required />
-			<img th:if="*{baseNo != null}" alt="demo" src="http://www.allitebooks.org/wp-content/uploads/1442/0755fc710a9234d.jpeg">
-		</div>
-		 -->
-		 <div id="habitType">
+		<div id="habitType">
 			<span>습관 타입</span><br />
 			<select multiple="multiple" style="width: 100px;" size="8" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" class="add" required>
 				<option value="HT01">Health</option>
@@ -178,10 +162,10 @@ textarea {
 		 	<tr>
 		 		<td id="thumbnailImg">
 		 			<span>썸네일 이미지</span>
-					<input type="file" name="baseThumbnailUrl" class="add" required />
-					<img alt="demo" src="http://www.allitebooks.org/wp-content/uploads/1442/0755fc710a9234d.jpeg" class="view">
+					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required />
+					<img th:src="@{*{baseThumbnailUrl}}" class="view">
 		 		</td>
-		 		<td class="forRecruiting" style="width: 20%">
+		 		<td class="forRecruiting" style="padding-left: 100px;">
 		 			<h4>카테고리 설정</h4>
 		 			<select name="categoryNo" id="categoryNo">
 		 				<option th:each="category : ${categoryList}" th:value="${category.categoryNo}" th:utext="${category.categoryContent}">
@@ -574,7 +558,7 @@ textarea {
 					 startDate: $('#startDate').val(),
 					 endDate: $('#endDate').val()
 				 }, function() {
-					 window.location = '/challenge/showChallengeList/1?baseNo=' + $('#baseNo').val();
+					 window.location = '/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val();
 				 });
 			 });
 			 

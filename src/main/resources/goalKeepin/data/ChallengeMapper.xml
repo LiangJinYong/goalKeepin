@@ -104,12 +104,12 @@
     </sql>
 
 	<insert id="insertOrUpdateBaseChallenge" parameterType="BaseChallenge">
-		/* insertOrUpdateBaseChallenge   BASE_THUMBNAIL_URL, */
+		/* insertOrUpdateBaseChallenge   , */
 		INSERT INTO BASE_CHALLENGE_TB
-		(base_no, base_nm_t_no, base_habit_tp_cd, base_auth_date_cd, base_auth_freq, base_auth_from_time, base_auth_to_time, base_auth_num, base_auth_method_cd, base_auth_is_open, base_auth_interval, base_auth_is_album, base_auth_desc_t_no, base_detail_t_no, search_keyword)
+		(base_no, base_nm_t_no, base_thumbnail_url, base_habit_tp_cd, base_auth_date_cd, base_auth_freq, base_auth_from_time, base_auth_to_time, base_auth_num, base_auth_method_cd, base_auth_is_open, base_auth_interval, base_auth_is_album, base_auth_desc_t_no, base_detail_t_no, search_keyword)
 		VALUES
-		(#{baseNo}, #{baseNmTransNo}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
-		ON DUPLICATE KEY UPDATE base_habit_tp_cd = #{baseHabitTypeCd}, base_auth_date_cd = #{baseAuthDateCd}, base_auth_freq = #{baseAuthFrequency}, base_auth_from_time = #{baseAuthFromTime}, base_auth_to_time = #{baseAuthToTime}, base_auth_num = #{baseAuthNumDaily}, base_auth_method_cd = #{baseAuthMethodCd}, base_auth_is_open = #{baseAuthIsOpen}, base_auth_interval = #{baseAuthInterval}, base_auth_is_album = #{baseAuthIsAlbum}, search_keyword = #{searchKeyword}  
+		(#{baseNo}, #{baseNmTransNo}, #{baseThumbnailUrl}, #{baseHabitTypeCd}, #{baseAuthDateCd}, #{baseAuthFrequency}, #{baseAuthFromTime}, #{baseAuthToTime}, #{baseAuthNumDaily}, #{baseAuthMethodCd}, #{baseAuthIsOpen}, #{baseAuthInterval}, #{baseAuthIsAlbum}, #{baseAuthDescTransNo}, #{baseDetailTransNo}, #{searchKeyword})
+		ON DUPLICATE KEY UPDATE base_thumbnail_url = #{baseThumbnailUrl}, base_habit_tp_cd = #{baseHabitTypeCd}, base_auth_date_cd = #{baseAuthDateCd}, base_auth_freq = #{baseAuthFrequency}, base_auth_from_time = #{baseAuthFromTime}, base_auth_to_time = #{baseAuthToTime}, base_auth_num = #{baseAuthNumDaily}, base_auth_method_cd = #{baseAuthMethodCd}, base_auth_is_open = #{baseAuthIsOpen}, base_auth_interval = #{baseAuthInterval}, base_auth_is_album = #{baseAuthIsAlbum}, search_keyword = #{searchKeyword}  
 						 
 	</insert>
 	

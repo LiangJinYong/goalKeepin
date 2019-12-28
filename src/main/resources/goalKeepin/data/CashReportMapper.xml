@@ -56,7 +56,7 @@
 	
 	<update id="updateCashReportStatus" parameterType="list">
 		UPDATE USER_CASH_REPORT_TB 
-		SETd = 'CT02' 
+		SET report_st_cd = 'CT02' 
 		WHERE cash_report_no IN 
 		<foreach collection="list" item="cashReportNo" open="(" separator="," close=")">
 			#{cashReportNo}
