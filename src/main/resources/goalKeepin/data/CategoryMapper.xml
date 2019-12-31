@@ -12,7 +12,7 @@
 	</resultMap>
 	
 	<select id="getTotalCategoryCount" resultType="int">
-		/* getTotalCategoryCount */	
+		/* getTotalCategoryCount */
 		SELECT COUNT(*) 
 		FROM CATEGORY_TB
 	</select>
@@ -26,18 +26,18 @@
 		LIMIT ${startIndex}, 10
 	</select>
 	
-	<insert id="insertCategoryNmTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="categoryNmTransNo">
+	<insert id="insertCategoryNmTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="categoryNmTransNo">
 		/* insertCategoryNmTrans */
 		INSERT INTO TRANSLATION_TB
-		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
 		VALUES
 		(#{categoryNmTransNo}, #{categoryNmEn}, #{categoryNmSC}, #{categoryNmTc})
 	</insert>
 	
-	<insert id="insertCategoryDescriptionTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="categoryDescriptionTransNo">
+	<insert id="insertCategoryDescriptionTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="categoryDescriptionTransNo">
 		/* insertCategoryDescriptionTrans */
 		INSERT INTO TRANSLATION_TB
-		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
 		VALUES
 		(#{categoryDescriptionTransNo}, #{categoryDescriptionEn}, #{categoryDescriptionSC}, #{categoryDescriptionTc})
 	</insert>

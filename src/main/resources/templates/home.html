@@ -3,92 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
+<link rel="stylesheet" href="bootstrap.css">
 <style type="text/css">
-	body, ul {
-	    margin: 0;
-	    padding: 0;
-	}
-	
-	ul {
-		margin: 10px;
-	}
-	
-	ul li {
-		list-style-type: none;
-		padding-left: 10px;
-	}
-	
-	h1 {
-		background-color: #ccc;
-		height: 60px;
-		color: #fff;
-		width: 100%;
-		margin: 0;
-		padding-top: 30px;
-		padding-left: 30px;
-	}
-	
-	#sideMenu {
-		float: left;
-		width: 12%;
-		border-right: 1px solid black;
-		height: 700px;
-	}
+.row {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.header {
+	padding: 10px 16px;
+	background: #555;
+	color: #f1f1f1;
+}
+
+
 </style>
 <body>
-		<h1>펜타베이스 관리자 페이지</h1>
-	<div id="sideMenu">
-		<ul>
-			<span>챌린지 관리</span>
-			<ul>
-				<li><a href="/challenge/baseManagement/1" target="menuFrame">- 챌린지 기본정보 관리</a></li>
-				<li><a href="/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00" target="menuFrame">- 모집중인 챌린지</a></li>
-				<li><a href="/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00" target="menuFrame">- 진행중인 챌린지</a></li>
-				<li><a href="/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00" target="menuFrame">- 완료된 챌린지</a></li>
-			</ul>
-			<span>카테고리 관리</span>
-			<ul>
-				<li><a href="/category/showCategoryList/1" target="menuFrame">- 카테고리 목록</a></li>
-			</ul>
-			<span>챌린지 제안</span>
-			<ul>
-				<li><a href="/offer/showOfferList/1?offerStatusCd=VO00" target="menuFrame">- 유저 제안 목록</a></li>
-				<li><a href="/offer/createNewOfferForm" target="menuFrame">- 제안 등록하기</a></li>
-			</ul>
-			<hr />
-			<span>회원 목록</span>
-			<ul>
-				<li><a href="/user/showUserList/sg/1" target="menuFrame">- 싱가포르</a></li>
-				<li><a href="/user/showUserList/hk/1" target="menuFrame">- 홍콩</a></li>
-			</ul>
-			<span>출금 내역 관리</span>
-			<ul>
-				<li><a href="/cashReport/showCashReportList/sg/1" target="menuFrame">- 싱가포르</a></li>
-				<li><a href="/cashReport/showCashReportList/hk/1" target="menuFrame">- 홍콩</a></li>
-			</ul>
-			<span>키타</span>
-			<ul>
-				<li><a href="#" target="menuFrame">- 공지사항</a></li>
-				<li><a href="#" target="menuFrame">- 문의</a></li>
-				<li><a href="#" target="menuFrame">- 통계</a></li>
-				<li><a href="#" target="menuFrame">- 리워드 지급</a></li>
-				<li><a href="#" target="menuFrame">- 푸시 전송</a></li>
-				<li><a href="#" target="menuFrame">- 팝업 설정</a></li>
-			</ul>
-		</ul>
+	<div>
+		<div class="row header" id="myHeader">
+			<header class="col-md-12 navbar-header">
+				<h1>펜타베이스 관리자 페이지</h1>
+			</header>
+		</div>
+		<div class="row">
+			<div class="col-md-2" style="border-right: 3px solid lightgrey;">
+				<div class="col-md-offset-2">
+					<ul class="list-unstyled">
+						<h2 class="h4">챌린지 관리</h2>
+						<ul class="list-unstyled">
+							<li><a href="/challenge/baseManagement/1" target="menuFrame">- 챌린지 기본정보 관리</a></li>
+							<li><a href="/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00" target="menuFrame">- 모집중인 챌린지</a></li>
+							<li><a href="/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00" target="menuFrame">- 진행중인 챌린지</a></li>
+							<li><a href="/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00" target="menuFrame">- 완료된 챌린지</a></li>
+						</ul>
+						<h2 class="h4">카테고리 관리</h2>
+						<ul class="list-unstyled">
+							<li><a href="/category/showCategoryList/1" target="menuFrame">- 카테고리 목록</a></li>
+						</ul>
+						<h2 class="h4">챌린지 제안</h2>
+						<ul class="list-unstyled">
+							<li><a href="/offer/showOfferList/1?offerStatusCd=VO00" target="menuFrame">- 유저 제안 목록</a></li>
+							<li><a href="/offer/createNewOfferForm" target="menuFrame">- 제안 등록하기</a></li>
+						</ul>
+						<h2 class="h4">회원 목록</h2>
+						<ul class="list-unstyled">
+							<li><a href="/user/showUserList/sg/1" target="menuFrame">- 싱가포르</a></li>
+							<li><a href="/user/showUserList/hk/1" target="menuFrame">- 홍콩</a></li>
+						</ul>
+						<h2 class="h4">출금 내역 관리</h2>
+						<ul class="list-unstyled">
+							<li><a href="/cashReport/showCashReportList/sg/1" target="menuFrame">- 싱가포르</a></li>
+							<li><a href="/cashReport/showCashReportList/hk/1" target="menuFrame">- 홍콩</a></li>
+						</ul>
+						<h2 class="h4">키타</h2>
+						<ul class="list-unstyled">
+							<li><a href="/notice/showNoticeList/1" target="menuFrame">- 공지사항</a></li>
+							<li><a href="#" target="menuFrame">- 문의</a></li>
+							<li><a href="#" target="menuFrame">- 통계</a></li>
+							<li><a href="#" target="menuFrame">- 리워드 지급</a></li>
+							<li><a href="#" target="menuFrame">- 푸시 전송</a></li>
+							<li><a href="#" target="menuFrame">- 팝업 설정</a></li>
+						</ul>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-10">
+				<!-- 
+	        <iframe id="menuFrame" name="menuFrame" src="/challenge/showCategoryListd" style="overflow: visible;"
+	        <iframe id="menuFrame" name="menuFrame" src="/cashReport/showCashReportList/sg/1" style="overflow: visible; width: 100%; height: 100%;"
+	         style="width: 100%; height: 100%;" scrolling="yes" frameborder="no"
+		 -->
+				<iframe id="menuFrame" name="menuFrame" src="/challenge/baseManagement/1" class="col-md-12" frameborder="no" style="width: 80vw; height: 85vh; position: relative;"></iframe>
+			</div>
+		</div>
 	</div>
-	<div class="layui-body" style="float: right; width: 87%; height: 800px;">
-	<!-- 
-        <iframe id="menuFrame" name="menuFrame" src="/challenge/showCategoryListd" style="overflow: visible;"
-        <iframe id="menuFrame" name="menuFrame" src="/cashReport/showCashReportList/sg/1" style="overflow: visible; width: 100%; height: 100%;"
-	 -->
-        <iframe id="menuFrame" name="menuFrame" src="/challenge/baseManagement/1" style="overflow: visible; width: 100%; height: 100%;"
-                scrolling="yes" frameborder="no">
-        </iframe>
-    </div>
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript">
-    	
-    </script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript">
+		
+	</script>
 </body>
 </html>
