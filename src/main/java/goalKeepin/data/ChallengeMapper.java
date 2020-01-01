@@ -41,6 +41,8 @@ public interface ChallengeMapper {
 	int selectModifiable(Long baseNo);
 
 	OperatedChallenge selectOperatedChallengeByNo(Long operatedNo);
+	
+	int getChallengeProofCount(Long operatedNo);
 
 	int getPaticipantCountByChallenge(Long operatedNo);
 
@@ -59,6 +61,5 @@ public interface ChallengeMapper {
 	int getAllOperatedChallengeCount(Map<String, Object> paramMap);
 
 	List<OperatedChallenge> selectAllOperatedChallengeList(Map<String, Object> paramMap);
-	
-	
+
 }

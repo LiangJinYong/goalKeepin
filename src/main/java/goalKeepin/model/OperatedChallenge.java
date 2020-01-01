@@ -10,8 +10,6 @@ public class OperatedChallenge {
 	private Long operatedChallengeNo;
 
 	private Long baseChallengeNo;
-	
-	private Long categoryNo;
 
 	private String gradeCd;
 
@@ -30,6 +28,8 @@ public class OperatedChallenge {
 	private String totalFee;
 	
 	private Date regDate;
+	
+	private Category category;
 	
 	private BaseChallenge baseChallenge;
 	

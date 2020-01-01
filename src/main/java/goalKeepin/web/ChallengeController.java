@@ -111,7 +111,6 @@ public class ChallengeController {
 			return "challenge/baseChallengeDetailForm";
 		}
 		*/
-		
 		String fileName = file.getOriginalFilename();
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
         
@@ -193,8 +192,13 @@ public class ChallengeController {
 	@GetMapping("/showOperatedChallengeDetail")
 	public String showOperatedChallengeDetail(@RequestParam("operatedNo") Long operatedNo, Model model) {
 		OperatedChallenge operatedChallenge = challengerMapper.selectOperatedChallengeByNo(operatedNo);
-		System.out.println("===>" + operatedChallenge);
+		int participantCount = challengerMapper.getPaticipantCountByChallenge(operatedNo);
+		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
+		
 		model.addAttribute("operatedChallenge", operatedChallenge);
+		model.addAttribute("participantCount", participantCount);
+		model.addAttribute("challengeProofCount", challengeProofCount);
+		
 		return "challenge/operatedChallengeDetailForm";
 	}
 	
@@ -242,8 +246,20 @@ public class ChallengeController {
 		
 		map = new HashMap<>();
 		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-		map.put("proofDate", "2019.11.01 13:00:00");
+		map.put("proofDate", "2019.11.03 13:00:00");
 		map.put("fileName", "bbb.jpg");
+		proofList.add(map);
+		
+		map = new HashMap<>();
+		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+		map.put("proofDate", "2019.11.04 14:00:00");
+		map.put("fileName", "ccc.jpg");
+		proofList.add(map);
+		
+		map = new HashMap<>();
+		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+		map.put("proofDate", "2019.11.05 15:00:00");
+		map.put("fileName", "ddd.jpg");
 		proofList.add(map);
 		
 		model.addAttribute("proofList", proofList);

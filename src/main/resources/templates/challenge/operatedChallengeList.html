@@ -5,47 +5,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Operated Challenge List</title>
-<link rel="stylesheet" href="../../dataTable.css" />
-<link rel="stylesheet" href="../../pagination.css" />
+<link rel="stylesheet" href="../../bootstrap.css">
+<style type="text/css">
+.row {
+	margin: 15px 0 0 0;
+}
+</style>
 </head>
 <body>
-	<div class="header">
-		<h1>
-			챌린지 관리 - <span th:text=*{baseChallengeNmEn}></span>
-		</h1>
+	<div class="row">
+		<header class="col-md-11 col-md-offset-1">
+			<h1 class="brand pull-left">챌린지 관리 - <span th:text=*{baseChallengeNmEn}></span></h1>
+		</header>
 	</div>
-	<table class="dataTable" id="detailTable">
-		<thead>
-			<tr>
-				<th>NO</th>
-				<th>챌린지 명</th>
-				<th>시작일</th>
-				<th>종료일</th>
-				<th>참여자 수</th>
-				<th>상태</th>
-			</tr>
-		</thead>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<table id="detailTable" class="table table-striped table-hover">
+				<thead>
+					<tr class="info">
+						<th class="text-center">
+							<h2 class="text-center h4">NO</h2>
+						</th>
+						<th class="text-center">
+							<h2 class="text-center h4">챌린지 명</h2>
+						</th>
+						<th class="text-center">
+							<h2 class="text-center h4">시작일</h2>
+						</th>
+						<th class="text-center">
+							<h2 class="text-center h4">종료일</h2>
+						</th>
+						<th class="text-center">
+							<h2 class="text-center h4">참여자 수</h2>
+						</th>
+						<th class="text-center">
+							<h2 class="text-center h4">상태</h2>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
+						<td class="text-center" th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
+						<td class="text-center" th:text="*{baseChallengeNmEn}">Challenge Name</td>
+						<td class="text-center" th:text="${operatedChallenge.startDate}">Start Date</td>
+						<td class="text-center" th:text="${operatedChallenge.endDate}">End Date</td>
+						<td class="text-center" th:text="${operatedChallenge.entryNum}">Entry Number</td>
+						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH01'}">모집중</td>
+						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH02'}">진행중</td>
+						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH03'}">완료</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 	
-		<tr th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
-			<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
-			<td th:text="*{baseChallengeNmEn}">Challenge Name</td>
-			<td th:text="${operatedChallenge.startDate}">Start Date</td>
-			<td th:text="${operatedChallenge.endDate}">End Date</td>
-			<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
-			<td th:if="${operatedChallenge.statusCd == 'CH01'}">모집중</td>
-			<td th:if="${operatedChallenge.statusCd == 'CH02'}">진행중</td>
-			<td th:if="${operatedChallenge.statusCd == 'CH03'}">완료</td>
-		</tr>
-	</table>
-	
-	<div id="pagination" th:if="${paging.totalPages > 1}">
-		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
-			<a th:href="@{'/challenge/showOperatedChallengeList/' + ${i} + '?baseNo=' + ${baseNo}}" th:text="${i}"></a>
-		</span>
+	<div class="row text-center" th:if="${paging.totalPages > 0}">
+		<nav aria-label="Page navigation example">
+			<ul class="pagination">
+				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
+					<a th:text="${i}" class="page-link" th:href="@{'/challenge/showOperatedChallengeList/' + ${i} + '?baseNo=' + ${baseNo}}"></a>
+				</li>
+			</ul>
+		</nav>
 	</div>
 	
 	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('#detailTable tr:gt(0)').click(function() {

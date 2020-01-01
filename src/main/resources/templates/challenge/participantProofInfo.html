@@ -5,38 +5,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Challenge Participant Info</title>
-<link rel="stylesheet" href="../../dataTable.css" />
-<link rel="stylesheet" href="../../pagination.css" />
+<link rel="stylesheet" href="../../bootstrap.css">
 <style type="text/css">
-	.header a {
-	float: right;
-	background-color: gray;
-	font-size: 20px;
-	color: #fff;
-	padding: 10px;
-	text-decoration: none;
-}
-
-.header h1 {
-	display: inline;
-}
-
-img {
-	width: 200px;
-	height: 200px;
-}
-
-.wrapper {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	grid-auto-rows: minmax(250px, auto);
-	margin: 40px
+.row {
+	margin: 15px 0 0 0;
 }
 
 .download {
 	width: 15px;
 	height: 15px;
 	margin-right: 10px;
+}
+
+span.h4 {
+	margin-right: 20px;
 }
 </style>
 </head>
@@ -52,42 +34,78 @@ img {
 			<span>참여자</span><span th:text="*{operatedChallenge.entryNum}">Entry Number</span><br />
 		</div>
 	</div>
+	
 	<div th:if="*{participantEntry != null}">
-		<div class="header">
-			<h1>챌린지 참여 정보</h1>
+		<div class="row">
+			<header>
+				<h1 class="brand pull-left">챌린지 참여 정보</h1>
+			</header>
 		</div>
-		<div>
-			<span>챌린지 명</span><span th:text="*{participantEntry.operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</span>
-			<span>참여일자</span><span th:text="*{#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
+		
+		<div class="row">
+			<div class="col-md-5">
+				<span class="h4">챌린지 명</span>
+				<span th:text="*{participantEntry.operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</span>
+			</div>
+			<div class="col-md-5">
+				<span class="h4">참여일자</span>
+				<span th:text="*{#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
+			</div>
 		</div>
-		<table class="dataTable">
-			<thead>
-				<tr>
-					<th>아이디</th>
-					<th>참가비(원)</th>
-					<th>달성률(%)</th>
-					<th>리워드 금액</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td th:text="*{participantEntry.participant.userId}">User Id</td>
-					<td th:text="*{participantEntry.entryFee}">Entry Fee</td>
-					<td th:text="*{participantEntry.entryResult}">Entry Result</td>
-					<td>1,100</td>
-				</tr>
-			</tbody>
-		</table>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table">
+					<thead>
+						<tr class="active">
+							<th>
+								<h2 class="text-center h4">아이디</h2>
+							</th>
+							<th>
+								<h2 class="text-center h4">참가비(원)</h2>
+							</th>
+							<th>
+								<h2 class="text-center h4">달성률(%)</h2>
+							</th>
+							<th>
+								<h2 class="text-center h4">리워드 금액</h2>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-center" th:text="*{participantEntry.participant.userId}">User Id</td>
+							<td class="text-center" th:text="*{participantEntry.entryFee}">Entry Fee</td>
+							<td class="text-center" th:text="*{participantEntry.entryResult}">Entry Result</td>
+							<td class="text-center">1,100</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 	
-	<table class="dataTable">
-		<thead>
-			<tr>
-				<th>인증샷 목록</th>
-			</tr>
-		</thead>
-	</table>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table">
+				<thead>
+					<tr class="active">
+						<th>
+							<h2 class="text-center h4">인증샷 목록</h2>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
 	
+	<div class="row" th:if="*{participantEntry != null}">
+		<div class="text-center col-md-4" th:if="*{participantEntry.operatedChallenge.baseChallenge.baseAuthMethodCd == 'AU02'}" th:each="proof: ${proofList}" style="margin-bottom: 30px;">
+			<a th:href="@{'/challenge/download/' + *{proof.fileName}}"><img src="../../images/download.png" class="download"><span th:text="*{proof.proofDate}"></span></a>
+		</div>
+	</div>
+	
+	<!-- 
 	<div th:if="*{operatedChallenge != null}" class="wrapper">
 		<div th:if="*{operatedChallenge.baseChallenge.baseAuthMethodCd == 'AU01'}" th:each="proof: ${proofList}">
 			<img th:src="*{proof.proofUrl}"><br />
@@ -107,6 +125,7 @@ img {
 			<a th:href="@{'/challenge/download/' + *{proof.fileName}}"><img src="../../images/download.png" class="download"><span th:text="*{proof.proofDate}"></span></a>
 		</div>
 	</div>
+	 -->
 	
 	<script type="text/javascript" src="../../jquery.js"></script>
 	<script type="text/javascript" src="../../dataTable.js"></script>

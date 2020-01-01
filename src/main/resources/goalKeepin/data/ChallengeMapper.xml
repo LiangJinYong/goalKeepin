@@ -37,7 +37,6 @@
 	<resultMap type="OperatedChallenge" id="OperatedChallenge">
 		<id property="operatedChallengeNo" column="operatedChallengeNo" />
 		<result property="baseChallengeNo" column="baseChallengeNo" />
-		<result property="categoryNo" column="categoryNo" />
 		<result property="gradeCd" column="gradeCd" />
 		<result property="minFee" column="minFee" />
 		<result property="maxFee" column="maxFee" />
@@ -47,6 +46,7 @@
 		<result property="entryNum" column="entryNum" />
 		<result property="totalFee" column="totalFee" />
 		<result property="regDate" column="regDate" />
+		<association property="category" resultMap="goalKeepin.data.CategoryMapper.Category"></association>
 		<association property="baseChallenge" resultMap="BaseChallenge"></association>
 	</resultMap>
 	
@@ -227,9 +227,9 @@
 		/* selectOperatedChallengeByNo */
 		SELECT bct.base_no baseNo
 		, bct.base_nm_t_no baseNmTransNo
-		, (SELECT TRANS_EN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
-		, (SELECT TRANS_T_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
-		, (SELECT TRANS_S_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
 		, bct.base_thumbnail_url baseThumbnailUrl
 		, bct.base_habit_tp_cd baseHabitTypeCd
 		, bct.base_auth_date_cd baseAuthDateCd
@@ -242,32 +242,42 @@
 		, bct.base_auth_interval baseAuthInterval
 		, bct.base_auth_is_album baseAuthIsAlbum
 		, bct.base_auth_desc_t_no baseAuthDescTransNo
-		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescEn
-		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescTc
-		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescSc
+		, (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescEn
+		, (SELECT trans_t_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescTc
+		, (SELECT trans_s_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescSc
 		, bct.base_detail_t_no baseDetailTransNo
-		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailEn
-		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailTc
-		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailSc
+		, (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailEn
+		, (SELECT trans_t_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailTc
+		, (SELECT trans_s_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailSc
 		, bct.base_reg_dt baseRegDate
 		, bct.search_keyword searchKeyword
-        , oct.CHALLENGE_NO operatedChallengeNo
-        , oct.CHALLENGE_CATEGORY_NO categoryNo
-        , oct.CHALLENGE_GRADE_CD gradeCd
-        , oct.CHALLENGE_MIN_FEE minFee
-        , oct.CHALLENGE_MAX_FEE maxFee
-        , oct.CHALLENGE_START_DT startDate
-        , oct.CHALLENGE_END_DT endDate
-        , oct.CHALLENGE_ST_CD statusCd
-        , oct.CHALLENGE_REG_DT regDate
+        , oct.challenge_no operatedChallengeNo
+        , oct.challenge_category_no categoryNo
+        , (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = oct.challenge_category_no) categoryNmEn
+        , oct.challenge_grade_cd gradeCd
+        , oct.challenge_min_fee minFee
+        , oct.challenge_max_fee maxFee
+        , oct.challenge_start_dt startDate
+        , oct.challenge_end_dt endDate
+        , oct.challenge_st_cd statusCd
+        , oct.challenge_reg_dt regDate
 		FROM BASE_CHALLENGE_TB bct
-        inner join OPERATED_CHALLENGE_TB oct on bct.BASE_NO = oct.CHALLENGE_BASE_NO
+        INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
         where oct.CHALLENGE_NO = #{operatedNo}
+	</select>
+	
+	<select id="getChallengeProofCount" parameterType="long" resultType="int">
+		/* getChallengeProofCount */
+		SELECT COUNT(*) 
+		FROM CHALLENGE_AUTH_TB 
+		WHERE auth_c_no = #{operatedNo}
 	</select>
 	
 	<select id="getPaticipantCountByChallenge" parameterType="long" resultType="int">
 		/* getPaticipantCountByChallenge */
-		SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = #{operatedNo}
+		SELECT COUNT(*) 
+		FROM CHALLENGE_ENTRY_TB 
+		WHERE entry_challenge_no = #{operatedNo}
 	</select>
 	
 	<select id="selectParticipantEntryList" parameterType="map" resultMap="ParticipantEntry">
