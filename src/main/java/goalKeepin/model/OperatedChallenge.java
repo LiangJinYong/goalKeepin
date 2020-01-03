@@ -10,6 +10,8 @@ public class OperatedChallenge {
 	private Long operatedChallengeNo;
 
 	private Long baseChallengeNo;
+	
+	private Long categoryNo;
 
 	private String gradeCd;
 

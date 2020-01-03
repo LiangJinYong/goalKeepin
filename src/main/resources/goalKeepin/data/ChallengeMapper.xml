@@ -184,7 +184,7 @@
 		FROM CATEGORY_TB ct
 		INNER JOIN TRANSLATION_TB tt
 		ON ct.category_nm_t_no = tt.trans_no
-		ORDER BY category_no
+		ORDER BY category_no DESC
 	</select>
 	
 	<insert id="insertOperatedChallengeInfo" parameterType="OperatedChallenge">

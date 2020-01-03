@@ -14,45 +14,46 @@
 </head>
 <body>
 	<div class="row">
-		<header class="col-md-11 col-md-offset-1">
+		<header class="col-md-offset-1">
 			<h1 class="brand pull-left">챌린지 관리 - <span th:text=*{baseChallengeNmEn}></span></h1>
 		</header>
 	</div>
+	
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-11 col-md-offset-1">
 			<table id="detailTable" class="table table-striped table-hover">
 				<thead>
 					<tr class="info">
-						<th class="text-center">
-							<h2 class="text-center h4">NO</h2>
+						<th>
+							<h2 class="h4 text-center">NO</h2>
 						</th>
-						<th class="text-center">
-							<h2 class="text-center h4">챌린지 명</h2>
+						<th>
+							<h2 class="h4 text-center">챌린지 명</h2>
 						</th>
-						<th class="text-center">
-							<h2 class="text-center h4">시작일</h2>
+						<th>
+							<h2 class="h4 text-center">시작일</h2>
 						</th>
-						<th class="text-center">
-							<h2 class="text-center h4">종료일</h2>
+						<th>
+							<h2 class="h4 text-center">종료일</h2>
 						</th>
-						<th class="text-center">
-							<h2 class="text-center h4">참여자 수</h2>
+						<th>
+							<h2 class="h4 text-center">참여자 수</h2>
 						</th>
-						<th class="text-center">
-							<h2 class="text-center h4">상태</h2>
+						<th>
+							<h2 class="h4 text-center">상태</h2>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
-						<td class="text-center" th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
-						<td class="text-center" th:text="*{baseChallengeNmEn}">Challenge Name</td>
-						<td class="text-center" th:text="${operatedChallenge.startDate}">Start Date</td>
-						<td class="text-center" th:text="${operatedChallenge.endDate}">End Date</td>
-						<td class="text-center" th:text="${operatedChallenge.entryNum}">Entry Number</td>
-						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH01'}">모집중</td>
-						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH02'}">진행중</td>
-						<td class="text-center" th:if="${operatedChallenge.statusCd == 'CH03'}">완료</td>
+					<tr class="text-center" th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
+						<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
+						<td th:text="*{baseChallengeNmEn}">Challenge Name</td>
+						<td th:text="${operatedChallenge.startDate}">Start Date</td>
+						<td th:text="${operatedChallenge.endDate}">End Date</td>
+						<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH01'}" style="color: blue;">모집중</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH02'}" style="color: green;">진행중</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH03'}" style="color: red;">완료</td>
 					</tr>
 				</tbody>
 			</table>

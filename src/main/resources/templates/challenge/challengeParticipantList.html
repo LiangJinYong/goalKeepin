@@ -36,29 +36,29 @@ header a, header li {
 				<thead>
 					<tr class="info">
 						<th>
-							<h2 class="text-center h4">NO</h2>
+							<h2 class="h4 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">아이디</h2>
+							<h2 class="h4 text-center">아이디</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">참가비(원)</h2>
+							<h2 class="h4 text-center">참가비(원)</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">참여 일자</h2>
+							<h2 class="h4 text-center">참여 일자</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">달성률(%)</h2>
+							<h2 class="h4 text-center">달성률(%)</h2>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="participantEntry: ${participantEntryList}" style="cursor: pointer;" th:id="${participantEntry.entryNo}">
-						<td class="text-center" th:text="${participantEntry.entryNo}">NO</td>
-						<td class="text-center" th:text="${participantEntry.participant.userId}">User Id</td>
-						<td class="text-center" th:text="${participantEntry.entryFee}">Entry Fee</td>
-						<td class="text-center" th:text="${participantEntry.entryFee}">Entry Reg Date</td>
-						<td class="text-center" th:text="${participantEntry.entryResult}">Entry Result</td>
+					<tr class="text-center" th:each="participantEntry: ${participantEntryList}" style="cursor: pointer;" th:id="${participantEntry.entryNo}">
+						<td th:text="${participantEntry.entryNo}">NO</td>
+						<td th:text="${participantEntry.participant.userId}">User Id</td>
+						<td th:text="${participantEntry.entryFee}">Entry Fee</td>
+						<td th:text="${#dates.format(participantEntry.entryRegDate, 'yyyy.MM.dd HH:mm:ss')}">Entry Reg Date</td>
+						<td th:text="${participantEntry.entryResult}">Entry Result</td>
 					</tr>
 				</tbody>
 			</table>

@@ -40,15 +40,15 @@ header li {
 
 <body>
 	<div class="row">
-		<header class="col-md-12">
+		<header class="col-md-11">
 			<h1 class="brand pull-left">챌린지 상세정보</h1>
 			<ul class="list-inline list-unstyled pull-right">
-				
 				<li th:if="*{participantCount > 0}"><a class="btn btn-primary" id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'참여자 목록보기(' + participantCount + ')'}"></a></li>
 				<li th:if="*{participantCount == 0}"><a class="btn btn-danger" >참여자 없음</a></li>
 				<li th:if="*{participantCount > 0 and challengeProofCount > 0}"><a class="btn btn-primary" id="showProofShotList" th:href="@{/challenge/showAllProofShotsByChallenge(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'인증샷 모아보기(' + challengeProofCount + ')'}"></a></li>
 				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger">인증샷 없음</a></li>
-				<li th:if="*{operatedChallenge.statusCd == 'CH03'}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}">리뷰 목록보기</a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount > 0}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" class="btn btn-primary" th:text="*{'리뷰 목록보기(' + reviewCount + ')'}"></a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger">리뷰 없음</a></li>
 			</ul>
 		</header>
 	</div>

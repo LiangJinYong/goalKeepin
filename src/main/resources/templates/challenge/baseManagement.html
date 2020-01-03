@@ -34,34 +34,35 @@ header a, header li {
 				<thead>
 					<tr class="info">
 						<th>
-							<h2 class="text-center h4">NO</h2>
+							<h2 class="h4 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">챌린지 명</h2>
+							<h2 class="h4 text-center">챌린지 명</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">모집중인 챌린지</h2>
+							<h2 class="h4 text-center">모집중인 챌린지</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">진행중인 챌린지</h2>
+							<h2 class="h4 text-center">진행중인 챌린지</h2>
 						</th>
 						<th>
-							<h2 class="text-center h4">완료된 챌린지</h2>
+							<h2 class="h4 text-center">완료된 챌린지</h2>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="challenge: ${challengeList}" th:id="${challenge.baseNo}" style="cursor: pointer;">
-						<td class="text-center" th:text="${challenge.baseNo}">NO</td>
-						<td class="text-center" th:text="${challenge.name}">Challenge Name</td>
-						<td class="text-center" th:text="${challenge.recruiting}">Recruiting Challenge</td>
-						<td class="text-center" th:text="${challenge.ongoing}">Ongoing Challenge</td>
-						<td class="text-center" th:text="${challenge.expired}">Expired Challenge</td>
+					<tr class="text-center" th:each="challenge: ${challengeList}" th:id="${challenge.baseNo}" style="cursor: pointer;">
+						<td th:text="${challenge.baseNo}">NO</td>
+						<td th:text="${challenge.name}">Challenge Name</td>
+						<td th:text="${challenge.recruiting}">Recruiting Challenge</td>
+						<td th:text="${challenge.ongoing}">Ongoing Challenge</td>
+						<td th:text="${challenge.expired}">Expired Challenge</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
+	
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation example">
 			<ul class="pagination">
@@ -71,6 +72,7 @@ header a, header li {
 			</ul>
 		</nav>
 	</div>
+	
 	<script type="text/javascript" src="../../jquery.js"></script>
 	<script type="text/javascript">
 		$(function() {

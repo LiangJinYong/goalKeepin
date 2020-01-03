@@ -5,29 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Offer Detail</title>
-<link rel="stylesheet" href="../../dataTable.css" />
-<link rel="stylesheet" href="../../pagination.css" />
+<link rel="stylesheet" href="../../../bootstrap.css">
 <style type="text/css">
-.wrapper {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	grid-auto-rows: minmax(30px, auto);
-	margin: 40px;
-	width: 800px;
-}
-.wrapper input {
-	width: 200px;
-}
-
-#userInfo table, #offerInfo table {
-	width: 30%;
-	margin-left: 40px;
-}
-
-.userInfoValue td, .offerInfoValue td {
-	padding-left: 30px;
-}
-
 .waiting {
 	color: red;
 }
@@ -39,86 +18,112 @@
 .voted {
 	color: blue;
 }
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+h2 + span, h2 + div {
+	margin-left: 30px;
+}
+
+h2 + div {
+	border: 2px solid grey;
+	min-height: 80px;
+	padding: 5px;
+}
+
+#offerTitle input {
+	width: 100%;
+}
 </style>
 </head>
 <body>
-	<div class="header">
-		<h1>
-			챌린지 제안 생성
-		</h1>
+	<div class="row">
+		<header class="col-md-12">
+			<h1>챌린지 제안 생성</h1>
+		</header>
 	</div>
+	
 	<form method="post" th:action="@{/offer/processOfferCreation}" th:object=${offer}>
 		<input type="hidden" name="offerNo" th:field="*{offerNo}" />
 		<input type="hidden" name="offerNo" th:field="*{offerStatusCd}" />
-		<div id="userInfo" th:if="*{offerStatusCd != null}">
-			<table>
-				<tr>
-					<td>유저 아이디</td>
-					<td>닉네임</td>
-				</tr>
-				<tr class="userInfoValue">
-					<td th:text="*{user.userId}"></td>
-					<td th:text="*{user.nickName}"></td>
-				</tr>
-			</table>
+		
+		<div class="row" th:if="*{offerStatusCd != null}">
+			<div class="col-md-3">
+				<h2 class="h4">유저 아이디</h2>
+				<span th:text="*{user.userId}"></span>
+			</div>
+			<div class="col-md-3">
+				<h2 class="h4">닉네임</h2>
+				<span th:text="*{user.nickName}"></span>
+			</div>
 		</div>
-		<div class="wrapper">
-			<div>
-				<span>주제(영문)</span><br />
+		
+		<div class="row" id="offerTitle">
+			<div class="col-md-4">
+				<h2 class="h4">주제(영문)</h2>
 				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
 				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleEn}"></span>
 			</div>
-			<div>
-				<span>주제(번체)</span><br />
+			<div class="col-md-4">
+				<h2 class="h4">주제(번체)</h2>
 				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
 				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleTc}"></span>
 			</div>
-			
-			<div>
-				<span>주제(간체)</span><br />
+			<div class="col-md-4">
+				<h2 class="h4">주제(간체)</h2>
 				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
 				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleSc}"></span>
 			</div>
 		</div>
-		<div>
-			<span>인증 방법 제안(영문)</span><br />
-			<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == null}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
-			<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
-			<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoEn}"></div>
+		
+		<div class="row">
+			<div class="col-md-10">
+				<h2 class="h4">인증 방법 제안(영문)</h2>
+				<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
+				<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
+				<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoEn}"></div>
+			</div>
 		</div>
-		<div>
-			<span>인증 방법 제안(번체)</span><br />
-			<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == null}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
-			<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
-			<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoTc}"></div>
+		
+		<div class="row">
+			<div class="col-md-10">
+				<h2 class="h4">인증 방법 제안(번체)</h2>
+				<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
+				<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
+				<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoTc}"></div>
+			</div>
 		</div>
-		<div>
-			<span>인증 방법 제안(간체)</span><br />
-			<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == null}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
-			<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="10" cols="200" placeholder="인증방법 제안" required="required"></textarea>
+		
+		<div class="row">
+			<div class="col-md-10">
+				<h2 class="h4">인증 방법 제안(간체)</h2>
+				<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
+			<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="인증방법 제안" required="required"></textarea>
 			<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoSc}"></div>
+			</div>
 		</div>
-		<div id="offerInfo" th:if="*{offerStatusCd != null}">
-			<table>
-				<tr>
-					<td>상태</td>
-					<td>좋아요</td>
-				</tr>
-				<tr class="offerInfoValue">
-					<td th:if="*{offerStatusCd == 'VO01'}" th:text="'대기중'" class="waiting"></td>
-					<td th:if="*{offerStatusCd == 'VO02'}" th:text="'투표중'" class="voting"></td>
-					<td th:if="*{offerStatusCd == 'VO03'}" th:text="'투표 완료'" class="voted"></td>
-					<td th:text="*{offerLikeNum}"></td>
-				</tr>
-			</table>
+		
+		<div class="row">
+			<div class="col-md-3" th:if="*{offerStatusCd != null}">
+				<h2 class="h4">상태</h2>
+				<span th:if="*{offerStatusCd == 'VO01'}" th:text="'대기중'" class="waiting"></span>
+				<span th:if="*{offerStatusCd == 'VO02'}" th:text="'투표중'" class="voting"></span>
+				<span th:if="*{offerStatusCd == 'VO03'}" th:text="'투표 완료'" class="voted"></span>
+			</div>
+			<div class="col-md-3" th:if="*{offerStatusCd != null}">
+				<h2 class="h4">좋아요</h2>
+				<span th:text="*{offerLikeNum}"></span>
+			</div>
+			
+			<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-success pull-right" type="submit" value="투표 등록하기" style="margin-right: 200px;" />
+			<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-success pull-right" type="submit" value="투표 종료하기" style="margin-right: 200px;" />
 		</div>
-		<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" type="submit" value="투표 등록하기" />
-		<input th:if="*{offerStatusCd == 'VO02'}" type="submit" value="투표 종료하기" />
 	</form>
 	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
 </body>
 </html>

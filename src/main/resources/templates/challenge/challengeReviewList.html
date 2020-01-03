@@ -5,35 +5,64 @@
 <head>
 <meta charset="UTF-8">
 <title>Challenge Review List</title>
-<link rel="stylesheet" href="../../dataTable.css" />
-<link rel="stylesheet" href="../../pagination.css" />
+<link rel="stylesheet" href="../../bootstrap.css">
+<style type="text/css">
+.row {
+	margin: 15px 0 0 0;
+}
+</style>
 </head>
 <body>
-	<div class="header">
-		<h1>
-			리뷰 목록
-		</h1>
+	<div class="row">
+		<header class="col-md-offset-1">
+			<h1 class="brand pull-left">리뷰 목록</h1>
+		</header>
 	</div>
-	<table class="dataTable" id="detailTable">
-		<thead>
-			<tr>
-				<th>NO</th>
-				<th>아이디</th>
-				<th>닉네임</th>
-				<th>내용</th>
-				<th>등록 일자</th>
-			</tr>
-		</thead>
 	
-		<tr th:each="review: ${reviewList}">
-			<td th:text="${review.reviewNo}">NO</td>
-			<td th:text="${review.user.userId}">User Id</td>
-			<td th:text="${review.user.nickName}">Nick Name</td>
-			<td th:text="${review.reviewContent}" style="width: 400px;">Review Content</td>
-			<td th:text="*{#dates.format(review.reviewRegDate, 'yyyy.MM.dd HH:mm:ss')}">Review Reg Date</td>
-		</tr>
-	</table>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr class="info">
+						<th>
+							<h2 class="h4 text-center">NO</h2>
+						</th>
+						<th>
+							<h2 class="h4 text-center">아이디</h2>
+						</th>
+						<th>
+							<h2 class="h4 text-center">닉네임</h2>
+						</th>
+						<th>
+							<h2 class="h4 text-center">내용</h2>
+						</th>
+						<th>
+							<h2 class="h4 text-center">등록 일자</h2>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="text-center" th:each="review: ${reviewList}">
+						<td th:text="${review.reviewNo}">NO</td>
+						<td th:text="${review.user.userId}">User Id</td>
+						<td th:text="${review.user.nickName}">Nick Name</td>
+						<td th:text="${review.reviewContent}" style="width: 400px;">Review Content</td>
+						<td th:text="*{#dates.format(review.reviewRegDate, 'yyyy.MM.dd HH:mm:ss')}">Review Reg Date</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 	
+	<div class="row text-center" th:if="${paging.totalPages > 0}">
+		<nav aria-label="Page navigation example">
+			<ul class="pagination">
+				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
+					<a th:text="${i}" class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}"></a>
+				</li>
+			</ul>
+		</nav>
+	</div>
 	<div id="pagination" th:if="${paging.totalPages > 1}">
 		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
 			<a th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}" th:text="${i}"></a>

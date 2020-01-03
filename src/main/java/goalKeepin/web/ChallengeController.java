@@ -162,7 +162,6 @@ public class ChallengeController {
 	@ResponseBody
 	public String createNewChallenge(OperatedChallenge challengeDetail) {
 		
-		System.out.println(challengeDetail);
 		challengerMapper.insertOperatedChallengeInfo(challengeDetail);
 		return "success";
 	}
@@ -194,10 +193,12 @@ public class ChallengeController {
 		OperatedChallenge operatedChallenge = challengerMapper.selectOperatedChallengeByNo(operatedNo);
 		int participantCount = challengerMapper.getPaticipantCountByChallenge(operatedNo);
 		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
+		int reviewCount = challengerMapper.getReviewCountByChallenge(operatedNo);
 		
 		model.addAttribute("operatedChallenge", operatedChallenge);
 		model.addAttribute("participantCount", participantCount);
 		model.addAttribute("challengeProofCount", challengeProofCount);
+		model.addAttribute("reviewCount", reviewCount);
 		
 		return "challenge/operatedChallengeDetailForm";
 	}
@@ -229,38 +230,58 @@ public class ChallengeController {
 		model.addAttribute("participantEntry", participantEntry);
 		String baseAuthMethodCd = participantEntry.getOperatedChallenge().getBaseChallenge().getBaseAuthMethodCd();
 		
+		List<Map<String, String>> proofList = new ArrayList();
 		if ("AU01".equals(baseAuthMethodCd)) {
 			// Photo
 			// need photo url, proof date
+			Map<String, String> map = new HashMap<>();
+			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/Chapter_6.png");
+			map.put("proofDate", "2019.11.02 12:00:00");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/TacoCloud.png");
+			map.put("proofDate", "2019.12.03 13:00:00");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/delegate.png");
+			map.put("proofDate", "2019.13.04 14:00:00");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/thumbnail_upload.png");
+			map.put("proofDate", "2019.14.05 15:00:00");
+			proofList.add(map);
 		} else {
 			// Audio
 			// need audio url, proof date, file name
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("proofUrl", "http://localhost:8080/challenge/download/b.mp3");
+			map.put("proofDate", "2019.11.02 12:00:00");
+			map.put("fileName", "b.mp3");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+			map.put("proofDate", "2019.11.03 13:00:00");
+			map.put("fileName", "bbb.jpg");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+			map.put("proofDate", "2019.11.04 14:00:00");
+			map.put("fileName", "ccc.jpg");
+			proofList.add(map);
+			
+			map = new HashMap<>();
+			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
+			map.put("proofDate", "2019.11.05 15:00:00");
+			map.put("fileName", "ddd.jpg");
+			proofList.add(map);
 		}
 			
-		List<Map<String, String>> proofList = new ArrayList();
-		Map<String, String> map = new HashMap<>();
-		map.put("proofUrl", "http://localhost:8080/challenge/download/b.mp3");
-		map.put("proofDate", "2019.11.02 12:00:00");
-		map.put("fileName", "b.mp3");
-		proofList.add(map);
-		
-		map = new HashMap<>();
-		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-		map.put("proofDate", "2019.11.03 13:00:00");
-		map.put("fileName", "bbb.jpg");
-		proofList.add(map);
-		
-		map = new HashMap<>();
-		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-		map.put("proofDate", "2019.11.04 14:00:00");
-		map.put("fileName", "ccc.jpg");
-		proofList.add(map);
-		
-		map = new HashMap<>();
-		map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-		map.put("proofDate", "2019.11.05 15:00:00");
-		map.put("fileName", "ddd.jpg");
-		proofList.add(map);
 		
 		model.addAttribute("proofList", proofList);
 		return "challenge/participantProofInfo";
