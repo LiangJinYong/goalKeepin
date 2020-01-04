@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.InquiryMapper">
+	
+	<resultMap type="Inquiry" id="Inquiry">
+		<id property="inquiryNo" column="inquiryNo" />
+		<result property="inquiryTitle" column="inquiryTitle" />
+		<result property="inquiryContent" column="inquiryContent" />
+		<result property="inquiryRegDate" column="inquiryRegDate" />
+		<result property="inquiryReplyCotent" column="inquiryReplyCotent" />
+		<result property="inquiryReplyRegDate" column="inquiryReplyRegDate" />
+		<result property="inquiryStatusCd" column="inquiryStatusCd" />
+		<association property="inquiryUser" resultMap="goalKeepin.data.ChallengeMapper.User" />
+	</resultMap>
+	
+	<sql id="inquiry">
+		FROM INQUIRY_TB it
+		INNER JOIN USER_TB ut ON it.inquiry_user_no = ut.user_no
+		<if test="inquiryStatusCd != 'IN00'">
+			WHERE it.inquiry_st_cd = #{inquiryStatusCd}
+		</if>
+	</sql>
+	
+	<select id="getTotalInquiryCount" parameterType="map" resultType="int">
+		/* getTotalInquiryCount */
+		SELECT COUNT(*) totalInquiryCount
+		<include refid="inquiry" />
+	</select>
+	
+	<select id="selectInquiryList" parameterType="map" resultMap="Inquiry">
+		/* selectInquiryList */
+		SELECT it.inquiry_no inquiryNo, ut.user_id userId, 'Inquiry Title' inquiryTitle, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd
+		<include refid="inquiry" />
+		ORDER BY inquiry_reg_dt DESC
+		LIMIT #{startIndex}, 10
+	</select>
+	
+	<select id="selectInquiryDetail" parameterType="long" resultMap="Inquiry">
+		/* selectInquiryDetail */
+		SELECT it.inquiry_no inquiryNo, ut.user_id userId, 'Inquiry Title' inquiryTitle, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd, it.inquiry_txt inquiryContent, it.inquiry_reply_txt inquiryReplyCotent
+		FROM INQUIRY_TB it
+		INNER JOIN USER_TB ut ON it.inquiry_user_no = ut.user_no
+		WHERE it.inquiry_no = #{inquiryNo}
+	</select>
+	
+	<update id="updateInquiryStatus" parameterType="Inquiry">
+		/* updateInquiryStatus */
+		UPDATE INQUIRY_TB
+		SET inquiry_reply_txt = #{inquiryReplyCotent},
+		inquiry_reply_reg_dt = now(),
+		inquiry_st_cd = 'IN02'
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+</mapper>
