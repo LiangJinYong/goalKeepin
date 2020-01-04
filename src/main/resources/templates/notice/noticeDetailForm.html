@@ -7,8 +7,6 @@
 <title>Notice Deatail Form</title>
 <link rel="stylesheet" href="../../bootstrap.css">
 <style type="text/css">
-
-
 .filebox input[type="file"] {
 	position: absolute;
 	width: 1px;
@@ -90,6 +88,10 @@
 .row {
 	margin: 15px 0 0 0;
 }
+
+input[name^=noticeTitle] {
+	width: 100%;
+}
 </style>
 </head>
 <body>
@@ -100,74 +102,95 @@
 	</div>
 	<form method="post" th:action="@{/notice/processNoticeDetail}" th:object="${notice}">
 		<div class="row">
-			<div class="col-md-12">
-				<h2>제목(영문)</h2>
+			<div class="col-md-6">
+				<h2 class="h4">제목(영문)</h2>
 				<input type="text" name="noticeTitleEn" placeholder="제목을 입력해주세요."
 					required="required">
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
-				<h2>제목(번체)</h2>
+			<div class="col-md-6">
+				<h2 class="h4">제목(번체)</h2>
 				<input type="text" name="noticeTitleTc" placeholder="제목을 입력해주세요."
 					required="required">
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
-				<h2>제목(간체)</h2>
+			<div class="col-md-6">
+				<h2 class="h4">제목(간체)</h2>
 				<input type="text" name="noticeTitleSc" placeholder="제목을 입력해주세요."
 					required="required">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<h2>내용(영문)</h2>
+				<h2 class="h4">내용(영문)</h2>
 				<textarea rows="4" cols="100" name="noticeContentEn"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<h2>내용(번체)</h2>
+				<h2 class="h4">내용(번체)</h2>
 				<textarea rows="4" cols="100" name="noticeContentTc"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<h2>내용(간체)</h2>
+				<h2 class="h4">내용(간체)</h2>
 				<textarea rows="4" cols="100" name="noticeContentSc"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
-		<div class="filebox bs3-primary preview-image">
-			<input class="upload-name" value="파일선택" disabled="disabled"
-				style="width: 200px;"> <label for="noticeImgEn">이미지(영문)</label>
-			<input type="file" id="noticeImgEn" class="upload-hidden"
-				required="required" name="noticeImgEn">
-		</div>
-		<div class="filebox bs3-primary preview-image">
-			<input class="upload-name" value="파일선택" disabled="disabled"
-				style="width: 200px;"> <label for="noticeImgTc">이미지(번체)</label>
-			<input type="file" id="noticeImgTc" class="upload-hidden"
-				required="required" name="noticeImgEn">
-		</div>
-		<div class="filebox bs3-primary preview-image">
-			<input class="upload-name" value="파일선택" disabled="disabled"
-				style="width: 200px;"> <label for="noticeImgSc">이미지(간체)</label>
-			<input type="file" id="noticeImgSc" class="upload-hidden"
-				required="required" name="noticeImgEn">
-		</div>
-		<div class="form-group">
-			<div class="col-md-offset-1 col-md-11">
-				<label class="checkbox"> 
-					<input type="checkbox" value="">메인화면 상단 배너에 노출하시겠습니까? 노출시 제목이 노출됩니다.
-				</label>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="filebox bs3-primary preview-image">
+					<input class="upload-name" value="파일선택" disabled="disabled"
+						style="width: 200px;"> <label for="noticeImgEn">이미지(영문)</label>
+					<input type="file" id="noticeImgEn" class="upload-hidden"
+						required="required" name="noticeImgEn">
+				</div>
 			</div>
 		</div>
-		<div class="col-md-12 text-center">
-			<input type="submit" class="btn btn-success" value="저장">
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="filebox bs3-primary preview-image">
+					<input class="upload-name" value="파일선택" disabled="disabled"
+						style="width: 200px;"> <label for="noticeImgTc">이미지(번체)</label>
+					<input type="file" id="noticeImgTc" class="upload-hidden"
+						required="required" name="noticeImgEn">
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="filebox bs3-primary preview-image">
+					<input class="upload-name" value="파일선택" disabled="disabled"
+						style="width: 200px;"> <label for="noticeImgSc">이미지(간체)</label>
+					<input type="file" id="noticeImgSc" class="upload-hidden"
+						required="required" name="noticeImgEn">
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="form-group">
+				<div class="col-md-offset-1 col-md-11">
+					<label class="checkbox"> 
+						<input type="checkbox" value="">메인화면 상단 배너에 노출하시겠습니까? 노출시 제목이 노출됩니다.
+					</label>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-10 text-center">
+				<input type="submit" class="btn btn-success" value="저장">
+			</div>
 		</div>
 	</form>
 	<script type="text/javascript" src="../../jquery.js"></script>

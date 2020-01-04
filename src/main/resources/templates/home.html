@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
@@ -26,7 +28,7 @@
 			</header>
 		</div>
 		<div class="row">
-			<div class="col-md-2" style="border-right: 3px solid lightgrey;">
+			<div class="col-md-2" style="border-right: 3px solid lightgrey;" id="sideMenu">
 				<div class="col-md-offset-2">
 					<ul class="list-unstyled">
 						<h2 class="h4">챌린지 관리</h2>
@@ -58,9 +60,9 @@
 						<h2 class="h4">키타</h2>
 						<ul class="list-unstyled">
 							<li><a href="/notice/showNoticeList/1" target="menuFrame">- 공지사항</a></li>
-							<li><a href="#" target="menuFrame">- 문의</a></li>
+							<li><a href="/inquiry/showInquiryList/1?inquiryStatusCd=IN00" target="menuFrame">- 문의</a></li>
 							<li><a href="#" target="menuFrame">- 통계</a></li>
-							<li><a href="#" target="menuFrame">- 리워드 지급</a></li>
+							<li><a href="/rewardPayment/showRewardPaymentDetail" target="menuFrame">- 리워드 지급</a></li>
 							<li><a href="#" target="menuFrame">- 푸시 전송</a></li>
 							<li><a href="#" target="menuFrame">- 팝업 설정</a></li>
 						</ul>
@@ -76,6 +78,7 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="jquery.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
 		
 	</script>

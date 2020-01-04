@@ -47,7 +47,7 @@ h2 + div {
 	
 	<form method="post" th:action="@{/offer/processOfferCreation}" th:object=${offer}>
 		<input type="hidden" name="offerNo" th:field="*{offerNo}" />
-		<input type="hidden" name="offerNo" th:field="*{offerStatusCd}" />
+		<input type="hidden" name="offerStatusCd" th:field="*{offerStatusCd}" />
 		
 		<div class="row" th:if="*{offerStatusCd != null}">
 			<div class="col-md-3">
