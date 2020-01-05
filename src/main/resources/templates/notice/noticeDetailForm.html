@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Notice Deatail Form</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .filebox input[type="file"] {
 	position: absolute;
@@ -44,7 +44,7 @@
 	border: 1px solid #ebebeb;
 	border-bottom-color: #e2e2e2;
 	border-radius: .25em;
-	-webkit-appearance: none; /* 네이티브 외형 감추기 */
+	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
 }
@@ -193,8 +193,7 @@ input[name^=noticeTitle] {
 			</div>
 		</div>
 	</form>
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			var fileTarget = $('.filebox .upload-hidden');

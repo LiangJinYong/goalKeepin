@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Offer Detail</title>
-<link rel="stylesheet" href="../../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .waiting {
 	color: red;
@@ -124,6 +124,6 @@ h2 + div {
 			<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-success pull-right" type="submit" value="투표 종료하기" style="margin-right: 200px;" />
 		</div>
 	</form>
-	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 </body>
 </html>

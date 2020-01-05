@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Challenge Participant List</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 header a, header li {
 	margin-top: 10px;
@@ -75,12 +75,11 @@ header a, header li {
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('#participantTable tr:gt(0)').click(function() {
-				window.location = '/challenge/showParticipantProofInfo?entryNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/challenge/showParticipantProofInfo?entryNo=' + $(this).attr('id');
 			});
 		});
 	</script>

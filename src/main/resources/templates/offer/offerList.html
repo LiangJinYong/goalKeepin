@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Offer List</title>
-<link rel="stylesheet" href="../../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .waiting {
 	color: red;
@@ -97,8 +97,8 @@ header li {
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
+	
 	<script th:inline="javascript">
 		var selectedOfferStatusCd = /*[[*{offerStatusCd}]]*/ null;
 	</script>
@@ -107,11 +107,11 @@ header li {
 		
 		$(function() {
 			$('#offerStatusCd').change(function() {
-				window.location = '/offer/showOfferList/1?offerStatusCd=' + $(this).val();
+				window.location = '/goalkeepinmanager/offer/showOfferList/1?offerStatusCd=' + $(this).val();
 			});
 			
 			$('#offerTable tbody tr').click(function() {
-				window.location = '/offer/showOfferDetail?offerNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/offer/showOfferDetail?offerNo=' + $(this).attr('id');
 			});
 		});
 	</script>

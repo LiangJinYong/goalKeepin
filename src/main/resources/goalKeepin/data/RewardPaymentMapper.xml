@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.RewardPaymentMapper">
+	
+	<select id="selectUserListById" parameterType="string" resultType="hashmap">
+		/* selectUserList */
+		SELECT user_no userNo, user_id userId, user_nickname nickName, user_login_tp_cd loginTypeCd, date_format(user_reg_dt, '%Y-%m-%d %h:%i:%s') userRegDate
+		FROM USER_TB
+		WHERE user_id LIKE CONCAT('%', #{userId}, '%')
+		ORDER BY user_no DESC
+		LIMIT 20
+	</select>
+	
+	<insert id="insertRewardPaymentRecords" parameterType="map">
+		/* insertRewardPaymentRecords */
+		INSERT INTO USER_CASH_REPORT_TB
+		(cash_user_no, report_tp_cd, report_st_cd, report_cash_amt)
+		VALUES
+		<foreach collection="userNoArr" item="userNo" separator=",">
+            (#{userNo}, 'CA02', 'CT02', #{rewardAmount})
+        </foreach>	
+	</insert>
+	
+	
+</mapper>

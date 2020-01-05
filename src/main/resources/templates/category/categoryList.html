@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Category List</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 header a, header li {
 	margin-top: 10px;
@@ -68,7 +68,7 @@ header a, header li {
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 					

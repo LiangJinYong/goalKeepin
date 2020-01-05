@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Inquiry List</title>
-<link rel="stylesheet" href="../../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .waiting {
 	color: red;
@@ -91,7 +91,7 @@ header li {
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script th:inline="javascript">
 		var selectedInquiryStatusCd = /*[[*{inquiryStatusCd}]]*/ null;
 	</script>
@@ -100,11 +100,11 @@ header li {
 		
 		$(function() {
 			$('#inquiryStatusCd').change(function() {
-				window.location = '/inquiry/showInquiryList/1?inquiryStatusCd=' + $(this).val();
+				window.location = '/goalkeepinmanager/inquiry/showInquiryList/1?inquiryStatusCd=' + $(this).val();
 			});
 			
 			$('#inquiryTable tbody tr').click(function() {
-				window.location = '/inquiry/showInquiryDetail?inquiryNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/inquiry/showInquiryDetail?inquiryNo=' + $(this).attr('id');
 			});
 		});
 	</script>

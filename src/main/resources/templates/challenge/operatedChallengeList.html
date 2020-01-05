@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Operated Challenge List</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .row {
 	margin: 15px 0 0 0;
@@ -70,11 +70,11 @@
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('#detailTable tr:gt(0)').click(function() {
-				window.location = '/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
 			});			
 		});
 	</script>

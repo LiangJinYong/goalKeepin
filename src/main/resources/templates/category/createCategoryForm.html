@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Create Category Form</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .row {
 	margin: 15px 0 0 0;
@@ -57,8 +57,7 @@
 		</div>
 	</form>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 					

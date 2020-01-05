@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Operated Challenge List</title>
-<link rel="stylesheet" href="../../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 header li {
 	margin-top: 30px;
@@ -89,8 +89,7 @@ header li {
 		</nav>
 	</div>
 	
-	<script type="text/javascript" src="../../../jquery.js"></script>
-	<script type="text/javascript" src="../../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script th:inline="javascript">
 		var statusCd = /*[[*{statusCd}]]*/ null;
 		var status;
@@ -108,11 +107,11 @@ header li {
 		$(function() {
 			$('#baseHabitTypeCd').val(selectedHabitTypeCd);
 			$('#statusTable tr:gt(0)').click(function() {
-				window.location = '/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
 			});
 			
 			$('#baseHabitTypeCd').change(function() {
-				window.location = '/challenge/showOperatedChallengeListByStatus/' + status + '/1?habitTypeCd=' + $(this).val();
+				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/' + status + '/1?habitTypeCd=' + $(this).val();
 			});
 		});
 	</script>

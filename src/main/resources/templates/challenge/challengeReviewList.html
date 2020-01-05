@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Challenge Review List</title>
-<link rel="stylesheet" href="../../bootstrap.css">
+<link rel="stylesheet" th:href="@{/bootstrap.css}">
 <style type="text/css">
 .row {
 	margin: 15px 0 0 0;
@@ -69,8 +69,7 @@
 		</span>
 	</div>
 	
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../dataTable.js"></script>
+	<script type="text/javascript" th:src="@{/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 					
