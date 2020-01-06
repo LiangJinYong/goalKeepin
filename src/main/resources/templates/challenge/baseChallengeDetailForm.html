@@ -46,6 +46,10 @@ header li {
 #authMethod .col-md-2 span {
 	font-weight: bold;
 }
+
+#authMethod input[type=number] {
+	width: 50px;
+}
 </style>
 <body>
 	<div class="row">
@@ -92,7 +96,8 @@ header li {
 				<h3 class="h4">습관 타입</h3>
 				<select multiple="multiple" style="width: 100px;" th:size="${T(goalKeepin.constants.BaseHabitType).values().length}" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" class="add" required="required">
 					<option th:each="habitType: ${T(goalKeepin.constants.BaseHabitType).values()}" th:value="${habitType}" th:text="${habitType.baseHabitTypeName}"></option>
-				</select> 
+				</select>
+				<input type="hidden" name="searchKeyword" id="searchKeyword">
 				<span th:text="*{searchKeyword}" class="view">Base Habit Type Text</span>
 			</div>
 		</div>
@@ -102,7 +107,7 @@ header li {
 			<div class="col-md-4" id="thumbnailImg">
 				<h3 class="h4">썸네일 이미지</h3>
 				<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" /> 
-				<img th:src="@{*{baseThumbnailUrl}}" class="view" style="margin-left: 100px;">
+				<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
 			</div>
 			<div class="col-md-4 forRecruiting">
 				<h3 class="h4">카테고리 설정</h3>
@@ -113,7 +118,6 @@ header li {
 			<div class="col-md-4 forRecruiting">
 				<h3 class="h4">제한 등급</h3>
 				<select id="gradeCd" name="gradeCd">
-					<option value="LV00">제한 없음</option>
 					<option th:each="grade: ${T(goalKeepin.constants.ChallengeGrade).values()}" th:value="${grade}" th:text="${grade.gradeName}"></option>
 				</select>
 			</div>
@@ -174,7 +178,7 @@ header li {
 				</div>
 				<div class="col-md-10">
 					<div class="add">
-						주 <input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" style="width: 50px;" /> 일 <input type="checkbox" id="everyday" /> <label for="everyday">매일</label>
+						주 <input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" /> 일 <input type="checkbox" id="everyday" /> <label for="everyday">매일</label>
 					</div>
 					<div class="view">
 						<span th:text="*{baseAuthFrequency}"></span>
@@ -192,8 +196,8 @@ header li {
 				</div>
 				<div class="col-md-10">
 					<div class="add">
-						<input type="time" name="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" />
-						 ~ <input type="time" name="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" /> 
+						<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" />
+						 ~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" /> 
 						<input type="checkbox" id="allHours" /> <label for="allHours">24시간</label>
 					</div>
 					<div class="view">
@@ -255,7 +259,9 @@ header li {
 				</div>
 				<div class="col-md-10">
 					<div class="add">
-						<input type="number" name="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" /><label>시간</label>
+						<span id="intervalItem">
+							<input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" /><label>시간</label>
+						</span>
 						<input type="checkbox" id="noLimit" /><label for="noLimit">제한없음</label>
 					</div>
 					<div class="view">
@@ -352,7 +358,7 @@ header li {
 			<a id="createChallengeDetail" class="btn btn-primary">모집 시작</a> 
 		</div>
 		<div class="row forModifying text-center">
-			<input id="modifyChallengeInfo" type="submit" class="btn btn-primary" value="수정하기" />
+			<input id="doModifyChallengeDetail" type="submit" class="btn btn-primary" value="수정하기" />
 		</div>
 	</form>
 	<script type="text/javascript" th:src="@{/jquery.js}"></script>
@@ -364,9 +370,6 @@ header li {
     	var baseDetailSc = /*[[*{baseChallenge.baseDetailSc}]]*/ null;
 	</script>
 
-	<script th:inline="javascript" th:if="*{operatedChallenge != null}">
-    	var baseHabitTypeCd = /*[[*{operatedChallenge.baseChallenge.baseHabitTypeCd}]]*/ null;
-	</script>
 	<script type="text/javascript">
 		$(function() {
 			 $('.content1').richText();
@@ -387,6 +390,7 @@ header li {
 				 $("#baseHabitTypeCd").val(baseHabitTypeCd.split(','));
 			 }
 			 
+			 // 챌린지 정보 수정하기 버튼 처리
 			 $('#modifyChallengeDetail').click(function() {
 				 $('.richText-editor').attr('contenteditable', true);
 				 $('.add').fadeIn('slow');
@@ -418,7 +422,17 @@ header li {
 				 
 			 });
 			 
-			 // 상단 '모집 시작하기' 버튼 처리
+			// 수정하기 실행
+			 $('#doModifyChallengeDetail').click(function() {
+				 var textArr = [];
+					$('#baseHabitTypeCd').children(':selected').each(function(index, element) {
+						textArr.push($(element).text());
+					});
+					
+					$('#searchKeyword').val(textArr.join(','));
+			 });
+			
+			 // 모집 시작하기 버튼 처리
 			 $('#startRecruiting').click(function() {
 				 $('.forRecruiting').fadeIn('slow');
 				 $('.forRecruiting input').attr('required', 'required');
@@ -439,16 +453,7 @@ header li {
 				 });
 			 });
 			 
-			 $('#modifyChallengeInfo').click(function() {
-				 var textArr = [];
-					$('#baseHabitTypeCd').children(':selected').each(function(index, element) {
-						textArr.push($(element).text());
-					});
-					
-					$('#searchKeyword').val(textArr.join(','));
-			 });
-	
-			 // everyday checkbox
+			 // 인증 빈도 매일 체크박스 처리
 			 $('#everyday').change(function() {
 				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
 				 if(dateCount == 0) {
@@ -471,8 +476,8 @@ header li {
 				 }
 			 });
 			 
+			 // 인증 가능 요일 라디오 처리
 			 $('input[name=baseAuthDateCd]').change(function() {
-			 	
 				var daysArr = [5, 2, 7];
 				for(var i=0; i<daysArr.length; i++) {
 					if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
@@ -483,20 +488,45 @@ header li {
 				}
 			 });
 			 
+			 // 인증 빈도 입력 처리
 			 $('#baseAuthFrequency').blur(function() {
-				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
-				 var frequencyVal = parseInt($(this).val());
+				 $baseAuthDateCd = $('[name=baseAuthDateCd]');
+				 var $checkedDateCd = $baseAuthDateCd.filter(':checked');
 				 
-				 if(!isNaN(frequencyVal) && dateCount != 0) {
+				 if($checkedDateCd.length > 0) {
+					 var maxDayIndex = $baseAuthDateCd.index($checkedDateCd);
+					 
 					 var daysArr = [5, 2, 7];
-						for(var i=0; i<daysArr.length; i++) {
-							if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
-								 $(this).val(daysArr[i]);
-							}	
-						}
+					 var maxDay = daysArr[maxDayIndex];
+					 if(parseInt($(this).val()) > maxDay) {
+						 $(this).val(maxDay);
+					 }
 				 }
 			 });
 			 
+			 // 24시간 체크박스 처리 
+			 $('#allHours').change(function() {
+				if($(this).prop('checked')) {
+					$('#baseAuthFromTime').val('01:00').attr('readonly', true);
+					$('#baseAuthToTime').val('23:59').attr('readonly', true);
+				} else {
+					$('#baseAuthFromTime').attr('readonly', false);
+					$('#baseAuthToTime').attr('readonly', false);
+				}
+			 });
+			 
+			 // 인증샷 간격 제한없음 체크박스 처리
+			 $('#noLimit').change(function() {
+				 if($(this).prop('checked')) {
+					 $('#intervalItem').hide();
+					 $('#baseAuthInterval').val('0');
+				 } else {
+					 $('#intervalItem').show();
+					 $('#baseAuthInterval').val('');
+				 }
+			 });
+			 
+			 // 제출시 습관타입을 키원드로 전환
 			 $('#baseHabitTypeCd').change(function() {
 				var textArr = [];
 				$(this).children(':selected').each(function(index, element) {
@@ -517,7 +547,7 @@ header li {
 					 return false;
 				 }
 				 
-				 $.post('/challenge/createNewOperatedChallenge', {
+				 $.post('/goalkeepinmanager/challenge/createNewOperatedChallenge', {
 					 baseChallengeNo: $('#baseNo').val(),
 					 categoryNo: $('#categoryNo').val(),
 					 gradeCd: $('#gradeCd').val(),

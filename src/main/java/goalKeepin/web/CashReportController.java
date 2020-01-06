@@ -60,7 +60,6 @@ public class CashReportController {
 		// get bank list
 		List<String> bankList = cashReportMapper.selectBankList(nationalityCd);
 		model.addAttribute("bankList", bankList);
-		System.out.println("@@@@" + bankList);
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		Map<String, String[]> cashReportFormParam = request.getParameterMap();

@@ -1,5 +1,6 @@
 package goalKeepin.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -11,7 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
-	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/";
+	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/";
 
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -115,20 +115,27 @@ public class ChallengeController {
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
         
 		// generate file name
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        Random r = new Random();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+        String datePath = sdf.format(new Date());
+        
+        File imageDir = new File(FILE_UPLOAD_PATH + datePath);
+        if (!imageDir.exists()) {
+			imageDir.mkdirs();
+		}
+        
+        sdf = new SimpleDateFormat("hhmmss");
         StringBuilder tempName = new StringBuilder();
-        tempName.append(sdf.format(new Date())).append(r.nextInt(100)).append(suffixName);
+        tempName.append(sdf.format(new Date())).append(suffixName);
         String newFileName = tempName.toString();
         try {
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(FILE_UPLOAD_PATH + newFileName);
+            Path path = Paths.get(imageDir.getAbsolutePath() + "/" + newFileName);
             Files.write(path, bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
         
-        baseChallenge.setBaseThumbnailUrl("/files/" + newFileName);
+        baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + datePath + newFileName);
         
         challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseAuthDescTrans(baseChallenge);
@@ -137,8 +144,6 @@ public class ChallengeController {
 		challengerMapper.insertOrUpdateBaseChallenge(baseChallenge);
 		
 		return "redirect:/challenge/baseManagement/1";
-		// file://localhost/Users/liangjinyong/Desktop/uploadImages/TacoCloud.png
-		
 	}
 	
 	@GetMapping("/showBaseChallengeDetail")
@@ -206,6 +211,7 @@ public class ChallengeController {
 	@GetMapping("/showParticipantList/{pageNum}")
 	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
+		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
 		int participantCount = challengerMapper.getPaticipantCountByChallenge(operatedNo);
 		Paging paging = PagingUtils.getPaging(pageNum, participantCount);
 
@@ -217,6 +223,7 @@ public class ChallengeController {
 		
 		List<ParticipantEntry> participantEntryList = challengerMapper.selectParticipantEntryList(paramMap);
 		model.addAttribute("participantEntryList", participantEntryList);
+		model.addAttribute("challengeProofCount", challengeProofCount);
 		model.addAttribute("operatedNo", operatedNo);
 		model.addAttribute("paging", paging);
 		
@@ -340,3 +347,5 @@ public class ChallengeController {
 	}
 	
 }
+
+ 
