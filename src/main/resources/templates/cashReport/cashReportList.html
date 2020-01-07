@@ -17,7 +17,6 @@
 
 header li {
 	margin-top: 30px;
-	margin-right: 3.2em;
 	color: #777;
 	font-weight: bold;
 	color: #777
@@ -31,9 +30,9 @@ header li {
 <body>
 	<form id="cashReportForm" method="get" th:action="@{/cashReport/showCashReportList/} + ${country} + '/1'">
 		<div class="row">
-			<header class="col-md-11 col-md-offset-1">
+			<header class="col-md-10 col-md-offset-1">
 				<h1 class="brand pull-left">출금 내역 관리</h1>
-				<ul class="list-inline list-unstyled pull-right" style="margin-right: 3.2em;">
+				<ul class="list-inline list-unstyled pull-right">
 					<li>
 						<label>은행</label>
 						<select name="bank" id="bank">
@@ -114,17 +113,17 @@ header li {
 		</div>
 		
 		<div class="row">
-			<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-offset-1">
 				<div class="col-md-4">
 				<a id="downloadExcel" th:href="@{/cashReport/excelDownload/} + ${country}" class="btn btn-primary">전체Excel다운</a>
 				</div>
-				<div class="col-md-1 col-md-offset-1 text-center">
+				<div class="col-md-3 text-center">
 					<a id="processCashReport" class="btn btn-success">선택한 요청 출금 처리</a>
 				</div>
-				<div class="col-md-4 pull-right">
+				<div class="col-md-3 pull-right">
 					<input type="date" name="reportRegDate" id="reportRegDate" placeholder="날짜 검색" />
 					<input type="submit" value="검색" /> <br />
-					<input type="text" name="userId" id="userId" placeholder="아이디 검색" />
+					<input type="text" name="userId" id="userId" placeholder="아이디 검색" style="margin-top: 8px;" />
 					<input type="submit" value="검색" />
 				</div>
 			</div>

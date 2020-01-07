@@ -9,7 +9,6 @@
 <style type="text/css">
 header li {
 	margin-top: 30px;
-	margin-right: 3.2em;
 	color: #777;
 	font-weight: bold;
 	color: #777
@@ -24,13 +23,13 @@ header li {
 </head>
 <body>
 	<div class="row">
-		<header class="col-md-11 col-md-offset-1">
+		<header class="col-md-10 col-md-offset-1">
 			<h1 class="brand pull-left">챌린지 관리 -
 				<span th:if="*{statusCd == 'CH01'}">모집중인 챌린지</span>
 				<span th:if="*{statusCd == 'CH02'}">진행중인 챌린지</span>
 				<span th:if="*{statusCd == 'CH03'}">완료된 챌린지</span>
 			</h1>
-			<ul class="list-inline list-unstyled pull-right" style="margin-right: 3.2em;">
+			<ul class="list-inline list-unstyled pull-right">
 				<li>
 					<select name="baseHabitTypeCd" id="baseHabitTypeCd">
 						<option value="HT00">ALL</option>

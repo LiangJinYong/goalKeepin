@@ -9,7 +9,8 @@ public class Inquiry {
 	private Long inquiryNo;
 	private User inquiryUser;
 	private String inquiryTitle;
-	private String inquiryContent;
+	private String inquiryContentShort;
+	private String inquiryContentFull;
 	private Date inquiryRegDate;
 	private String inquiryReplyCotent;
 	private Date inquiryReplyRegDate;

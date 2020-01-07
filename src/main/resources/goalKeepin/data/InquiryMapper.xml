@@ -8,7 +8,8 @@
 	<resultMap type="Inquiry" id="Inquiry">
 		<id property="inquiryNo" column="inquiryNo" />
 		<result property="inquiryTitle" column="inquiryTitle" />
-		<result property="inquiryContent" column="inquiryContent" />
+		<result property="inquiryContentShort" column="inquiryContentShort" />
+		<result property="inquiryContentFull" column="inquiryContentFull" />
 		<result property="inquiryRegDate" column="inquiryRegDate" />
 		<result property="inquiryReplyCotent" column="inquiryReplyCotent" />
 		<result property="inquiryReplyRegDate" column="inquiryReplyRegDate" />
@@ -32,7 +33,7 @@
 	
 	<select id="selectInquiryList" parameterType="map" resultMap="Inquiry">
 		/* selectInquiryList */
-		SELECT it.inquiry_no inquiryNo, ut.user_id userId, 'Inquiry Title' inquiryTitle, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd
+		SELECT it.inquiry_no inquiryNo, ut.user_id userId, CASE WHEN LENGTH(it.inquiry_txt) > 50 THEN CONCAT(LEFT(it.inquiry_txt, 50), '......') ELSE it.inquiry_txt END inquiryContentShort, it.inquiry_txt inquiryContentFull, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd
 		<include refid="inquiry" />
 		ORDER BY inquiry_reg_dt DESC
 		LIMIT #{startIndex}, 10
@@ -40,7 +41,7 @@
 	
 	<select id="selectInquiryDetail" parameterType="long" resultMap="Inquiry">
 		/* selectInquiryDetail */
-		SELECT it.inquiry_no inquiryNo, ut.user_id userId, 'Inquiry Title' inquiryTitle, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd, it.inquiry_txt inquiryContent, it.inquiry_reply_txt inquiryReplyCotent
+		SELECT it.inquiry_no inquiryNo, ut.user_id userId, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd, it.inquiry_txt inquiryContentFull, it.inquiry_reply_txt inquiryReplyCotent
 		FROM INQUIRY_TB it
 		INNER JOIN USER_TB ut ON it.inquiry_user_no = ut.user_no
 		WHERE it.inquiry_no = #{inquiryNo}

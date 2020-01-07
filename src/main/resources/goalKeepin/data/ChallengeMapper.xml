@@ -190,9 +190,9 @@
 	<insert id="insertOperatedChallengeInfo" parameterType="OperatedChallenge">
 		/* insertOperatedChallengeInfo */
 		INSERT INTO OPERATED_CHALLENGE_TB 
-		(challenge_base_no, challenge_category_no, challenge_grade_cd, challenge_min_fee, challenge_max_fee, challenge_start_dt, challenge_end_dt, challenge_st_cd)
+		(challenge_base_no, challenge_category_no, challenge_grade_cd, challenge_min_fee, challenge_max_fee, challenge_start_dt, challenge_end_dt, challenge_st_cd, challenge_max_result)
 		VALUES
-		(#{baseChallengeNo}, #{categoryNo}, #{gradeCd}, #{minFee}, #{maxFee}, #{startDate}, #{endDate}, 'CH01')
+		(#{baseChallengeNo}, #{categoryNo}, #{gradeCd}, #{minFee}, #{maxFee}, #{startDate}, #{endDate}, 'CH01', #{maxResult})
 	</insert>
 	
 	<sql id="operatedChallenge">
@@ -291,7 +291,7 @@
 	</select>
 
 	<select id="selectEntryInfoByParticipant" parameterType="long" resultMap="ParticipantEntry">
-		/* selectParticipantEntryList */
+		/* selectEntryInfoByParticipant */
 		SELECT tt.trans_en baseNmEn, ut.user_id userId, cet.entry_fee entryFee, cet.entry_result entryResult, cet.entry_reg_dt entryRegDate, bct.base_auth_method_cd baseAuthMethodCd
         FROM CHALLENGE_ENTRY_TB cet
         INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
@@ -348,5 +348,22 @@
 		</if>
 		ORDER BY bct.base_no DESC, oct.challenge_no DESC
 		LIMIT ${startIndex}, 10
+	</select>
+	
+	<select id="selectParticipantProofList" parameterType="long" resultType="hashmap">
+		/* selectParticipantProofList */
+		SELECT cat.auth_reg_dt proofDate, cat.auth_url proofUrl
+		FROM CHALLENGE_AUTH_TB cat
+		INNER JOIN CHALLENGE_ENTRY_TB cet ON cat.auth_c_no = cet.entry_challenge_no AND cat.auth_user_no = cet.entry_user_no
+		WHERE cet.entry_no = #{entryNo}
+		ORDER BY cat.auth_reg_dt DESC
+	</select>
+	
+	<select id="selectChallengeProofList" parameterType="long" resultType="hashmap">
+		/* selectChallengeProofList */
+		SELECT cat.auth_reg_dt proofDate, cat.auth_url proofUrl, ut.USER_ID userId
+		FROM CHALLENGE_AUTH_TB cat INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
+		INNER JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
+		WHERE oct.challenge_no = #{operatedNo}
 	</select>
 </mapper>

@@ -12,7 +12,6 @@
 <style>
 header a, header li {
 	margin-top: 10px;
-	margin-right: 3.2em;
 	color: #777;
 	font-weight: bold;
 	color: #777
@@ -23,7 +22,7 @@ header a, header li {
 }
 
 header li {
-	margin-left: -5em;
+	margin-left: 5px;
 }
 
 #thumbnailImg img {
@@ -40,7 +39,7 @@ header li {
 
 <body>
 	<div class="row">
-		<header class="col-md-11">
+		<header class="col-md-12">
 			<h1 class="brand pull-left">챌린지 상세정보</h1>
 			<ul class="list-inline list-unstyled pull-right">
 				<li th:if="*{participantCount > 0}"><a class="btn btn-primary" id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'참여자 목록보기(' + participantCount + ')'}"></a></li>

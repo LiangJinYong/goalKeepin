@@ -17,7 +17,6 @@
 	
 header li {
 	margin-top: 30px;
-	margin-right: 3.2em;
 	color: #777;
 	font-weight: bold;
 	color: #777
@@ -30,9 +29,9 @@ header li {
 </head>
 <body>
 	<div class="row">
-		<header class="col-md-11 col-md-offset-1">
+		<header class="col-md-10 col-md-offset-1">
 			<h1 class="brand pull-left">문의</h1>
-			<ul class="list-inline list-unstyled pull-right" style="margin-right: 3.2em;">
+			<ul class="list-inline list-unstyled pull-right">
 				<li>
 					<select id="inquiryStatusCd">
 						<option value="IN00">전제보기</option>
@@ -56,7 +55,7 @@ header li {
 							<h2 class="h4 text-center">유저 아이디</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">제목</h2>
+							<h2 class="h4 text-center">문의 내용</h2>
 						</th>
 						<th>
 							<h2 class="h4 text-center">등록 일자</h2>
@@ -71,8 +70,8 @@ header li {
 					<tr class="text-center" th:each="inquiry: ${inquiryList}" th:id="${inquiry.inquiryNo}" style="cursor: pointer;">
 						<td th:text="${inquiry.inquiryNo}">NO</td>
 						<td th:text="${inquiry.inquiryUser.userId}">User Id</td>
-						<td th:text="${inquiry.inquiryTitle}">Inquiry Title</td>
-						<td th:text="*{#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm:ss')}">Inquiry Reg Date</td>
+						<td th:text="${inquiry.inquiryContentShort}">Inquiry Content</td>
+						<td th:text="*{#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm:ss')}" title="aaa">Inquiry Reg Date</td>
 						<td th:if="*{inquiry.inquiryStatusCd == 'IN01'}" class="waiting" th:text="'대기중'"></td>
 						<td th:if="*{inquiry.inquiryStatusCd == 'IN02'}" class="replied" th:text="'답변 완료'"></td>
 					</tr>

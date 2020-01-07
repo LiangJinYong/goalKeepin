@@ -31,6 +31,8 @@ public class OperatedChallenge {
 	
 	private Date regDate;
 	
+	private int maxResult;
+	
 	private Category category;
 	
 	private BaseChallenge baseChallenge;

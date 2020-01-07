@@ -1,13 +1,14 @@
 package goalKeepin.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -166,10 +171,38 @@ public class ChallengeController {
 	@PostMapping("/createNewOperatedChallenge")
 	@ResponseBody
 	public String createNewChallenge(OperatedChallenge challengeDetail) {
+		String startDate = challengeDetail.getStartDate();
+		String endDate = challengeDetail.getEndDate();
+		int workDays = workDays(startDate, endDate);
+		
 		
 		challengerMapper.insertOperatedChallengeInfo(challengeDetail);
 		return "success";
 	}
+	
+	private static int workDays(String strStartDate, String strEndDate) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cl1 = Calendar.getInstance();
+        Calendar cl2 = Calendar.getInstance();
+
+        try {
+            cl1.setTime(df.parse(strStartDate));
+            cl2.setTime(df.parse(strEndDate));
+
+        } catch (ParseException e) {
+            System.out.println("日期格式非法");
+            e.printStackTrace();
+        }
+
+        int count = -1;
+        while (cl1.compareTo(cl2) <= 0) {
+            if (cl1.get(Calendar.DAY_OF_WEEK) != 7 && cl1.get(Calendar.DAY_OF_WEEK) != 1)
+                count++;
+            cl1.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return count;
+    }
 	
 	@GetMapping("/showOperatedChallengeList/{pageNum}")
 	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
@@ -236,59 +269,18 @@ public class ChallengeController {
 		ParticipantEntry participantEntry = challengerMapper.selectEntryInfoByParticipant(entryNo);
 		model.addAttribute("participantEntry", participantEntry);
 		String baseAuthMethodCd = participantEntry.getOperatedChallenge().getBaseChallenge().getBaseAuthMethodCd();
+		model.addAttribute("baseAuthMethodCd", baseAuthMethodCd);
 		
-		List<Map<String, String>> proofList = new ArrayList();
-		if ("AU01".equals(baseAuthMethodCd)) {
-			// Photo
-			// need photo url, proof date
-			Map<String, String> map = new HashMap<>();
-			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/Chapter_6.png");
-			map.put("proofDate", "2019.11.02 12:00:00");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/TacoCloud.png");
-			map.put("proofDate", "2019.12.03 13:00:00");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/delegate.png");
-			map.put("proofDate", "2019.13.04 14:00:00");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://ec2-52-78-77-76.ap-northeast-2.compute.amazonaws.com:8080/app/goalkeepinImage/authInfo/image/thumbnail_upload.png");
-			map.put("proofDate", "2019.14.05 15:00:00");
-			proofList.add(map);
-		} else {
-			// Audio
-			// need audio url, proof date, file name
-			
-			Map<String, String> map = new HashMap<>();
-			map.put("proofUrl", "http://localhost:8080/challenge/download/b.mp3");
-			map.put("proofDate", "2019.11.02 12:00:00");
-			map.put("fileName", "b.mp3");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-			map.put("proofDate", "2019.11.03 13:00:00");
-			map.put("fileName", "bbb.jpg");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-			map.put("proofDate", "2019.11.04 14:00:00");
-			map.put("fileName", "ccc.jpg");
-			proofList.add(map);
-			
-			map = new HashMap<>();
-			map.put("proofUrl", "http://localhost:8080/challenge/download/b.jpg");
-			map.put("proofDate", "2019.11.05 15:00:00");
-			map.put("fileName", "ddd.jpg");
-			proofList.add(map);
+		List<Map<String, String>> proofList = challengerMapper.selectParticipantProofList(entryNo);
+		
+		if ("AU02".equals(baseAuthMethodCd)) {
+			for(Map<String, String> proof : proofList) {
+				String proofUrl = proof.get("proofUrl");
+				String fileName = proofUrl.substring(proofUrl.lastIndexOf("/"));
+				
+				proof.put("fileName", fileName);
+			}
 		}
-			
 		
 		model.addAttribute("proofList", proofList);
 		return "challenge/participantProofInfo";
@@ -299,32 +291,36 @@ public class ChallengeController {
 		OperatedChallenge operatedChallenge = challengerMapper.selectOperatedChallengeInfo(operatedNo);
 		String baseAuthMethodCd = operatedChallenge.getBaseChallenge().getBaseAuthMethodCd();
 		
+		List<Map<String, String>> proofList = challengerMapper.selectChallengeProofList(operatedNo);
+		if ("AU02".equals(baseAuthMethodCd)) {
+			for(Map<String, String> proof : proofList) {
+				String proofUrl = proof.get("proofUrl");
+				String fileName = proofUrl.substring(proofUrl.lastIndexOf("/"));
+				
+				proof.put("fileName", fileName);
+			}
+		}
+		
+		model.addAttribute("proofList", proofList);
 		model.addAttribute("operatedChallenge", operatedChallenge);
 		model.addAttribute("baseAuthMethodCd", baseAuthMethodCd);
-		return "challenge/participantProofInfo";
+		return "challenge/challengeProofInfo";
 	}
 	
 	@GetMapping("/download/{fileName:.+}")
-	public void downloadAudioProofFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("fileName") String fileName) {
-		String dataDirectory = request.getServletContext().getRealPath("/WEB-INF/downloads/");
-		Path file = Paths.get(dataDirectory, fileName);
-		
-		if (Files.exists(file)) {
-			String mimeType = URLConnection.guessContentTypeFromName(fileName);
-			if (mimeType == null) {
-				mimeType = "application/octet-stream";
-			}
-			
-			response.setContentType(mimeType);
-			response.addHeader("Content-Disposition", String.format("attachment;filename=" + fileName));
-			
-			try {
-				Files.copy(file, response.getOutputStream());
-				response.getOutputStream().flush();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public ResponseEntity<InputStreamResource> downloadAudioProofFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("fileName") String fileName) throws IOException {
+		String directory = "/var/lib/tomcat8/webapps/goalkeepinImage/authInfo/audio/";
+		File file = new File(directory + "/" + fileName);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+ 
+        return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                // Content-Type
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                // Contet-Length
+                .contentLength(file.length()) //
+                .body(resource);
 	}
 
 	@GetMapping("/showReviewListByChallenge/{pageNum}")

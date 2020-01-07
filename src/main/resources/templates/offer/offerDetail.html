@@ -120,8 +120,10 @@ h2 + div {
 				<span th:text="*{offerLikeNum}"></span>
 			</div>
 			
-			<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-success pull-right" type="submit" value="투표 등록하기" style="margin-right: 200px;" />
-			<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-success pull-right" type="submit" value="투표 종료하기" style="margin-right: 200px;" />
+			<div class="col-md-10">
+				<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-success pull-right" type="submit" value="투표 등록하기" />
+				<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-success pull-right" type="submit" value="투표 종료하기" />
+			</div>
 		</div>
 	</form>
 	<script type="text/javascript" th:src="@{/jquery.js}"></script>

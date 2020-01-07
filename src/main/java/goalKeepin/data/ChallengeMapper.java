@@ -62,4 +62,8 @@ public interface ChallengeMapper {
 
 	List<OperatedChallenge> selectAllOperatedChallengeList(Map<String, Object> paramMap);
 
+	List<Map<String, String>> selectParticipantProofList(Long entryNo);
+
+	List<Map<String, String>> selectChallengeProofList(Long operatedNo);
+
 }

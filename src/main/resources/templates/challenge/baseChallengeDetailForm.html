@@ -9,7 +9,6 @@
 <style>
 header a, header li {
 	margin-top: 10px;
-	margin-right: 3.2em;
 	color: #777;
 	font-weight: bold;
 	color: #777
@@ -20,7 +19,7 @@ header a, header li {
 }
 
 header li {
-	margin-left: -5em;
+	margin-left: 5px;
 }
 
 #challengeName input {
@@ -53,8 +52,9 @@ header li {
 </style>
 <body>
 	<div class="row">
-		<header class="col-md-11">
-			<h1 class="brand pull-left">챌린지 생성하기</h1>
+		<header class="col-md-12">
+			<h1 th:if="*{baseChallenge.baseNo == null}" class="brand pull-left">챌린지 생성하기</h1>
+			<h1 th:if="*{baseChallenge.baseNo != null}" class="brand pull-left">생성한 챌린지 상세정보</h1>
 			<ul th:if="*{baseChallenge != null and baseChallenge.baseNo != null}" class="list-inline list-unstyled pull-right" id="headerBtn">
 				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'등록한 챌린지 목록 (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">등록한 챌린지 목록</a></li>
 				<li><a class="btn btn-primary" id="startRecruiting" href="#">모집 시작하기</a></li>
@@ -554,7 +554,8 @@ header li {
 					 minFee: $('#minFee').val(),
 					 maxFee: $('#maxFee').val(),
 					 startDate: $('#startDate').val(),
-					 endDate: $('#endDate').val()
+					 endDate: $('#endDate').val(),
+					 
 				 }, function() {
 					 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val();
 				 });
