@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Push Notification</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<style type="text/css">
+.row {
+	margin: 15px 0 0 0;
+}
+
+input[type=text], input[type=number] {
+	width: 200px;
+}
+
+#searchResult, #sendArea, #noResult {
+	display: none;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<header class="col-md-12">
+			<h1 class="brand pull-left">푸시 전송</h1>
+		</header>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<span style="margin-right: 20px;">유저 아이디</span>
+			<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="아이디를 입력하세요">
+			<a class="btn btn-info" href="#" id="userSearch">검색</a>
+			<span style="margin-left: 20px;">
+				<input type="checkbox" id="sendToAll">
+				<label for="sendToAll">전체 전송</label>
+			</span>
+		</div>
+	</div>
+	
+	<section id="searchResult">
+		<div class="row">
+			<div class="col-md-12">
+				<h2 class="h3">검색 결과</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-11">
+				<table class="table table-striped table-hover" style="border-bottom: 1px solid grey;">
+					<thead>
+						<tr class="active">
+							<th>
+								<h2 class="h4 text-center">
+									<input type="checkbox" id="selectAll">
+								</h2>
+							</th>
+							<th>
+								<h2 class="h4 text-center">회원번호</h2>
+							</th>
+							<th>
+								<h2 class="h4 text-center">아이디</h2>
+							</th>
+							<th>
+								<h2 class="h4 text-center">닉네임</h2>
+							</th>
+							<th>
+								<h2 class="h4 text-center">로그인 타입</h2>
+							</th>
+							<th>
+								<h2 class="h4 text-center">가입 일자</h2>
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody id="userData">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+	
+	<section id="sendArea">
+		<div class="row">
+			<div class="col-md-12">
+				<span style="margin-right: 20px;">메시지</span>
+				<input type="text" name="notificationMessage" id="notificationMessage" placeholder="전송할 내용을 입력하세요" style="width: 400px;">
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-11 text-center">
+				<a href="#" class="btn btn-success" id="doSend">전송하기</a>
+			</div>
+		</div>
+	</section>
+	
+	<div class="row" id="noResult">
+		<div class="col-md-12" style="border-top: 1px solid grey;">
+			<h2 class="h3">No data found.</h2>
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('#userId').focus();
+			
+			$('#userSearch').click(function() {
+				var userIdVal = $('#userId').val();
+				
+				if(userIdVal != '') {
+					$.get({
+						url: '/goalkeepinmanager/pushNotification/searchUserList',
+						data: {
+							userId: userIdVal
+						},
+						dataType: 'json',
+						success: function(data) {
+							$('#searchResult, #noResult').hide();
+							$('#userData').empty();
+							$('#selectAll').prop('checked', false);
+							if(data.length > 0) {
+								$('#searchResult').show();
+								$('#sendArea').show();
+								
+								for(var i=0; i<data.length; i++) {
+									var row = '<tr class="text-center"><td>';
+									row += '<input type="checkbox" value="' + data[i].userNo + '">';
+									row += '</td><td>';
+									row += data[i].userNo;
+									row += '</td><td>';
+									row += data[i].userId;
+									row += '</td><td>';
+									row += data[i].nickName;
+									row += '</td><td>';
+									row += data[i].loginTypeCd;
+									row += '</td><td>';
+									row += data[i].userRegDate;
+									row += '</td></tr>';
+									
+									$('#userData').append(row);
+								}
+								
+								$('#userData tr').css('cursor', 'pointer')
+								.click(function() {
+									var checkbox = $(this).find('input');
+									checkbox.prop('checked', !checkbox.prop('checked'));
+								});
+								
+								$('#userData input').click(function(e) {
+									e.stopPropagation();
+								});
+								
+								$('#userData input[type=checkbox]').change(function() {
+									if($('#userData input[type=checkbox]:checked').length == 0) {
+										$('#selectAll').prop('checked', false);
+									}
+								});
+							} else {
+								$('#noResult').show();
+							}
+							
+						}, error: function() {
+							alert('Error searching users');
+						}
+					});
+				} else {
+					alert('겸색할 유저아이디를 입력하세요.');
+					$('#userId').focus();
+				}
+			});
+			
+			$('#userId').keydown(function(e) {
+				if (e.keyCode == 13) {
+					$('#userSearch').click();
+		        }
+			});
+			
+			$('#selectAll').change(function() {
+				var isChecked = $(this).is(':checked');
+				$('#userData input').prop('checked', isChecked);
+			});
+			
+			$('#doSend').click(function() {
+				var checkedUserCount = $('#userData input:checked').length;
+				
+				
+				if(checkedUserCount == 0 && !$('#sendToAll').is(':checked')) {
+					alert('전송할 유저를 선택하세요.');
+					return;
+				}
+				
+				var notificationMessage = $('#notificationMessage').val();
+				
+				if(notificationMessage == '') {
+					alert('전송할 내용을 입력하세요.');
+					return;
+				}
+				
+				var userNos = [];
+				$('#userData input:checked').each(function() {
+					userNos.push($(this).val());
+				});
+				
+				
+				
+				$.post({
+					url: '/goalkeepinmanager/pushNotification/sendingPushNotification',
+					data: {
+						userNos: userNos.join(','),
+						notificationMessage: notificationMessage
+					},
+					dataType: 'json',
+					success: function() {
+						alert('푸시 전송이 정상적으로 발송되었습니다.')
+					},
+					error: function() {
+						alert('Error sending push notification.');
+					}
+				});
+			});
+			
+			$('#sendToAll').change(function() {
+				var checked = $(this).prop('checked');
+				if(checked) {
+					$('#searchResult').hide();
+					$('#sendArea').show();
+				} else {
+					$('#searchResult').show();
+					$('#sendArea').show();
+				}
+			});
+		});
+	</script>
+</body>
+</html>

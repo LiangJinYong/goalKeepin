@@ -14,6 +14,8 @@ import goalKeepin.model.Review;
 @Mapper
 public interface ChallengeMapper {
 
+	Map<String, Object> selectHomepageHeaderInfo();
+	
 	List<Map<String, Object>> selectBaseChallengeList(int startIndex);
 
 	int getTotalBaseChallengeNum();

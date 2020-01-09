@@ -4,6 +4,8 @@ import goalKeepin.model.Paging;
 
 public class PagingUtils {
 
+	private PagingUtils() {}
+	
 	public static Paging getPaging(Integer pageNum, Integer totalRecordCount) {
 		
 		Paging paging = new Paging();

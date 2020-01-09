@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Category List</title>
-<link rel="stylesheet" th:href="@{/bootstrap.css}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
 .waiting {
 	color: red;
@@ -130,7 +130,7 @@ header li {
 		</div>
 	</form>
 	
-	<script type="text/javascript" th:src="@{/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	
 	<script th:inline="javascript">
 	var bank = /*[[*{bank}]]*/ null;
@@ -190,7 +190,7 @@ header li {
 							} else {
 								alert('출금 처리 실패했습니다.');
 							}
-						}, 'text');
+					}, 'text');
 				}
 			});
 		});

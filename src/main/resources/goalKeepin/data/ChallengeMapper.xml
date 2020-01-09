@@ -80,6 +80,12 @@
 		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
 	</resultMap>
 	
+	<select id="selectHomepageHeaderInfo" resultType="hashmap">
+    	/* selectHomepageHeaderInfo */
+		SELECT SUM(challenge_entry_num) totalParicipantCount, SUM(challenge_total_fee) totalFeeAmount 
+		FROM OPERATED_CHALLENGE_TB
+	</select>
+	
 	<select id="getTotalBaseChallengeNum" resultType="int">
     	/* getTotalBaseChallengeNum */
     	SELECT COUNT(*) totalBaseChallengeNum

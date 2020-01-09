@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +37,7 @@ import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.Paging;
 import goalKeepin.model.ParticipantEntry;
 import goalKeepin.model.Review;
+import goalKeepin.util.DateUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
@@ -171,38 +170,20 @@ public class ChallengeController {
 	@PostMapping("/createNewOperatedChallenge")
 	@ResponseBody
 	public String createNewChallenge(OperatedChallenge challengeDetail) {
+		
 		String startDate = challengeDetail.getStartDate();
 		String endDate = challengeDetail.getEndDate();
-		int workDays = workDays(startDate, endDate);
+		String baseAuthMethodCd = challengeDetail.getBaseAuthMethodCd();
+		Integer baseAuthFrequency = challengeDetail.getBaseAuthFrequency();
+		Integer baseAuthNumDaily = challengeDetail.getBaseAuthNumDaily();
 		
+			
+		int maxResult = DateUtils.getMaxResult(startDate, endDate, baseAuthMethodCd, baseAuthFrequency, baseAuthNumDaily);
+		challengeDetail.setMaxResult(maxResult);
 		
 		challengerMapper.insertOperatedChallengeInfo(challengeDetail);
 		return "success";
 	}
-	
-	private static int workDays(String strStartDate, String strEndDate) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-        Calendar cl1 = Calendar.getInstance();
-        Calendar cl2 = Calendar.getInstance();
-
-        try {
-            cl1.setTime(df.parse(strStartDate));
-            cl2.setTime(df.parse(strEndDate));
-
-        } catch (ParseException e) {
-            System.out.println("日期格式非法");
-            e.printStackTrace();
-        }
-
-        int count = -1;
-        while (cl1.compareTo(cl2) <= 0) {
-            if (cl1.get(Calendar.DAY_OF_WEEK) != 7 && cl1.get(Calendar.DAY_OF_WEEK) != 1)
-                count++;
-            cl1.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        return count;
-    }
 	
 	@GetMapping("/showOperatedChallengeList/{pageNum}")
 	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
@@ -314,11 +295,8 @@ public class ChallengeController {
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
  
         return ResponseEntity.ok()
-                // Content-Disposition
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                // Content-Type
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                // Contet-Length
                 .contentLength(file.length()) //
                 .body(resource);
 	}
@@ -341,7 +319,6 @@ public class ChallengeController {
 		model.addAttribute("operatedNo", operatedNo);
 		return "challenge/challengeReviewList";
 	}
-	
 }
 
  

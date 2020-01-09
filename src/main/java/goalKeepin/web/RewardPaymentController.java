@@ -37,7 +37,6 @@ public class RewardPaymentController {
 	public String searchUserList(@RequestParam("userId") String userId) {
 		Gson gson = new Gson();
 		List<Map<String, String>> userList = rewardPaymentMapper.selectUserListById(userId);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for(Map<String, String> user : userList) {
 			String loginTypeCd = user.get("loginTypeCd");
 			String loginTypeName = LoginType.valueOf(loginTypeCd).getLoginTypeName();

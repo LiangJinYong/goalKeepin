@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
-<link rel="stylesheet" th:href="@{/bootstrap.css}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
 .row {
 	margin-left: 0;
@@ -26,9 +26,23 @@
 <body>
 	<div>
 		<div class="row header" id="myHeader">
-			<header class="col-md-12 navbar-header">
-				<h1>펜타베이스 관리자 페이지</h1>
-			</header>
+			<div class="col-md-12">
+				<header class="col-md-5 navbar-header">
+					<h1>펜타베이스 관리자 페이지</h1>
+				</header>
+				<div class="col-md-6">
+						<div class="h3 pull-right">
+							<span>누적 참여자:</span>
+							<span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span>
+							<span style="margin-left: 30px;">누적 참가 금액:</span>
+							<span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span>
+						</div>
+					</div>
+					<form th:action="@{/logout}" method="post">
+						<input type="submit" value="Logout" class="btn btn-primary" style="margin-left: 30px; margin-top: 18px;">
+					</form>
+				</div>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-2" style="border-right: 3px solid lightgrey;" id="sideMenu">
@@ -66,8 +80,8 @@
 							<li><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">- 문의</a></li>
 							<li><a href="#" target="menuFrame">- 통계</a></li>
 							<li><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">- 리워드 지급</a></li>
-							<li><a href="#" target="menuFrame">- 푸시 전송</a></li>
-							<li><a href="#" target="menuFrame">- 팝업 설정</a></li>
+							<li><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">- 푸시 전송</a></li>
+							<li><a th:href="@{/popup/showPopupList/1}" target="menuFrame">- 팝업 설정</a></li>
 						</ul>
 					</ul>
 				</div>
@@ -80,7 +94,7 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" th:src="@{/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('#sideMenu a').click(function() {

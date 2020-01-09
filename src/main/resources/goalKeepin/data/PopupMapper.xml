@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.PopupMapper">
+	
+	<resultMap type="Popup" id="Popup">
+		<id property="popupNo" column="popupNo" />
+		<result property="popupImgUrl" column="popupImgUrl" />
+		<result property="popupTypeCd" column="popupTypeCd" />
+		<result property="popupTargetNo" column="popupTargetNo" />
+		<result property="popupTargetNameEn" column="popupTargetNameEn" />
+		<result property="popupIsOn" column="popupIsOn" />
+	</resultMap>
+	
+	<select id="getTotalPopupCount" resultType="int">
+		/* getTotalPopupCount */
+		SELECT COUNT(*) FROM POPUP_TB
+	</select>
+	
+	<select id="selectPopupList" parameterType="map" resultMap="Popup">
+		/* selectPopupList */
+		SELECT popup_no popupNo
+		, popup_image_url popupImgUrl
+		, popup_tp_cd popupTypeCd,
+		CASE WHEN popup_tp_cd = 'PO01' THEN 
+		(SELECT tt.trans_en FROM NOTICE_TB nt INNER JOIN TRANSLATION_TB tt ON nt.notice_title_t_no = tt.trans_no WHERE nt.notice_no = pt.popup_target_no)
+		ELSE (SELECT tt.trans_en FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no WHERE oct.challenge_no = pt.popup_target_no) END popupTargetNameEn
+		, popup_is_on popupIsOn
+		FROM POPUP_TB pt
+		ORDER BY popup_no DESC
+        LIMIT #{startIndex}, 10
+	</select>
+</mapper>
