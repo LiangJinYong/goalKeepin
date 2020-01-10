@@ -84,6 +84,7 @@ public class CashReportController {
 	@PostMapping("/processCashReport")
 	@ResponseBody
 	public String processCashReport(@RequestParam("cashReportIdList[]") List<String> cashReportIdList) {
+		System.out.println("@@@@");
 		try {
 			cashReportMapper.updateCashReportStatus(cashReportIdList);
 			return "success";

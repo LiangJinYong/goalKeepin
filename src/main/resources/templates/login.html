@@ -58,5 +58,11 @@
 	<script th:src="@{/vendor/daterangepicker/daterangepicker.js}"></script>
 	<script th:src="@{/vendor/countdowntime/countdowntime.js}"></script>
 	<script th:src="@{/js/main.js}"></script>
+	<script type="text/javascript">
+		if(top != self){
+	        if(top.location != self.location)
+	             top.location = self.location;
+	    }
+	</script>
 </body>
 </html>

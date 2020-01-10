@@ -14,4 +14,13 @@ public interface PopupMapper {
 
 	List<Popup> selectPopupList(Map<String, Object> paramMap);
 
+	List<Map<String, String>> selectNoticeList(Map<String, Object> paramMap);
+
+	List<Map<String, String>> selectChallengeList(Map<String, Object> paramMap);
+
+	int getTotalNoticeCount();
+
+	int getTotalChallengeCount();
+
+
 }

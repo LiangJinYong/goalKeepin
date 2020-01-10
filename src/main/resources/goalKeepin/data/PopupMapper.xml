@@ -33,4 +33,35 @@
 		ORDER BY popup_no DESC
         LIMIT #{startIndex}, 10
 	</select>
+	
+	<select id="getTotalNoticeCount" resultType="int">
+		/* getTotalNoticeCount */
+		SELECT COUNT(*) totalNoticeCount
+		FROM NOTICE_TB
+	</select>
+	
+	
+	<select id="selectNoticeList" parameterType="map" resultType="hashmap">
+		/* selectNoticeList */
+		SELECT nt.notice_no contentNo, tt.trans_en contentTitleEn, DATE_FORMAT(nt.notice_reg_dt, '%Y-%m-%d %H:%i:%s') contentRegDate
+		FROM NOTICE_TB nt INNER JOIN TRANSLATION_TB tt ON nt.notice_title_t_no = tt.trans_no
+		LIMIT #{startIndex}, 5
+	</select>
+	
+	<select id="getTotalChallengeCount" resultType="int">
+		/* getTotalChallengeCount */
+		SELECT COUNT(*) totalChallengeCount
+		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
+		WHERE oct.challenge_st_cd = 'CH01'
+	</select>
+	
+	<select id="selectChallengeList" parameterType="map" resultType="hashmap">
+		/* selectChallengeList */
+		SELECT oct.CHALLENGE_NO contentNo, tt.TRANS_EN contentTitleEn, date_format(oct.CHALLENGE_REG_DT, '%Y-%m-%d %H:%i:%s') contentRegDate
+		FROM OPERATED_CHALLENGE_TB oct inner join BASE_CHALLENGE_TB bct on oct.CHALLENGE_BASE_NO = bct.BASE_NO
+		INNER join TRANSLATION_TB tt on bct.BASE_NM_T_NO = tt.TRANS_NO
+		WHERE oct.CHALLENGE_ST_CD = 'CH01'
+		LIMIT #{startIndex}, 5
+	</select>
 </mapper>

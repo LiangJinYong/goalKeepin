@@ -17,6 +17,11 @@ public class Paging {
 		return totalPages;
 	}
 	
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+		totalPages = totalRecords % pageSize == 0 ? totalRecords / pageSize : totalRecords / pageSize + 1;
+	}
+	
 	public int getPrevPageNum() {
 		if (currentPageNum > 1) {
 			prevPageNum = currentPageNum - 1;

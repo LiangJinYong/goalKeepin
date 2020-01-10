@@ -115,6 +115,7 @@ public class ChallengeController {
 			return "challenge/baseChallengeDetailForm";
 		}
 		*/
+		System.out.println("asdfsadf");
 		String fileName = file.getOriginalFilename();
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
         

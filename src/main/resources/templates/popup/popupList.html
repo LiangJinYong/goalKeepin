@@ -7,6 +7,13 @@
 <title>Popup List</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
 .row {
 	margin: 15px 0 0 0;
 }
@@ -21,12 +28,24 @@ img {
 	vertical-align: middle;
 }
 
+.popupActive {
+	color: green;
+}
+
+.popupDeactive {
+	color: red;
+}
+
 </style>
 </head>
 <body>
 	<div class="row">
-		<header class="col-md-11 col-md-offset-1">
+		<header class="col-md-10 col-md-offset-1">
 			<h1 class="brand pull-left">팝업 설정</h1>
+			<ul class="list-inline list-unstyled pull-right">
+				<li><a class="btn btn-primary" th:href="@{/popup/savePopupSetting}">파업 설정 저장</a></li>
+				<li><a class="btn btn-primary" th:href="@{/popup/createNewPopup}">파업 생성하기</a></li>
+			</ul>
 		</header>
 	</div>
 	
@@ -35,6 +54,8 @@ img {
 			<table id="popupTable" class="table table-striped table-hover">
 				<thead>
 					<tr class="info">
+						<th>
+						</th>
 						<th>
 							<h2 class="h4 text-center">NO</h2>
 						</th>
@@ -54,7 +75,10 @@ img {
 				</thead>
 				
 				<tbody>
-					<tr class="text-center" th:each="popup: ${popupList}">
+					<tr class="text-center" th:each="popup: ${popupList}" th:id="${popup.popupNo}">
+						<td>
+							<input type="checkbox">
+						</td>
 						<td th:text="${popup.popupNo}">NO</td>
 						<td>
 							<img th:src="${popup.popupImgUrl}">
@@ -62,8 +86,8 @@ img {
 						<td th:if="${popup.popupTypeCd == 'PO01'}" th:text="'공지사항'">Popup Type</td>
 						<td th:if="${popup.popupTypeCd == 'PO02'}" th:text="'챌린지'">Popup Type</td>
 						<td th:text="${popup.popupTargetNameEn}">Connecting Content</td>
-						<td th:if="${popup.popupIsOn}" th:text="'활성화'">Popup Is On</td>
-						<td th:if="${!popup.popupIsOn}" th:text="'비활성화'">Popup Is On</td>
+						<td class="popupActive" th:if="${popup.popupIsOn}" th:text="'활성화'">Popup Is On</td>
+						<td class="popupDeactive" th:if="${!popup.popupIsOn}" th:text="'비활성화'">Popup Is On</td>
 					</tr>
 				</tbody>
 			</table>
@@ -82,6 +106,29 @@ img {
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
+		$(function() {
+			
+			$('#popupTable tbody tr').css('cursor', 'pointer')
+			.click(function() {
+				var checkbox = $(this).find('input');
+				
+				var isChecked = checkbox.prop('checked');
+				checkbox.prop('checked', !isChecked);
+				
+				if(!isChecked) {
+					$(this).siblings().find('input').prop('checked', false);
+				}
+			});
+			
+			$('#popupTable input').click(function(e) {
+				e.stopPropagation();
+				var isChecked = $(this).prop('checked');
+				
+				if(isChecked) {
+					$(this).parents('tr').siblings().find('input').prop('checked', false);
+				}
+			});
+		});
 	</script>
 </body>
 </html>
