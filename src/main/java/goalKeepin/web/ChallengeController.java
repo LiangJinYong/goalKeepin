@@ -3,11 +3,6 @@ package goalKeepin.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +33,7 @@ import goalKeepin.model.Paging;
 import goalKeepin.model.ParticipantEntry;
 import goalKeepin.model.Review;
 import goalKeepin.util.DateUtils;
+import goalKeepin.util.FileUploadUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
@@ -115,32 +111,10 @@ public class ChallengeController {
 			return "challenge/baseChallengeDetailForm";
 		}
 		*/
-		System.out.println("asdfsadf");
-		String fileName = file.getOriginalFilename();
-		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		
+		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH);
         
-		// generate file name
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
-        String datePath = sdf.format(new Date());
-        
-        File imageDir = new File(FILE_UPLOAD_PATH + datePath);
-        if (!imageDir.exists()) {
-			imageDir.mkdirs();
-		}
-        
-        sdf = new SimpleDateFormat("hhmmss");
-        StringBuilder tempName = new StringBuilder();
-        tempName.append(sdf.format(new Date())).append(suffixName);
-        String newFileName = tempName.toString();
-        try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(imageDir.getAbsolutePath() + "/" + newFileName);
-            Files.write(path, bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + datePath + newFileName);
+        baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
         
         challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseAuthDescTrans(baseChallenge);

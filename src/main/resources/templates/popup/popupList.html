@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Popup List</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
 header a, header li {
@@ -43,8 +45,8 @@ img {
 		<header class="col-md-10 col-md-offset-1">
 			<h1 class="brand pull-left">팝업 설정</h1>
 			<ul class="list-inline list-unstyled pull-right">
-				<li><a class="btn btn-primary" th:href="@{/popup/savePopupSetting}">파업 설정 저장</a></li>
-				<li><a class="btn btn-primary" th:href="@{/popup/createNewPopup}">파업 생성하기</a></li>
+				<li><a class="btn btn-primary" id="savePopupSetting">팝업 설정 저장</a></li>
+				<li><a class="btn btn-primary" th:href="@{/popup/createNewPopup}">팝업 생성하기</a></li>
 			</ul>
 		</header>
 	</div>
@@ -77,7 +79,8 @@ img {
 				<tbody>
 					<tr class="text-center" th:each="popup: ${popupList}" th:id="${popup.popupNo}">
 						<td>
-							<input type="checkbox">
+							<input type="checkbox" th:if="${popup.popupIsOn}" checked="checked">
+							<input type="checkbox" th:if="${!popup.popupIsOn}">
 						</td>
 						<td th:text="${popup.popupNo}">NO</td>
 						<td>
@@ -128,6 +131,53 @@ img {
 					$(this).parents('tr').siblings().find('input').prop('checked', false);
 				}
 			});
+			
+			$('#savePopupSetting').click(function() {
+				
+				var $checkedPopup = $('#popupTable input:checked');
+				var checkedPopupCount = $checkedPopup.length;
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				if(checkedPopupCount == 0) {
+					var deactivedPopups = [];
+					$('#popupTable tbody tr').each(function(index, item) {
+						deactivedPopups.push(item.id);
+					});
+					
+					$.ajax({ url: '/goalkeepinmanager/popup/deactivePopups',  
+					 data: {
+						 deactivedPopups: deactivedPopups.join('-')
+		 			 },  
+					 method: "GET",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
+					 });
+				} else {
+					var checkedPopupId = $checkedPopup.parents('tr').attr('id');
+					
+					$.ajax({ url: '/goalkeepinmanager/popup/activePopup',  
+					 data: {
+						 activePopup: checkedPopupId
+		 			 },  
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
+					 });
+				}
+			});
+			
 		});
 	</script>
 </body>

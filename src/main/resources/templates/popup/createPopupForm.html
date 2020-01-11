@@ -24,7 +24,7 @@
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}">
+	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-md-12">
 				<div>
@@ -95,8 +95,11 @@
 				</div>
 			</div>
 			
+			<input type="hidden" name="popupTargetNo" id="popupTargetNo">
 			<div class="row text-center" style="margin-top: 30px;">
-				<input type="submit" value="생성하기" class="btn btn-success" />
+				<div class="col-md-11">
+					<input type="submit" value="생성하기" class="btn btn-success" id="createPopup" />
+				</div>
 			</div>
 		</section>
 	</form>
@@ -141,7 +144,8 @@
 				var contentList = data.contentList;
 				var contentData = '';
 				for(var i=0; i < contentList.length; i++) {
-					contentData += '<tr class="text-center">';
+					contentData += '<tr class="text-center" ';
+					contentData += 'id="' + contentList[i].contentNo + '">';
 					contentData += '<td>';
 					contentData += '<input type="checkbox">';
 					contentData += '</td>';
@@ -158,6 +162,27 @@
 				}
 				
 				$('#contentData').append(contentData);
+				
+				$('#popupContentTable tbody tr').css('cursor', 'pointer')
+				.click(function() {
+					var checkbox = $(this).find('input');
+					var isChecked = checkbox.prop('checked');
+					checkbox.prop('checked', !isChecked);
+					
+					if(!isChecked) {
+						$(this).siblings().find('input').prop('checked', false);
+						$('#popupTargetNo').val($(this).attr('id'));
+					}
+				});
+				
+				$('#popupContentTable input').click(function(e) {
+					e.stopPropagation();
+					
+					if($(this).prop('checked')) {
+						$(this).parents('tr').siblings().find('input').prop('checked', false);					
+						$('#popupTargetNo').val($(this).parents('tr').attr('id'));
+					}
+				});
 			}
 			
 			function processPagination(data, getUrl) {
@@ -187,17 +212,17 @@
 						}
 					);
 				});
-				
-				$('#popupContentTable tbody tr').css('cursor', 'pointer')
-				.click(function() {
-					var checkbox = $(this).find('input');
-					checkbox.prop('checked', !checkbox.prop('checked'));
-				});
-				
-				$('#userData input').click(function(e) {
-					e.stopPropagation();
-				});
 			}
+			
+			$('#createPopup').click(function(e) {
+				
+				var checkedContentCount = $('#popupContentTable input:checked').length;
+				
+				if(checkedContentCount == 0) {
+					alert('연결 컨텐츠를 선택하세요.');
+					e.preventDefault();
+				}
+			});
 		});
 	</script>
 </body>

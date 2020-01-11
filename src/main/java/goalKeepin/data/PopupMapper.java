@@ -22,5 +22,7 @@ public interface PopupMapper {
 
 	int getTotalChallengeCount();
 
+	void insertNewPopup(Popup popup);
+
 
 }

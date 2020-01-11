@@ -100,7 +100,8 @@ header li {
 		<div class="row">
 			<div class="col-md-4" id="thumbnailImg">
 				<h3 class="h4">썸네일 이미지</h3>
-				<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" /> <img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
+				<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" />
+				<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
 			</div>
 			<div class="col-md-4 forRecruiting">
 				<h3 class="h4">카테고리 설정</h3>
@@ -327,7 +328,7 @@ header li {
 		</section>
 
 		<div class="row text-center">
-			<input th:if="*{baseNo == null}" type="submit" value="생성하기" class="btn btn-success" />
+			<input th:if="*{baseNo == null}" type="submit" value="생성하기" class="btn btn-success" id="createChallenge" />
 		</div>
 		<div class="row forRecruiting text-center">
 			<a id="createChallengeDetail" class="btn btn-primary">모집 시작</a>
@@ -512,7 +513,7 @@ header li {
 			 });
 			 
 			 // 하단 모집 시작하기 버튼 처리
-			 $('#createChallengeDetail').click(function() {
+			 $('#createChallengeDetail').click(function(e) {
 				 
 				 var minFee = $('#minFee').val();
 				 
@@ -522,7 +523,7 @@ header li {
 					 return false;
 				 }
 				 
-				 var token = $("meta[name='_csrf']").attr("content"); 
+				 var token = $("meta[name='_csrf']").attr("content");
 				 var header = $("meta[name='_csrf_header']").attr("content");
 				 
 				 $.ajax({ url: '/goalkeepinmanager/challenge/createNewOperatedChallenge',  
@@ -554,6 +555,7 @@ header li {
 			 $('#showOperatedChallengeList').click(function() {
 				 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val();
 			 });
+			 
 		});
 	</script>
 </body>

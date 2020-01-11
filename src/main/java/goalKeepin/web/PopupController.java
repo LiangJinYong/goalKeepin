@@ -1,6 +1,7 @@
 package goalKeepin.web;
 
 import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -9,14 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
 import goalKeepin.data.PopupMapper;
 import goalKeepin.model.Paging;
 import goalKeepin.model.Popup;
+import goalKeepin.util.FileUploadUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
@@ -25,6 +30,9 @@ public class PopupController {
 
 	@Autowired
 	private PopupMapper popupMapper;
+	
+	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/popupImage/";
+//	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/popupImage/";
 	
 	@GetMapping("/showPopupList/{pageNum}")
 	public String showPopupList(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -91,4 +99,32 @@ public class PopupController {
 		return gson.toJson(result);
 	}
 	
+	@PostMapping("/processPopupCreation")
+	public String proceessPopupCreation(@RequestParam("popupTypeCd") String popupTypeCd, @RequestParam("popupTargetNo") Long popupTargetNo, @RequestParam("popupImgUrl") MultipartFile file) {
+		
+		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH);
+		
+		Popup popup = new Popup();
+		popup.setPopupTypeCd(popupTypeCd);
+		popup.setPopupTargetNo(popupTargetNo);
+		popup.setPopupImgUrl("/app/goalkeepinImage/popupImage/" + filePath);
+		popupMapper.insertNewPopup(popup);
+		return "redirect:/popup/showPopupList/1";
+	}
+	
+	@GetMapping("/deactivePopups")
+	@ResponseBody
+	public String savePopupSetting(HttpServletRequest request) {
+		
+		System.out.println("####" + request.getParameter("deactivedPopups"));
+		return "200";
+	}
+	
+	@GetMapping("/activePopup")
+	@ResponseBody
+	public String activePopup() {
+		
+		
+		return "200";
+	}
 }
