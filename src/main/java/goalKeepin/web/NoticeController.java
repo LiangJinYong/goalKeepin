@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import goalKeepin.data.NoticeMapper;
 import goalKeepin.model.Notice;
 import goalKeepin.model.Paging;
+import goalKeepin.util.FileUploadUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
@@ -23,6 +24,9 @@ public class NoticeController {
 
 	@Autowired
 	private NoticeMapper noticeMapper;
+	
+//	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/popupImage/";
+	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/noticeImage/";
 	
 	@GetMapping("/showNoticeList/{pageNum}")
 	public String showNoticeList(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -48,8 +52,16 @@ public class NoticeController {
 	@PostMapping("/processNoticeDetail")
 	public String processNoticeDetail(Notice notice, @RequestParam("noticeImgs") MultipartFile[] noticeImgs) {
 		
+		String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], FILE_UPLOAD_PATH, "en");
+		String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
+		String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
+		notice.setNoticeImgUrlEn(noticeImgUrlEn);
+		notice.setNoticeImgUrlTc(noticeImgUrlTc);
+		notice.setNoticeImgUrlSc(noticeImgUrlSc);
+		
 		noticeMapper.insertOrUpdateNoticeTitle(notice);
 		noticeMapper.insertOrUpdateNoticeContent(notice);
+		noticeMapper.insertOrUpdateNoticeImgUrl(notice);
 		noticeMapper.insertOrUpdateNotice(notice);
 		return "redirect:/notice/showNoticeList/1";
 	}

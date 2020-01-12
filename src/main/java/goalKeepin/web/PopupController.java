@@ -102,7 +102,7 @@ public class PopupController {
 	@PostMapping("/processPopupCreation")
 	public String proceessPopupCreation(@RequestParam("popupTypeCd") String popupTypeCd, @RequestParam("popupTargetNo") Long popupTargetNo, @RequestParam("popupImgUrl") MultipartFile file) {
 		
-		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH);
+		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH, null);
 		
 		Popup popup = new Popup();
 		popup.setPopupTypeCd(popupTypeCd);
@@ -112,18 +112,38 @@ public class PopupController {
 		return "redirect:/popup/showPopupList/1";
 	}
 	
-	@GetMapping("/deactivePopups")
+	@GetMapping("/deactivatePopups")
 	@ResponseBody
-	public String savePopupSetting(HttpServletRequest request) {
+	public String deactivatePopups(HttpServletRequest request) {
 		
-		System.out.println("####" + request.getParameter("deactivedPopups"));
+		String deactivedPopups = request.getParameter("deactivedPopups");
+		String[] popupArr = deactivedPopups.split("-");
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("popupArr", popupArr);
+		
+		try {
+			popupMapper.deactivatePopups(paramMap);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
+		
 		return "200";
 	}
 	
-	@GetMapping("/activePopup")
+	@GetMapping("/activatePopup")
 	@ResponseBody
-	public String activePopup() {
+	public String activatePopup(HttpServletRequest request) {
 		
+		String activePopup = request.getParameter("activePopup");
+		
+		try {
+			popupMapper.deactivateOtherPopups(activePopup);
+			popupMapper.activatePopup(activePopup);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
 		
 		return "200";
 	}

@@ -24,5 +24,11 @@ public interface PopupMapper {
 
 	void insertNewPopup(Popup popup);
 
+	void deactivatePopups(Map<String, Object> paramMap);
+
+	void deactivateOtherPopups(String activePopup);
+
+	void activatePopup(String activePopup);
+
 
 }

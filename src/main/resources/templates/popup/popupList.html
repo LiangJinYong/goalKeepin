@@ -134,47 +134,49 @@ img {
 			
 			$('#savePopupSetting').click(function() {
 				
-				var $checkedPopup = $('#popupTable input:checked');
-				var checkedPopupCount = $checkedPopup.length;
-				
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-				
-				if(checkedPopupCount == 0) {
-					var deactivedPopups = [];
-					$('#popupTable tbody tr').each(function(index, item) {
-						deactivedPopups.push(item.id);
-					});
+				if(confirm('Are you sure to save the popup setting?')) {
+					var $checkedPopup = $('#popupTable input:checked');
+					var checkedPopupCount = $checkedPopup.length;
 					
-					$.ajax({ url: '/goalkeepinmanager/popup/deactivePopups',  
-					 data: {
-						 deactivedPopups: deactivedPopups.join('-')
-		 			 },  
-					 method: "GET",  
-					 dataType: "text", 
-					 beforeSend : function(xhr) {
-					    xhr.setRequestHeader(header, token);
-						}
-					 })
-					 .done(function(json) { 
-						 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
-					 });
-				} else {
-					var checkedPopupId = $checkedPopup.parents('tr').attr('id');
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
 					
-					$.ajax({ url: '/goalkeepinmanager/popup/activePopup',  
-					 data: {
-						 activePopup: checkedPopupId
-		 			 },  
-					 method: "POST",  
-					 dataType: "text", 
-					 beforeSend : function(xhr) {
-					    xhr.setRequestHeader(header, token);
-						}
-					 })
-					 .done(function(json) { 
-						 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
-					 });
+					if(checkedPopupCount == 0) {
+						var deactivedPopups = [];
+						$('#popupTable tbody tr').each(function(index, item) {
+							deactivedPopups.push(item.id);
+						});
+						
+						$.ajax({ url: '/goalkeepinmanager/popup/deactivatePopups',  
+						 data: {
+							 deactivedPopups: deactivedPopups.join('-')
+			 			 },  
+						 method: "GET",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+						 .done(function(json) { 
+							 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
+						 });
+					} else {
+						var checkedPopupId = $checkedPopup.parents('tr').attr('id');
+						
+						$.ajax({ url: '/goalkeepinmanager/popup/activatePopup',  
+						 data: {
+							 activePopup: checkedPopupId
+			 			 },  
+						 method: "GET",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+						 .done(function(json) { 
+							 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
+						 });
+					}
 				}
 			});
 			

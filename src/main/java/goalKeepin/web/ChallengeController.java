@@ -112,7 +112,7 @@ public class ChallengeController {
 		}
 		*/
 		
-		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH);
+		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH, null);
         
         baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
         

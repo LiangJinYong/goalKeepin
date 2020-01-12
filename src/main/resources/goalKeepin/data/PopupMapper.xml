@@ -70,6 +70,27 @@
 		INSERT INTO POPUP_TB (popup_image_url, popup_tp_cd, popup_target_no, popup_is_on)
 		VALUES (#{popupImgUrl}, #{popupTypeCd}, #{popupTargetNo}, 0)
 	</insert>
+	
+	<update id="deactivatePopups" parameterType="map">
+		/* deactivatePopups */
+		UPDATE POPUP_TB 
+		SET popup_is_on = 0 
+		WHERE popup_no in 
+		<foreach collection="popupArr" item="popup"  open="(" close=")" separator=", ">
+			#{popup}
+ 		</foreach>
+	</update>
+	
+	<update id="deactivateOtherPopups" parameterType="string">
+		/* deactivateOtherPopups */
+		UPDATE POPUP_TB SET popup_is_on = 0 WHERE popup_no != #{activePopup};
+	
+	</update>
+	
+	<update id="activatePopup" parameterType="string">
+		/* activatePopup */
+		UPDATE POPUP_TB SET popup_is_on = 1 WHERE popup_no = #{activePopup};
+	</update>
 </mapper>
 
 

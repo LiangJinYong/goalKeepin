@@ -39,7 +39,7 @@
 		ON DUPLICATE KEY UPDATE trans_en = #{noticeTitleEn}, trans_s_cn = #{noticeTitleSc}, trans_t_cn = #{noticeTitleTc}
 	</insert>
 	
-	<insert id="insertOrUpdateNoticeContent" parameterType="Notice" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="noticeTitleTransNo">
+	<insert id="insertOrUpdateNoticeContent" parameterType="Notice" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="noticeContentTransNo">
 		/* insertOrUpdateNoticeContent */
 		INSERT INTO TRANSLATION_TB
 		(trans_no, trans_en, trans_s_cn, trans_t_cn)
@@ -47,6 +47,16 @@
 		(#{noticeContentTransNo}, #{noticeContentEn}, #{noticeContentSc}, #{noticeContentTc})
 		ON DUPLICATE KEY UPDATE trans_en = #{noticeContentEn}, trans_s_cn = #{noticeContentSc}, trans_t_cn = #{noticeContentTc}
 	</insert>
+	
+	<insert id="insertOrUpdateNoticeImgUrl" parameterType="Notice" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="noticeImgUrlTransNo">
+		/* insertOrUpdateNoticeContent */
+		INSERT INTO TRANSLATION_TB
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
+		VALUES
+		(#{noticeImgUrlTransNo}, #{noticeImgUrlEn}, #{noticeImgUrlSc}, #{noticeImgUrlTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{noticeImgUrlEn}, trans_s_cn = #{noticeImgUrlSc}, trans_t_cn = #{noticeImgUrlTc}
+	</insert>
+	
 	
 	<insert id="insertOrUpdateNotice" parameterType="Notice">
 		/* insertOrUpdateNotice */

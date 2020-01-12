@@ -17,6 +17,7 @@ public interface NoticeMapper {
 
 	void insertOrUpdateNoticeContent(Notice notice);
 
-	void insertOrUpdateNotice(Notice notice);
+	void insertOrUpdateNoticeImgUrl(Notice notice);
 
+	void insertOrUpdateNotice(Notice notice);
 }

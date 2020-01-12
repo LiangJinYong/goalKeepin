@@ -14,7 +14,7 @@ public class FileUploadUtils {
 
 	private FileUploadUtils() {}
 	
-	public static String processFileUpload(MultipartFile file, String basePath) {
+	public static String processFileUpload(MultipartFile file, String basePath, String country) {
 		String fileName = file.getOriginalFilename();
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
         
@@ -29,8 +29,15 @@ public class FileUploadUtils {
         
         sdf = new SimpleDateFormat("hhmmss");
         StringBuilder tempName = new StringBuilder();
-        tempName.append(sdf.format(new Date())).append(suffixName);
+        tempName.append(sdf.format(new Date()));
+        
+        if (country != null) {
+        	tempName.append("_" + country);
+		}
+        
+        tempName.append(suffixName);
         String newFileName = tempName.toString();
+
         try {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(imageDir.getAbsolutePath() + "/" + newFileName);

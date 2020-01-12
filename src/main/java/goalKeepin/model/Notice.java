@@ -23,6 +23,6 @@ public class Notice {
 	private String noticeImgUrlTc;
 	private String noticeImgUrlSc;
 	
-	private int noticeIsMain;
+	private boolean noticeIsMain;
 	private Date noticeRegDate;
 }
