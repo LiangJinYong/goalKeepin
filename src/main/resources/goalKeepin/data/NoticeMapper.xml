@@ -8,6 +8,19 @@
 	<resultMap type="Notice" id="Notice">
 		<id property="noticeNo" column="noticeNo" />
  		<result property="noticeTitleEn" column="noticeTitleEn" />
+ 		<result property="noticeTitleTc" column="noticeTitleTc" />
+ 		<result property="noticeTitleSc" column="noticeTitleSc" />
+ 		
+ 		<result property="noticeContentEn" column="noticeContentEn" />
+ 		<result property="noticeContentTc" column="noticeContentTc" />
+ 		<result property="noticeContentSc" column="noticeContentSc" />
+ 		
+ 		<result property="noticeImgUrlEn" column="noticeImgUrlEn" />
+ 		<result property="noticeImgUrlTc" column="noticeImgUrlTc" />
+ 		<result property="noticeImgUrlSc" column="noticeImgUrlSc" />
+ 		
+ 		<result property="noticeIsMain" column="noticeIsMain" />
+ 		
  		<result property="noticeRegDate" column="noticeRegDate" />
 	</resultMap>
 	
@@ -61,9 +74,35 @@
 	<insert id="insertOrUpdateNotice" parameterType="Notice">
 		/* insertOrUpdateNotice */
 		INSERT INTO NOTICE_TB
-		(notice_title_t_no, notice_detail_t_no, notice_img_url_t_no, notice_is_main)
+		(notice_no, notice_title_t_no, notice_detail_t_no, notice_img_url_t_no, notice_is_main)
 		VALUES
-		(#{noticeTitleTransNo}, #{noticeContentTransNo}, #{noticeImgUrlTransNo}, #{noticeIsMain})
+		(#{noticeNo}, #{noticeTitleTransNo}, #{noticeContentTransNo}, #{noticeImgUrlTransNo}, #{noticeIsMain})
+		ON DUPLICATE KEY UPDATE notice_is_main = #{noticeIsMain}
 	</insert>
 	
+	<select id="selectNoticeDetail" parameterType="long" resultMap="Notice">
+		/* selectNoticeDetail */
+		SELECT notice_no noticeNo 
+		, notice_title_t_no noticeTitleTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_title_t_no) noticeTitleEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_title_t_no) noticeTitleTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_title_t_no) noticeTitleSc
+		, notice_detail_t_no noticeContentTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_detail_t_no) noticeContentEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_detail_t_no) noticeContentTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_detail_t_no) noticeContentSc
+		, notice_img_url_t_no noticeImgUrlTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_img_url_t_no) noticeImgUrlEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_img_url_t_no) noticeImgUrlTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = nt.notice_img_url_t_no) noticeImgUrlSc
+		, notice_is_main noticeIsMain
+		, notice_reg_dt noticeRegDate
+		FROM NOTICE_TB nt
+		WHERE notice_no = #{noticeNo}
+	</select>
+	
+	<delete id="deleteNotice" parameterType="long">
+		/* deleteNotice */
+		DELETE FROM NOTICE_TB WHERE notice_no = #{noticeNo}
+	</delete>
 </mapper>

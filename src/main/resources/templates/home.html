@@ -22,6 +22,11 @@
 	font-weight: bolder;
 	font-size: 1.1em;
 }
+
+#menuItems  {
+	line-height: 1.5em;
+  	list-style-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/4621/treehouse-marker.png);
+}
 </style>
 <body>
 	<div>
@@ -44,53 +49,54 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="row">
-			<div class="col-md-2" style="border-right: 3px solid lightgrey;" id="sideMenu">
+			<div class="col-md-2" style="border-right: 3px solid lightgrey; width: 14%; min-height:680px;" id="sideMenu">
 				<div class="col-md-offset-2">
 					<ul class="list-unstyled">
 						<h2 class="h4">챌린지 관리</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/challenge/baseManagement/1}" target="menuFrame" class="highlight">- 챌린지 기본정보 관리</a></li>
-							<li><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">- 모집중인 챌린지</a></li>
-							<li><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">- 진행중인 챌린지</a></li>
-							<li><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">- 완료된 챌린지</a></li>
+							<li style="list-style-image: url(images/all.png);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame" class="highlight">챌린지 기본정보 관리</a></li>
+							<li style="list-style-image: url(images/recruiting.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">모집중인 챌린지</a></li>
+							<li style="list-style-image: url(images/ongoing.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">진행중인 챌린지</a></li>
+							<li style="list-style-image: url(images/exipred.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">완료된 챌린지</a></li>
 						</ul>
 						<h2 class="h4">카테고리 관리</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/category/showCategoryList/1}" target="menuFrame">- 카테고리 목록</a></li>
+							<li style="list-style-image: url(images/category.png);"><a th:href="@{/category/showCategoryList/1}" target="menuFrame">카테고리 목록</a></li>
 						</ul>
 						<h2 class="h4">챌린지 제안</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/offer/showOfferList/1?offerStatusCd=VO00}" target="menuFrame">- 유저 제안 목록</a></li>
-							<li><a th:href="@{/offer/createNewOfferForm}" target="menuFrame">- 제안 등록하기</a></li>
+							<li style="list-style-image: url(images/userOffer.png);"><a th:href="@{/offer/showOfferList/1?offerStatusCd=VO00}" target="menuFrame">유저 제안 목록</a></li>
+							<li style="list-style-image: url(images/registerOffer.png);"><a th:href="@{/offer/createNewOfferForm}" target="menuFrame">제안 등록하기</a></li>
 						</ul>
 						<h2 class="h4">회원 목록</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/user/showUserList/sg/1}" target="menuFrame">- 싱가포르</a></li>
-							<li><a th:href="@{/user/showUserList/hk/1}" target="menuFrame">- 홍콩</a></li>
+							<li style="list-style-image: url(images/users.png);"><a th:href="@{/user/showUserList/sg/1}" target="menuFrame">싱가포르</a></li>
+							<li style="list-style-image: url(images/users.png);"><a th:href="@{/user/showUserList/hk/1}" target="menuFrame">홍콩</a></li>
 						</ul>
 						<h2 class="h4">출금 내역 관리</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/cashReport/showCashReportList/sg/1}" target="menuFrame">- 싱가포르</a></li>
-							<li><a th:href="@{/cashReport/showCashReportList/hk/1}" target="menuFrame">- 홍콩</a></li>
+							<li style="list-style-image: url(images/payment.png);"><a th:href="@{/cashReport/showCashReportList/sg/1}" target="menuFrame">싱가포르</a></li>
+							<li style="list-style-image: url(images/payment.png);"><a th:href="@{/cashReport/showCashReportList/hk/1}" target="menuFrame">홍콩</a></li>
 						</ul>
 						<h2 class="h4">키타</h2>
 						<ul class="list-unstyled">
-							<li><a th:href="@{/notice/showNoticeList/1}" target="menuFrame">- 공지사항</a></li>
-							<li><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">- 문의</a></li>
-							<li><a href="#" target="menuFrame">- 통계</a></li>
-							<li><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">- 리워드 지급</a></li>
-							<li><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">- 푸시 전송</a></li>
-							<li><a th:href="@{/popup/showPopupList/1}" target="menuFrame">- 팝업 설정</a></li>
+							<li style="list-style-image: url(images/notice.png);"><a th:href="@{/notice/showNoticeList/1}" target="menuFrame">공지사항</a></li>
+							<li style="list-style-image: url(images/inquiry.png);"><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">문의</a></li>
+							<li style="list-style-image: url(images/statistics.png);"><a href="#" target="menuFrame">통계</a></li>
+							<li style="list-style-image: url(images/money.png);"><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">리워드 지급</a></li>
+							<li style="list-style-image: url(images/push.png);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">푸시 전송</a></li>
+							<li style="list-style-image: url(images/popup.png);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">팝업 설정</a></li>
 						</ul>
 					</ul>
 				</div>
 			</div>
-			<div class="col-md-10">
+			<div class="col-md-10" style="width: 85%;">
 				<!-- 
-				<iframe id="menuFrame" name="menuFrame" th:src="@{/challenge/baseManagement/1}" class="col-md-12" frameborder="no" style="width: 80vw; height: 85vh; position: relative;"></iframe>
-		 -->
 				<iframe id="menuFrame" name="menuFrame" th:src="@{/notice/createNewNotice}" class="col-md-12" frameborder="no" style="width: 80vw; height: 85vh; position: relative;"></iframe>
+		 -->
+				<iframe id="menuFrame" name="menuFrame" th:src="@{/challenge/baseManagement/1}" class="col-md-12" frameborder="no" style="width: 80vw; height: 85vh; position: relative;"></iframe>
 			</div>
 		</div>
 	</div>

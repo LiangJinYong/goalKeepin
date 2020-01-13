@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Notice Deatail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
 .filebox input[type="file"] {
@@ -85,6 +87,13 @@
 	border-color: #2e6da4;
 }
 
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
 .row {
 	margin: 15px 0 0 0;
 }
@@ -92,95 +101,148 @@
 input[name^=noticeTitle] {
 	width: 100%;
 }
+
+img {
+	width: 200px;
+	height: 200px;
+	border: 1px solid black;
+}
+
 </style>
 </head>
 <body>
-	<div class="row">
-		<header class="col-md-12">
-			<h1>공지사항 등록</h1>
-		</header>
-	</div>
 	<form method="post" th:action="@{/notice/processNoticeDetail}" th:object="${notice}" enctype="multipart/form-data">
+		<input type="hidden" th:field="*{noticeNo}">
+		<input type="hidden" th:field="*{noticeTitleTransNo}">
+		<input type="hidden" th:field="*{noticeContentTransNo}">
+		<input type="hidden" th:field="*{noticeImgUrlTransNo}">
+		
+		<div class="row">
+			<header class="col-md-11">
+				<h1 class="brand pull-left">공지사항 등록</h1>
+				<ul th:if="*{noticeNo != null}" class="list-inline list-unstyled pull-right">
+					<li><a href="#" class="btn btn-primary" id="deleteNotice">삭제하기</a></li>
+				</ul>
+			</header>
+		</div>
+		
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h4">제목(영문)</h2>
-				<input type="text" name="noticeTitleEn" placeholder="제목을 입력해주세요."
+				<input th:field="*{noticeTitleEn}" type="text" name="noticeTitleEn" placeholder="제목을 입력해주세요."
 					required="required">
+			</div>
+			<div th:if="*{noticeNo != null}" class="col-md-6">
+				<h2 class="h4">등록 일자</h2>
+				<span th:text="*{#dates.format(noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h4">제목(번체)</h2>
-				<input type="text" name="noticeTitleTc" placeholder="제목을 입력해주세요."
+				<input th:field="*{noticeTitleTc}" type="text" name="noticeTitleTc" placeholder="제목을 입력해주세요."
 					required="required">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h4">제목(간체)</h2>
-				<input type="text" name="noticeTitleSc" placeholder="제목을 입력해주세요."
+				<input th:field="*{noticeTitleSc}" type="text" name="noticeTitleSc" placeholder="제목을 입력해주세요."
 					required="required">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h4">내용(영문)</h2>
-				<textarea rows="4" cols="100" name="noticeContentEn"
+				<textarea th:field="*{noticeContentEn}" rows="4" cols="100" name="noticeContentEn"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h4">내용(번체)</h2>
-				<textarea rows="4" cols="100" name="noticeContentTc"
+				<textarea th:field="*{noticeContentTc}" rows="4" cols="100" name="noticeContentTc"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h4">내용(간체)</h2>
-				<textarea rows="4" cols="100" name="noticeContentSc"
+				<textarea th:field="*{noticeContentSc}" rows="4" cols="100" name="noticeContentSc"
 					placeholder="내용을 입력해주세요." required="required"></textarea>
 			</div>
 		</div>
 		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="filebox bs3-primary preview-image">
-					<input class="upload-name" value="파일선택" disabled="disabled"
-						style="width: 200px;"> <label for="noticeImgEn">이미지(영문)</label>
-					<input type="file" id="noticeImgEn" class="upload-hidden"
-						required="required" name="noticeImgs">
+		<section id="imgUploadArea" th:class="*{noticeNo == null ? 'forAdd' : 'forEdit'}">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="filebox bs3-primary preview-image">
+						<img src="" style="display: none;"><br />
+						<input class="upload-name" value="파일선택" disabled="disabled"
+							style="width: 200px;"> <label for="noticeImgEn">이미지(영문)</label>
+						<input type="file" id="noticeImgEn" class="upload-hidden"
+							required="required" name="noticeImgs">
+					</div>
 				</div>
 			</div>
-		</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="filebox bs3-primary preview-image">
+						<img src="" style="display: none;"><br />
+						<input class="upload-name" value="파일선택" disabled="disabled"
+							style="width: 200px;"> <label for="noticeImgTc">이미지(번체)</label>
+						<input type="file" id="noticeImgTc" class="upload-hidden"
+							required="required" name="noticeImgs">
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="filebox bs3-primary preview-image">
+						<img src="" style="display: none;"><br />
+						<input class="upload-name" value="파일선택" disabled="disabled"
+							style="width: 200px;"> <label for="noticeImgSc">이미지(간체)</label>
+						<input type="file" id="noticeImgSc" class="upload-hidden"
+							required="required" name="noticeImgs">
+					</div>
+				</div>
+			</div>
+		</section>
 		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="filebox bs3-primary preview-image">
-					<input class="upload-name" value="파일선택" disabled="disabled"
-						style="width: 200px;"> <label for="noticeImgTc">이미지(번체)</label>
-					<input type="file" id="noticeImgTc" class="upload-hidden"
-						required="required" name="noticeImgs">
+		<section th:if="*{noticeNo != null}" id="imgDisplayArea">
+			<div class="row">
+				<div class="col-md-4">
+					<h2 class="h4">이미지(영문)</h2>
+					<div class="col-md-offset-1 col-md-10">
+						<img th:src="*{noticeImgUrlEn}">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h4">이미지(번체)</h2>
+					<div class="col-md-offset-1 col-md-10">
+						<img th:src="*{noticeImgUrlTc}">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h4">이미지(간체)</h2>
+					<div class="col-md-offset-1 col-md-10">
+						<img th:src="*{noticeImgUrlSc}">
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="filebox bs3-primary preview-image">
-					<input class="upload-name" value="파일선택" disabled="disabled"
-						style="width: 200px;"> <label for="noticeImgSc">이미지(간체)</label>
-					<input type="file" id="noticeImgSc" class="upload-hidden"
-						required="required" name="noticeImgs">
-				</div>
-			</div>
+		<div th:if="*{noticeNo != null}" class="row">
+			<a class="btn btn-primary" id="changeImages">이미지 변경</a>
+			<a class="btn btn-primary" id="cancelImagesChanging" style="display: none;">변경 취소</a>
 		</div>
 		
 		<div class="row">
 			<div class="form-group">
 				<div class="col-md-offset-1 col-md-11">
-					<label class="checkbox"> 
+					<label class="checkbox">
 						<input th:field="*{noticeIsMain}" type="checkbox" value="0">메인화면 상단 배너에 노출하시겠습니까? 노출시 제목이 노출됩니다.
 					</label>
 				</div>
@@ -216,6 +278,52 @@ input[name^=noticeTitle] {
 					$(this).val('0');
 				}
 			});
+			
+			//process images
+			$('.forEdit').hide();
+			
+			$('#changeImages').click(function() {
+				$('#imgDisplayArea').hide();
+				$('#imgUploadArea').show();
+				
+				$('#imgUploadArea .upload-hidden').attr('required', 'required').removeAttr('disabled');
+				
+				$(this).hide();
+				$('#cancelImagesChanging').show()
+				.click(function() {
+					$('#imgDisplayArea').show();
+					$('#imgUploadArea').hide();
+					$(this).hide();
+					$('#changeImages').show();
+					
+					$('#imgUploadArea .upload-hidden').removeAttr('required').attr('disabled', 'disabled');
+				});
+			});
+			
+			$('.forEdit .upload-hidden').removeAttr('required');
+			$('.forEdit .upload-hidden').attr('disabled', 'disabled');
+			
+			$('#deleteNotice').click(function() {
+				if(confirm('Are you sure to delete this notice?')) {
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({ url: '/goalkeepinmanager/notice/deleteNotice',  
+						 data: {
+							 noticeNo: $('#noticeNo').val() 
+		 			 },  
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/notice/showNoticeList/1'; 
+					 });
+				}
+			});
+			
 		});
 	</script>
 </body>

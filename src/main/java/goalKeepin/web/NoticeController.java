@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import goalKeepin.data.NoticeMapper;
@@ -25,8 +26,7 @@ public class NoticeController {
 	@Autowired
 	private NoticeMapper noticeMapper;
 	
-//	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/popupImage/";
-	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/noticeImage/";
+	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/noticeImage/";
 	
 	@GetMapping("/showNoticeList/{pageNum}")
 	public String showNoticeList(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -52,17 +52,43 @@ public class NoticeController {
 	@PostMapping("/processNoticeDetail")
 	public String processNoticeDetail(Notice notice, @RequestParam("noticeImgs") MultipartFile[] noticeImgs) {
 		
-		String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], FILE_UPLOAD_PATH, "en");
-		String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
-		String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
-		notice.setNoticeImgUrlEn(noticeImgUrlEn);
-		notice.setNoticeImgUrlTc(noticeImgUrlTc);
-		notice.setNoticeImgUrlSc(noticeImgUrlSc);
+		if (noticeImgs.length > 0) {
+			String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], FILE_UPLOAD_PATH, "en");
+			String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
+			String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
+			
+			notice.setNoticeImgUrlEn("/app/goalkeepinImage/noticeImage/" + noticeImgUrlEn);
+			notice.setNoticeImgUrlTc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlTc);
+			notice.setNoticeImgUrlSc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlSc);
+			
+			noticeMapper.insertOrUpdateNoticeImgUrl(notice);
+		}
 		
 		noticeMapper.insertOrUpdateNoticeTitle(notice);
 		noticeMapper.insertOrUpdateNoticeContent(notice);
-		noticeMapper.insertOrUpdateNoticeImgUrl(notice);
 		noticeMapper.insertOrUpdateNotice(notice);
+		
 		return "redirect:/notice/showNoticeList/1";
+	}
+	
+	@GetMapping("/showNoticeDetail")
+	public String showNoticeDetail(@RequestParam("noticeNo") Long noticeNo, Model model) {
+		
+		Notice notice = noticeMapper.selectNoticeDetail(noticeNo);
+		model.addAttribute("notice", notice);
+		return "notice/noticeDetailForm";
+	}
+	
+	@PostMapping("/deleteNotice")
+	@ResponseBody
+	public String deleteNotice(@RequestParam("noticeNo") Long noticeNo) {
+		
+		try {
+			noticeMapper.deleteNotice(noticeNo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
+		return "200";
 	}
 }

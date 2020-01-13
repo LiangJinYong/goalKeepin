@@ -27,7 +27,7 @@ public class FileUploadUtils {
 			imageDir.mkdirs();
 		}
         
-        sdf = new SimpleDateFormat("hhmmss");
+        sdf = new SimpleDateFormat("HHmmss");
         StringBuilder tempName = new StringBuilder();
         tempName.append(sdf.format(new Date()));
         

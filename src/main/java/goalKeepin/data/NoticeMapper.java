@@ -20,4 +20,9 @@ public interface NoticeMapper {
 	void insertOrUpdateNoticeImgUrl(Notice notice);
 
 	void insertOrUpdateNotice(Notice notice);
+
+	Notice selectNoticeDetail(Long noticeNo);
+
+	void deleteNotice(Long noticeNo);
+
 }
