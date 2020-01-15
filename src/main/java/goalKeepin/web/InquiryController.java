@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import goalKeepin.data.InquiryMapper;
 import goalKeepin.model.Inquiry;
 import goalKeepin.model.Paging;
+import goalKeepin.util.FCMUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
@@ -57,7 +58,24 @@ public class InquiryController {
 	
 	@PostMapping("/processInquiryReply")
 	public String processInquiryReply(Inquiry inquiry) {
-		inquiryMapper.updateInquiryStatus(inquiry);
+		try {
+			
+			inquiryMapper.updateInquiryStatus(inquiry);
+			
+			long userNo = inquiry.getInquiryUser().getUserNo();
+			
+			String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
+			String title = "Inquiry Answer";
+			String body = inquiry.getInquiryReplyCotent();
+			String type = "PS01";
+			
+			if(pushToken != null) {
+				FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "redirect:/inquiry/showInquiryList/1?inquiryStatusCd=IN00";
 	}
 

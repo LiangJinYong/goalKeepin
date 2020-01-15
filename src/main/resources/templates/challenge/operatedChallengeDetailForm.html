@@ -31,189 +31,205 @@ header li {
 	border: 2px solid grey;
 }
 
-#authMethod .col-md-2 span {
+#authMethod .col-md-3 span {
 	font-weight: bold;
 }
+#middlePart, #bottomPart {
+	background-color: #fcfcfc;
+	width: 98%; 
+	border: 1px solid grey;
+	border-top-width: 3px;
+	padding: 20px;
+	margin-bottom: 20px;
+}
 
+.view {
+	margin-left: 10px;
+}
 </style>
 
-<body>
+<body style="background-color: rgb(245, 247, 250); padding-bottom: 40px;">
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left">챌린지 상세정보</h1>
+			<h1 class="brand pull-left h3">Project details</h1>
 			<ul class="list-inline list-unstyled pull-right">
-				<li th:if="*{participantCount > 0}"><a class="btn btn-primary" id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'참여자 목록보기(' + participantCount + ')'}"></a></li>
-				<li th:if="*{participantCount == 0}"><a class="btn btn-danger" >참여자 없음</a></li>
-				<li th:if="*{participantCount > 0 and challengeProofCount > 0}"><a class="btn btn-primary" id="showProofShotList" th:href="@{/challenge/showAllProofShotsByChallenge(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'인증샷 모아보기(' + challengeProofCount + ')'}"></a></li>
-				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger">인증샷 없음</a></li>
-				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount > 0}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" class="btn btn-primary" th:text="*{'리뷰 목록보기(' + reviewCount + ')'}"></a></li>
-				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger">리뷰 없음</a></li>
+				<li th:if="*{participantCount > 0}"><a class="btn btn-primary" id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'Participants list(' + participantCount + ')'}"></a></li>
+				<li th:if="*{participantCount == 0}"><a class="btn btn-danger" >No particapnt</a></li>
+				<li th:if="*{participantCount > 0 and challengeProofCount > 0}"><a class="btn btn-primary" id="showProofShotList" th:href="@{/challenge/showAllProofShotsByChallenge(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'View verifications(' + challengeProofCount + ')'}"></a></li>
+				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger">No verification</a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount > 0}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" class="btn btn-primary" th:text="*{'Review List(' + reviewCount + ')'}"></a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger">No review</a></li>
 			</ul>
 		</header>
 	</div>
+	
 	<div th:object="${operatedChallenge}">
-		<div class="row">
-			<div class="col-md-6">
-				<h3 class="h4">챌린지 명</h3>
-				<span th:text="*{baseChallenge.baseNmEn}" style="margin-right: 20px;"></span>
-				<span th:if="*{statusCd == 'CH01'}" th:text="Recruiting" class="btn btn-info"></span>
-				<span th:if="*{statusCd == 'CH02'}" th:text="Ongoing" class="btn btn-success"></span>
-				<span th:if="*{statusCd == 'CH03'}" th:text="Expired" class="btn btn-danger"></span>
-			</div>
-			<div class="col-md-6">
-				<h3 class="h4">등록일시</h3>
-				<span th:text="*{#dates.format(regDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-				<h3 class="h4">습관 타입</h3>
-				<span th:text="*{baseChallenge.searchKeyword}">Base Habit Type Text</span>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-4" id="thumbnailImg">
-				<h3 class="h4">썸네일 이미지</h3>
-				<img th:src="*{baseChallenge.baseThumbnailUrl}" class="view" style="margin-left: 100px;">
-			</div>
-			<div class="col-md-4">
-				<h3 class="h4">카테고리 설정</h3>
-				<span th:text="*{category.categoryNmEn}"></span>
-			</div>
-			<div class="col-md-4">
-				<h3 class="h4">제한 등급</h3>
- 				<span th:if="*{gradeCd} == 'LV00'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV00.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV01'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV01.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV02'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV02.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV03'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV03.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV04'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV04.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV05'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV05.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV06'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV06.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV07'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV07.gradeName}"></span>
-				<span th:if="*{gradeCd} == 'LV08'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV08.gradeName}"></span>
-			</div>			
-		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="col-md-4">
-					<h3 class="h4">최소 참가비</h3>
-					<span th:text="*{minFee}"></span>
-				</div>
-				<div class="col-md-4">
-					<h3 class="h4">최대 참가비</h3>
-					<span th:text="*{maxFee}"></span>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="col-md-4">
-					<h3 class="h4">시작일</h3>
-					<span th:text="*{startDate}"></span>
-				</div>
-				<div class="col-md-4">
-					<h3 class="h4">종료일</h3>
-					<span th:text="*{endDate}"></span>
-				</div>
-			</div>
-		</div>
-		
-		<section id="authMethod">
+		<section id="middlePart">
 			<div class="row">
-				<h2 class="h3">인증 방법</h2>
+				<div class="col-md-6">
+					<h3 class="h5">Name of Project</h3>
+					<span th:text="*{baseChallenge.baseNmEn}" style="margin-right: 20px;"></span>
+					<span th:if="*{statusCd == 'CH01'}" th:text="Recruiting" class="btn btn-info" style="cursor: default;"></span>
+					<span th:if="*{statusCd == 'CH02'}" th:text="Ongoing" class="btn btn-success" style="cursor: default;"></span>
+					<span th:if="*{statusCd == 'CH03'}" th:text="Completed" class="btn btn-danger" style="cursor: default;"></span>
+				</div>
+				<div class="col-md-6">
+					<h3 class="h5">Registration Date</h3>
+					<span th:text="*{#dates.format(regDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-md-2">
-					<span>인증가능 요일</span>
+				<div class="col-md-12">
+					<h3 class="h5">Habit type</h3>
+					<span th:text="*{baseChallenge.searchKeyword}">Base Habit Type Text</span>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4" id="thumbnailImg">
+					<h3 class="h5">Thumbnail image</h3>
+					<img th:src="*{baseChallenge.baseThumbnailUrl}" class="view" style="margin-left: 100px;">
+				</div>
+				<div class="col-md-4">
+					<h3 class="h5">Category setting</h3>
+					<span th:text="*{category.categoryNmEn}"></span>
+				</div>
+				<div class="col-md-4">
+					<h3 class="h5">Level Restriction</h3>
+	 				<span th:if="*{gradeCd} == 'LV00'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV00.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV01'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV01.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV02'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV02.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV03'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV03.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV04'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV04.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV05'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV05.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV06'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV06.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV07'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV07.gradeName}"></span>
+					<span th:if="*{gradeCd} == 'LV08'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV08.gradeName}"></span>
 				</div>			
-				<div class="col-md-10">
-					<span th:if="*{baseChallenge.baseAuthDateCd == 'AD01'}" th:text="'월/화/수/목/금'"></span>
-							<span th:if="*{baseChallenge.baseAuthDateCd == 'AD02'}" th:text="'토/일'"></span>
-							<span th:if="*{baseChallenge.baseAuthDateCd == 'AD03'}" th:text="'월/화/수/목/금/토/일'"></span>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-4">
+						<h3 class="h5">Minimum participation fee</h3>
+						<span th:text="*{minFee}"></span>
+					</div>
+					<div class="col-md-4">
+						<h3 class="h5">Maximum participation fee</h3>
+						<span th:text="*{maxFee}"></span>
+					</div>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-md-2">
-					<span>인증 빈도</span>
-				</div>
-				<div class="col-md-10">
-					<span th:text="*{baseChallenge.baseAuthFrequency}"></span>
-						<span th:if="*{(baseChallenge.baseAuthDateCd == 'AD01' and baseChallenge.baseAuthFrequency == 5)
-									or (baseChallenge.baseAuthDateCd == 'AD02' and baseChallenge.baseAuthFrequency == 2)
-									or (baseChallenge.baseAuthDateCd == 'AD03' and baseChallenge.baseAuthFrequency == 7)}"
-							 th:text="'(매일)'"></span>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증 가능 시간</span>
-				</div>
-				<div class="col-md-10">
-					<span th:text="*{baseChallenge.baseAuthFromTime}"></span>
-						 ~ <span th:text="*{baseChallenge.baseAuthToTime}"></span>
+				<div class="col-md-12">
+					<div class="col-md-4">
+						<h3 class="h5">Start date</h3>
+						<span th:text="*{startDate}"></span>
+					</div>
+					<div class="col-md-4">
+						<h3 class="h5">Start date</h3>
+						<span th:text="*{endDate}"></span>
+					</div>
 				</div>
 			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>하루 인증 횟수</span>
+		</section>
+		
+		<section id="bottomPart">
+			<section id="authMethod">
+				<div class="row">
+					<h2 class="h3">Verification Method</h2>
 				</div>
-				<div class="col-md-10">
-					<span th:text="*{baseChallenge.baseAuthNumDaily}"></span>회
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Available day for verification</span>
+					</div>			
+					<div class="col-md-9">
+						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD01'}" th:text="'Mon/Tue/Wed/Thu/Fri'"></span>
+								<span th:if="*{baseChallenge.baseAuthDateCd == 'AD02'}" th:text="'Sat/Sun'"></span>
+								<span th:if="*{baseChallenge.baseAuthDateCd == 'AD03'}" th:text="'Mon/Tue/Wed/Thu/Fri/Sat/Sun'"></span>
+					</div>
 				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증 방법</span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Frequency</span>
+					</div>
+					<div class="col-md-9">
+						<span th:text="*{baseChallenge.baseAuthFrequency}"></span>
+							<span th:if="*{(baseChallenge.baseAuthDateCd == 'AD01' and baseChallenge.baseAuthFrequency == 5)
+										or (baseChallenge.baseAuthDateCd == 'AD02' and baseChallenge.baseAuthFrequency == 2)
+										or (baseChallenge.baseAuthDateCd == 'AD03' and baseChallenge.baseAuthFrequency == 7)}"
+								 th:text="'(Everyday)'"></span>
+					</div>
 				</div>
-				<div class="col-md-10">
-					<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU01'}" th:text="'사진'"></span>
-					<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU02'}" th:text="'음성'"></span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Available time period for verification</span>
+					</div>
+					<div class="col-md-9">
+						<span th:text="*{baseChallenge.baseAuthFromTime}"></span>
+							 ~ <span th:text="*{baseChallenge.baseAuthToTime}"></span>
+					</div>
 				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증샷 공개 여부</span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Number of verification per day</span>
+					</div>
+					<div class="col-md-9">
+						<span th:text="*{baseChallenge.baseAuthNumDaily}"></span>회
+					</div>
 				</div>
-				<div class="col-md-10">
-					<span th:if="*{baseChallenge.baseAuthIsOpen == 1}" th:text="'공개'"></span>
-					<span th:if="*{baseChallenge.baseAuthIsOpen == 0}" th:text="'불공개'"></span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Method</span>
+					</div>
+					<div class="col-md-9">
+						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span>
+						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
+					</div>
 				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증샷 간격</span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Contents Privacy</span>
+					</div>
+					<div class="col-md-9">
+						<span th:if="*{baseChallenge.baseAuthIsOpen == 1}" th:text="'Public'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsOpen == 0}" th:text="'Private'"></span>
+					</div>
 				</div>
-				<div class="col-md-10">
-					<span th:if="*{baseChallenge.baseAuthInterval != 0}" th:text="*{baseChallenge.baseAuthInterval} + '시간'"></span>
-						<span th:if="*{baseChallenge.baseAuthInterval == 0}" th:text="'제한없음'"></span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Frequency</span>
+					</div>
+					<div class="col-md-9">
+						<span th:if="*{baseChallenge.baseAuthInterval != 0}" th:text="*{baseChallenge.baseAuthInterval} + 'Hours'"></span>
+							<span th:if="*{baseChallenge.baseAuthInterval == 0}" th:text="'No limit'"></span>
+					</div>
 				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-md-2">
-					<span>사진첩 사용 가능 여부</span>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<span>Photo album Availability</span>
+					</div>
+					<div class="col-md-9">
+						<span th:if="*{baseChallenge.baseAuthIsAlbum == 1}" th:text="'Possible'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
+					</div>
 				</div>
-				<div class="col-md-10">
-					<span th:if="*{baseChallenge.baseAuthIsAlbum == 1}" th:text="'가능'"></span>
-					<span th:if="*{baseChallenge.baseAuthIsAlbum == 0}" th:text="'불가능'"></span>
-				</div>
-			</div>
+			</section>
 			
 			<section id="challengeDetail">
 				<div class="row">
 					<div>
-						<h3 class="h4">상세 설명(영문)</h3>
+						<h3 class="h5">Detailed Description (English)</h3>
 					</div>
 					<div class="col-md-10">
 						<div class="view" th:text="*{baseChallenge.baseAuthDescEn}"></div>
@@ -221,7 +237,7 @@ header li {
 				</div>
 				<div class="row">
 					<div>
-						<h3 class="h4">상세 설명(번체)</h3>
+						<h3 class="h5">Detailed Description (Traditional)</h3>
 					</div>
 					<div class="col-md-10">
 						<div class="view" th:text="*{baseChallenge.baseAuthDescTc}"></div>
@@ -229,42 +245,42 @@ header li {
 				</div>
 				<div class="row">
 					<div>
-						<h3 class="h4">상세 설명(간체)</h3>
+						<h3 class="h5">Detailed Description (Simplified)</h3>
 					</div>
 					<div class="col-md-10">
 						<div class="view" th:text="*{baseChallenge.baseAuthDescSc}"></div>
 					</div>
 				</div>
 			</section>
+		</section>
 			
-			<section>
-				<div class="row">
-					<div>
-						<h2 class="h4">챌린지 상세 설명(영문)</h2>
-					</div>
-					<div class="page-wrapper box-content col-md-11">
-						<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
-					</div>
+		<section>
+			<div class="row">
+				<div>
+					<h2 class="h5">Project details (English)</h2>
 				</div>
-				
-				<div class="row">
-					<div>
-						<h2 class="h4">챌린지 상세 설명(번체)</h2>
-					</div>
-					<div class="page-wrapper box-content col-md-11">
-						<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
-					</div>
+				<div class="page-wrapper box-content col-md-11">
+					<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
 				</div>
-				
-				<div class="row">
-					<div>
-						<h2 class="h4">챌린지 상세 설명(간체)</h2>
-					</div>
-					<div class="page-wrapper box-content col-md-11">
-						<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
-					</div>
+			</div>
+			
+			<div class="row">
+				<div>
+					<h2 class="h5">Project details (Traditional)</h2>
 				</div>
-			</section>
+				<div class="page-wrapper box-content col-md-11">
+					<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div>
+					<h2 class="h5">Project details (Simplified)</h2>
+				</div>
+				<div class="page-wrapper box-content col-md-11">
+					<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
+				</div>
+			</div>
 		</section>
 		
 	</div>

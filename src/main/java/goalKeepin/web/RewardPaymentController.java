@@ -48,8 +48,6 @@ public class RewardPaymentController {
 	@PostMapping("/processRewardPayment")
 	@ResponseBody
 	public String processRewardPayment(@RequestParam("userNos") String userNos, @RequestParam("rewardAmount") Double rewardAmount) {
-		Gson gson = new Gson();
-		Map<String, String> result = new HashMap<>();
 
 		String[] userNoArr = userNos.split(",");
 		Map<String, Object> paramMap = new HashMap<>();
@@ -58,12 +56,11 @@ public class RewardPaymentController {
 		
 		try {
 			rewardPaymentMapper.insertRewardPaymentRecords(paramMap);
-			result.put("resultCode", "200");
 		} catch(Exception e) {
-			result.put("resultCode", "500");
 			e.printStackTrace();
+			return "500";
 		}
 		
-		return gson.toJson(result);
+		return "200";
 	}
 }

@@ -20,39 +20,40 @@ h2 + span, h2 + div {
 }
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
 		<header class="col-md-12">
-			<h1>문의 상세</h1>
+			<h1 class="h3">Inquiry details</h1>
 		</header>
 	</div>
 	
 	<form method="post" th:action="@{/inquiry/processInquiryReply}" th:object=${inquiry}>
 		<input type="hidden" name="inquiryNo" th:field="*{inquiryNo}" />
+		<input type="hidden" name="userNo" th:field="*{inquiryUser.userNo}" />
 		
 		<div class="row">
 			<div class="col-md-6">
-				<h2 class="h4">아이디</h2>
+				<h2 class="h5">User ID</h2>
 				<span th:text="*{inquiryUser.userId}"></span>
 			</div>
 			<div class="col-md-6">
-				<h2 class="h4">등록 일자</h2>
+				<h2 class="h5">Registration Date</h2>
 				<span th:text="*{#dates.format(inquiryRegDate, 'yyyy-MM-dd HH:mm:ss')}" style="margin-right: 30px;"></span>
-				<span th:if="*{inquiryStatusCd == 'IN01'}" th:text="'대기중'" class="btn btn-danger" style="cursor: default;"></span>
-				<span th:if="*{inquiryStatusCd == 'IN02'}" th:text="'답변 완료'" class="btn btn-info" style="cursor: default;"></span>
+				<span th:if="*{inquiryStatusCd == 'IN01'}" th:text="'Waiting'" class="btn btn-danger" style="cursor: default;"></span>
+				<span th:if="*{inquiryStatusCd == 'IN02'}" th:text="'Answer completed'" class="btn btn-info" style="cursor: default;"></span>
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-10">
-				<h2 class="h4">내용</h2>
+				<h2 class="h5">Contents</h2>
 				<div th:text="*{inquiryContentFull}"></div>
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-10">
-				<h2 class="h4">답변</h2>
+				<h2 class="h5">Answer</h2>
 				<div th:if="*{inquiryStatusCd == 'IN02'}" th:text="*{inquiryReplyCotent}"></div>
 				<textarea id="inquiryReplyCotent" name="inquiryReplyCotent" th:if="*{inquiryStatusCd == 'IN01'}" rows="5" style="width: 100%" required="required"></textarea>
 			</div>
@@ -60,7 +61,7 @@ h2 + span, h2 + div {
 		
 		<div class="row" th:if="*{inquiryStatusCd == 'IN01'}">
 			<div class="col-md-10">
-				<input type="submit" value="저장" class="btn btn-success pull-right">
+				<input type="submit" value="Save" class="btn btn-primary pull-right">
 			</div>
 		</div>
 	</form>

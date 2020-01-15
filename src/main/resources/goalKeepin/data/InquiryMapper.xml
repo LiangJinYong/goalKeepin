@@ -41,7 +41,7 @@
 	
 	<select id="selectInquiryDetail" parameterType="long" resultMap="Inquiry">
 		/* selectInquiryDetail */
-		SELECT it.inquiry_no inquiryNo, ut.user_id userId, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd, it.inquiry_txt inquiryContentFull, it.inquiry_reply_txt inquiryReplyCotent
+		SELECT it.inquiry_no inquiryNo, ut.user_no userNo, ut.user_id userId, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd, it.inquiry_txt inquiryContentFull, it.inquiry_reply_txt inquiryReplyCotent
 		FROM INQUIRY_TB it
 		INNER JOIN USER_TB ut ON it.inquiry_user_no = ut.user_no
 		WHERE it.inquiry_no = #{inquiryNo}
@@ -55,4 +55,11 @@
 		inquiry_st_cd = 'IN02'
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
+	
+	<select id="getPushTokenByUserNo" parameterType="long" resultType="string">
+		/* getPushTokenByUserNo */
+		SELECT user_push_token 
+		FROM USER_TB 
+		WHERE user_no = #{userNo}
+	</select>
 </mapper>

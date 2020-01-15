@@ -44,266 +44,281 @@ header li {
 	margin-left: 5px;
 }
 
-#authMethod .col-md-2 span {
+#authMethod .col-md-3 span {
 	font-weight: bold;
 }
 
 #authMethod input[type=number] {
 	width: 50px;
 }
+
+#middlePart, #bottomPart {
+	background-color: #fcfcfc;
+	width: 98%; 
+	border: 1px solid grey;
+	border-top-width: 3px;
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
 </style>
-<body>
-	<div class="row">
-		<header class="col-md-12">
-			<h1 th:if="*{baseChallenge.baseNo == null}" class="brand pull-left">챌린지 생성하기</h1>
-			<h1 th:if="*{baseChallenge.baseNo != null}" class="brand pull-left">생성한 챌린지 상세정보</h1>
+<body style="background-color: rgb(245, 247, 250);">
+	<div class="row header">
+		<header class="col-md-12 navbar-header">
+			<h1 th:if="*{baseChallenge.baseNo == null}" class="brand pull-left h3">Create a project</h1>
+			<h1 th:if="*{baseChallenge.baseNo != null}" class="brand pull-left h3">Details of created projects</h1>
 			<ul th:if="*{baseChallenge != null and baseChallenge.baseNo != null}" class="list-inline list-unstyled pull-right" id="headerBtn">
-				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'등록한 챌린지 목록 (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">등록한 챌린지 목록</a></li>
-				<li><a class="btn btn-primary" id="startRecruiting" href="#">모집 시작하기</a></li>
-				<li th:if="*{modifiable == 1}"><a class="btn btn-primary" href="#" id="modifyChallengeDetail">수정하기</a></li>
+				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'Project list (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">Project List</a></li>
+				<li><a class="btn btn-primary" id="startRecruiting" href="#">Start a project</a></li>
+				<li th:if="*{modifiable == 1}"><a class="btn btn-primary" href="#" id="modifyChallengeDetail">Edit</a></li>
 			</ul>
 		</header>
 	</div>
 
 	<form th:if="*{baseChallenge != null}" method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}" enctype="multipart/form-data">
 		<input th:if="*{baseNo != null}" type="hidden" id="baseNo" name="baseNo" th:value="*{baseNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseNmTransNo" name="baseNmTransNo" th:value="*{baseNmTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseAuthDescTransNo" name="baseAuthDescTransNo" th:value="*{baseAuthDescTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseDetailTransNo" name="baseDetailTransNo" th:value="*{baseDetailTransNo}" />
-
-		<div class="row" id="challengeName">
-			<div class="col-md-3">
-				<h3 class="h4">챌린지 명(영문)</h3>
-				<input type="text" name="baseNmEn" th:field="*{baseNmEn}" class="add" required="required" /> <span th:text="*{baseNmEn}" class="view"></span>
+	
+		<section id="middlePart">
+			<div class="row" id="challengeName">
+				<div class="col-md-3">
+					<h3 class="h5">Name of Project (English)</h3>
+					<input type="text" name="baseNmEn" th:field="*{baseNmEn}" class="add" required="required" /> <span th:text="*{baseNmEn}" class="view"></span>
+				</div>
+				<div class="col-md-3">
+					<h3 class="h5">Name of Project (Traditional)</h3>
+					<input type="text" name="baseNmTc" th:field="*{baseNmTc}" class="add" required="required" /> <span th:text="*{baseNmTc}" class="view"></span>
+				</div>
+				<div class="col-md-3">
+					<h3 class="h5">Name of Project (Simplified)</h3>
+					<input type="text" name="baseNmSc" th:field="*{baseNmSc}" class="add" required="required" /> <span th:text="*{baseNmSc}" class="view"></span>
+				</div>
+				<div class="col-md-3" th:if="*{baseNo != null}">
+					<h3 class="h5">Registration Date</h3>
+					<span th:text="*{#dates.format(baseRegDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+				</div>
 			</div>
-			<div class="col-md-3">
-				<h3 class="h4">챌린지 명(번체)</h3>
-				<input type="text" name="baseNmTc" th:field="*{baseNmTc}" class="add" required="required" /> <span th:text="*{baseNmTc}" class="view"></span>
-			</div>
-			<div class="col-md-3">
-				<h3 class="h4">챌린지 명(간체)</h3>
-				<input type="text" name="baseNmSc" th:field="*{baseNmSc}" class="add" required="required" /> <span th:text="*{baseNmSc}" class="view"></span>
-			</div>
-			<div class="col-md-3" th:if="*{baseNo != null}">
-				<h3 class="h4">등록일시</h3>
-				<span th:text="*{#dates.format(baseRegDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12">
-				<h3 class="h4">습관 타입</h3>
-				<select multiple="multiple" style="width: 100px;" th:size="${T(goalKeepin.constants.BaseHabitType).values().length}" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" class="add" required="required">
-					<option th:each="habitType: ${T(goalKeepin.constants.BaseHabitType).values()}" th:value="${habitType}" th:text="${habitType.baseHabitTypeName}"></option>
-				</select> <input type="hidden" name="searchKeyword" id="searchKeyword"> <span th:text="*{searchKeyword}" class="view">Base Habit Type Text</span>
-			</div>
-		</div>
-
-
-		<div class="row">
-			<div class="col-md-4" id="thumbnailImg">
-				<h3 class="h4">썸네일 이미지</h3>
-				<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" />
-				<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
-			</div>
-			<div class="col-md-4 forRecruiting">
-				<h3 class="h4">카테고리 설정</h3>
-				<select name="categoryNo" id="categoryNo">
-					<option th:each="category : ${categoryList}" th:value="${category.categoryNo}" th:utext="${category.categoryContent}">
-				</select>
-			</div>
-			<div class="col-md-4 forRecruiting">
-				<h3 class="h4">제한 등급</h3>
-				<select id="gradeCd" name="gradeCd">
-					<option th:each="grade: ${T(goalKeepin.constants.ChallengeGrade).values()}" th:value="${grade}" th:text="${grade.gradeName}"></option>
-				</select>
-			</div>
-		</div>
-
-		<section class="forRecruiting">
+	
 			<div class="row">
 				<div class="col-md-12">
-					<div class="col-md-4">
-						<h3 class="h4">최소 참가비</h3>
-						<input type="number" name="minFee" id="minFee" style="width: 200px;" />
-					</div>
-					<div class="col-md-4">
-						<h3 class="h4">최대 참가비</h3>
-						<input type="number" name="minFee" id="maxFee" style="width: 200px;" />
-					</div>
+					<h3 class="h5">Habit type</h3>
+					<select multiple="multiple" style="width: 100px;" th:size="${T(goalKeepin.constants.BaseHabitType).values().length}" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" class="add" required="required">
+						<option th:each="habitType: ${T(goalKeepin.constants.BaseHabitType).values()}" th:value="${habitType}" th:text="${habitType.baseHabitTypeName}"></option>
+					</select> <input type="hidden" name="searchKeyword" id="searchKeyword"> <span th:text="*{searchKeyword}" class="view">Base Habit Type Text</span>
 				</div>
 			</div>
+	
+	
 			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-4">
-						<h3 class="h4">시작일</h3>
-						<input type="date" name="startDate" id="startDate" style="width: 200px;" />
-					</div>
-					<div class="col-md-4">
-						<h3 class="h4">종료일</h3>
-						<input type="date" name="endDate" id="endDate" style="width: 200px;" />
-					</div>
+				<div class="col-md-4" id="thumbnailImg">
+					<h3 class="h5">Thumbnail image</h3>
+					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" />
+					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
+				</div>
+				<div class="col-md-4 forRecruiting">
+					<h3 class="h5">Category setting</h3>
+					<select name="categoryNo" id="categoryNo">
+						<option th:each="category : ${categoryList}" th:value="${category.categoryNo}" th:utext="${category.categoryContent}">
+					</select>
+				</div>
+				<div class="col-md-4 forRecruiting">
+					<h3 class="h5">Level Restriction</h3>
+					<select id="gradeCd" name="gradeCd">
+						<option th:each="grade: ${T(goalKeepin.constants.ChallengeGrade).values()}" th:value="${grade}" th:text="${grade.gradeName}"></option>
+					</select>
 				</div>
 			</div>
+
+			<section class="forRecruiting">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<h3 class="h5">Minimum participation fee</h3>
+							<input type="number" name="minFee" id="minFee" style="width: 200px;" />
+						</div>
+						<div class="col-md-4">
+							<h3 class="h5">Maximum participation fee</h3>
+							<input type="number" name="minFee" id="maxFee" style="width: 200px;" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<h3 class="h5">Start date</h3>
+							<input type="date" name="startDate" id="startDate" style="width: 200px;" />
+						</div>
+						<div class="col-md-4">
+							<h3 class="h5">Start date</h3>
+							<input type="date" name="endDate" id="endDate" style="width: 200px;" />
+						</div>
+					</div>
+				</div>
+			</section>
 		</section>
 
-		<section id="authMethod">
-			<div class="row">
-				<h2 class="h3">인증 방법</h2>
-			</div>
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증가능 요일</span>
+		<section id="bottomPart">
+			<section id="authMethod">
+				<div class="row">
+					<h2 class="h3">Verification Method</h2>
 				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd1">월-금</label> <input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd2">토-일</label> <input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd3">월-일</label>
+				<div class="row">
+					<div class="col-md-3">
+						<span>Available day for verification</span>
 					</div>
-					<div class="view">
-						<span th:if="*{baseAuthDateCd == 'AD01'}" th:text="'월/화/수/목/금'"></span> <span th:if="*{baseAuthDateCd == 'AD02'}" th:text="'토/일'"></span> <span th:if="*{baseAuthDateCd == 'AD03'}" th:text="'월/화/수/목/금/토/일'"></span>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증 빈도</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						주 <input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" /> 일 <input type="checkbox" id="everyday" /> <label for="everyday">매일</label>
-					</div>
-					<div class="view">
-						<span th:text="*{baseAuthFrequency}"></span> <span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
-									or (baseAuthDateCd == 'AD02' and baseAuthFrequency == 2)
-									or (baseAuthDateCd == 'AD03' and baseAuthFrequency == 7)}" th:text="'(매일)'"></span>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd1">Mon-Fri</label> <input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd2">Sat-Sun</label> <input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd3">Mon-Sun</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthDateCd == 'AD01'}" th:text="'Mon/Tue/Wed/Thu/Fri'"></span> <span th:if="*{baseAuthDateCd == 'AD02'}" th:text="'Sat/Sun'"></span> <span th:if="*{baseAuthDateCd == 'AD03'}" th:text="'Mon/Tue/Wed/Thu/Fri/Sat/Sun'"></span>
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증 가능 시간</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" /> ~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" /> <input type="checkbox" id="allHours" /> <label for="allHours">24시간</label>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Frequency</span>
 					</div>
-					<div class="view">
-						<span th:text="*{baseAuthFromTime}"></span> ~ <span th:text="*{baseAuthToTime}"></span>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>하루 인증 횟수</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="number" id="baseAuthNumDaily" name="baseAuthNumDaily" th:field="*{baseAuthNumDaily}" required /> 회
-					</div>
-					<div class="view">
-						<span th:text="*{baseAuthNumDaily}"></span>회
+					<div class="col-md-9">
+						<div class="add">
+							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" />Days per week <input type="checkbox" id="everyday" /><label for="everyday">Everyday</label>
+						</div>
+						<div class="view">
+							<span th:text="*{baseAuthFrequency}"></span> <span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
+										or (baseAuthDateCd == 'AD02' and baseAuthFrequency == 2)
+										or (baseAuthDateCd == 'AD03' and baseAuthFrequency == 7)}" th:text="'(Everyday)'"></span>
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증 방법</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">사진</label> <input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">음성</label>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Available time period for verification</span>
 					</div>
-					<div class="view">
-						<span th:if="*{baseAuthMethodCd == 'AU01'}" th:text="'사진'"></span> <span th:if="*{baseAuthMethodCd == 'AU02'}" th:text="'음성'"></span>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증샷 공개 여부</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="radio" name="baseAuthIsOpen" value="1" id="photoShown" th:field="*{baseAuthIsOpen}" required="required" /><label for="photoShown">공개</label> <input type="radio" name="baseAuthIsOpen" value="0" id="photoHidden" th:field="*{baseAuthIsOpen}" required="required" /><label for="photoHidden">비공개</label>
-					</div>
-					<div class="view">
-						<span th:if="*{baseAuthIsOpen == 1}" th:text="'공개'"></span> <span th:if="*{baseAuthIsOpen == 0}" th:text="'불공개'"></span>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" /> ~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" /> <input type="checkbox" id="allHours" /> <label for="allHours">24 Hours</label>
+						</div>
+						<div class="view">
+							<span th:text="*{baseAuthFromTime}"></span> ~ <span th:text="*{baseAuthToTime}"></span>
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>인증샷 간격</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" /><label>시간</label>
-						</span> <input type="checkbox" id="noLimit" /><label for="noLimit">제한없음</label>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Number of verification per day</span>
 					</div>
-					<div class="view">
-						<span th:if="*{baseAuthInterval != 0}" th:text="*{baseAuthInterval} + '시간'"></span> <span th:if="*{baseAuthInterval == 0}" th:text="'제한없음'"></span>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-2">
-					<span>사진첩 사용 가능 여부</span>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumAvaliable">가능</label> <input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumNotavaliable">불가능</label>
-					</div>
-					<div class="view">
-						<span th:if="*{baseAuthIsAlbum == 1}" th:text="'가능'"></span> <span th:if="*{baseAuthIsAlbum == 0}" th:text="'불가능'"></span>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="number" id="baseAuthNumDaily" name="baseAuthNumDaily" th:field="*{baseAuthNumDaily}" required /> Times
+						</div>
+						<div class="view">
+							<span th:text="*{baseAuthNumDaily}"></span> Times
+						</div>
 					</div>
 				</div>
-			</div>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Method</span>
+					</div>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">Photo</label> <input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">Voice</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span> <span th:if="*{baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
+						</div>
+					</div>
+				</div>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Contents Privacy</span>
+					</div>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="radio" name="baseAuthIsOpen" value="1" id="photoShown" th:field="*{baseAuthIsOpen}" required="required" /><label for="photoShown">Public</label> <input type="radio" name="baseAuthIsOpen" value="0" id="photoHidden" th:field="*{baseAuthIsOpen}" required="required" /><label for="photoHidden">Private</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthIsOpen == 1}" th:text="'Public'"></span> <span th:if="*{baseAuthIsOpen == 0}" th:text="'Private'"></span>
+						</div>
+					</div>
+				</div>
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Verification Frequency</span>
+					</div>
+					<div class="col-md-9">
+						<div class="add">
+							<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" /><label>Hours</label>
+							</span> <input type="checkbox" id="noLimit" /><label for="noLimit">No limit</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthInterval != 0}" th:text="*{baseAuthInterval} + ' Hours'"></span> <span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
+						</div>
+					</div>
+				</div>
+				
+	
+				<div class="row">
+					<div class="col-md-3">
+						<span>Photo album Availability</span>
+					</div>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumAvaliable">Possible</label> <input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumNotavaliable">Impossible</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthIsAlbum == 1}" th:text="'Possible'"></span> <span th:if="*{baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
+						</div>
+					</div>
+				</div>
+			</section>
+	
+			<section id="challengeDetail">
+				<div class="row">
+					<div>
+						<h3 class="h5">Detailed Description (English)</h3>
+					</div>
+					<div class="col-md-10">
+						<div class="add">
+							<textarea rows="5" style="width: 100%;" name="baseAuthDescEn" th:field="*{baseAuthDescEn}" id="baseAuthDescEn" placeholder="Please fill in the content." required="required"></textarea>
+						</div>
+						<div class="view" th:text="*{baseAuthDescEn}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div>
+						<h3 class="h5">Detailed Description (Traditional)</h3>
+					</div>
+					<div class="col-md-10">
+						<div class="add">
+							<textarea rows="5" style="width: 100%;" name="baseAuthDescTc" th:field="*{baseAuthDescTc}" id="baseAuthDescTc" placeholder="Please fill in the content." required="required"></textarea>
+						</div>
+						<div class="view" th:text="*{baseAuthDescTc}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div>
+						<h3 class="h5">Detailed Description (Simplified)</h3>
+					</div>
+					<div class="col-md-10">
+						<div class="add">
+							<textarea rows="5" style="width: 100%;" name="baseAuthDescSc" th:field="*{baseAuthDescSc}" id="baseAuthDescSc" placeholder="Please fill in the content." required="required"></textarea>
+						</div>
+						<div class="view" th:text="*{baseAuthDescSc}"></div>
+					</div>
+				</div>
+			</section>
 		</section>
-
-		<section id="challengeDetail">
-			<div class="row">
-				<div>
-					<h3 class="h4">상세 설명(영문)</h3>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<textarea rows="5" style="width: 100%;" name="baseAuthDescEn" th:field="*{baseAuthDescEn}" id="baseAuthDescEn" placeholder="Please fill in the content." required="required"></textarea>
-					</div>
-					<div class="view" th:text="*{baseAuthDescEn}"></div>
-				</div>
-			</div>
-			<div class="row">
-				<div>
-					<h3 class="h4">상세 설명(번체)</h3>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<textarea rows="5" style="width: 100%;" name="baseAuthDescTc" th:field="*{baseAuthDescTc}" id="baseAuthDescTc" placeholder="Please fill in the content." required="required"></textarea>
-					</div>
-					<div class="view" th:text="*{baseAuthDescTc}"></div>
-				</div>
-			</div>
-			<div class="row">
-				<div>
-					<h3 class="h4">상세 설명(간체)</h3>
-				</div>
-				<div class="col-md-10">
-					<div class="add">
-						<textarea rows="5" style="width: 100%;" name="baseAuthDescSc" th:field="*{baseAuthDescSc}" id="baseAuthDescSc" placeholder="Please fill in the content." required="required"></textarea>
-					</div>
-					<div class="view" th:text="*{baseAuthDescSc}"></div>
-				</div>
-			</div>
-		</section>
-
+		
 		<section>
 			<div class="row">
 				<div>
-					<h2 class="h4">챌린지 상세 설명(영문)</h2>
+					<h2 class="h5">Project details (English)</h2>
 				</div>
 				<div class="page-wrapper box-content col-md-11">
 					<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseDetailEn}" required></textarea>
@@ -311,7 +326,7 @@ header li {
 			</div>
 			<div class="row">
 				<div>
-					<h2 class="h4">챌린지 상세 설명(번체)</h2>
+					<h2 class="h5">Project details (Traditional)</h2>
 				</div>
 				<div class="page-wrapper box-content col-md-11">
 					<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseDetailTc}" required></textarea>
@@ -319,23 +334,25 @@ header li {
 			</div>
 			<div class="row">
 				<div>
-					<h2 class="h4">챌린지 상세 설명(간체)</h2>
+					<h2 class="h5">Project details (Simplified)</h2>
 				</div>
 				<div class="page-wrapper box-content col-md-11">
 					<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseDetailSc}" required></textarea>
 				</div>
 			</div>
 		</section>
-
-		<div class="row text-center">
-			<input th:if="*{baseNo == null}" type="submit" value="생성하기" class="btn btn-success" id="createChallenge" />
-		</div>
-		<div class="row forRecruiting text-center">
-			<a id="createChallengeDetail" class="btn btn-primary">모집 시작</a>
-		</div>
-		<div class="row forModifying text-center">
-			<input id="doModifyChallengeDetail" type="submit" class="btn btn-primary" value="수정하기" />
-		</div>
+		
+		<section style="margin-bottom: 40px;">
+			<div class="row text-center col-md-11">
+				<input th:if="*{baseNo == null}" type="submit" value="Create a project" class="btn btn-primary" id="createChallenge" />
+			</div>
+			<div class="row forRecruiting text-center col-md-11">
+				<a id="createChallengeDetail" class="btn btn-primary">Start a project</a>
+			</div>
+			<div class="row forModifying text-center col-md-11">
+				<input id="doModifyChallengeDetail" type="submit" class="btn btn-primary" value="Edit" />
+			</div>
+		</section>
 	</form>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery.richtext.js}"></script>
@@ -372,8 +389,9 @@ header li {
 				 $('.add').fadeIn('slow');
 				 $('.view').css('display', 'none');
 				 $('.forModifying').show('slow');
+				 $('#baseThumbnailUrl').removeAttr('required');
 				 
-				 $('<li><a href="#" class="btn btn-primary">수정 취소</a></li>')
+				 $('<li><a href="#" class="btn btn-primary">Cancel Editing</a></li>')
 				 .appendTo('#headerBtn')
 				 .siblings('li')
 				 .hide()
@@ -394,6 +412,7 @@ header li {
 					 $('.richText-editor').attr('contenteditable', false);
 					 
 					 $('.forModifying').hide();
+					 $('#baseThumbnailUrl').attr('required', 'required');
 				 });
 				 
 			 });
@@ -413,7 +432,7 @@ header li {
 				 $('.forRecruiting').fadeIn('slow');
 				 $('.forRecruiting input').attr('required', 'required');
 				 
-				 $('<li><a href="#" class="btn btn-primary">모집 시작 취소</a></li>')
+				 $('<li><a href="#" class="btn btn-primary">Cancel Editing</a></li>')
 				 .appendTo('#headerBtn')
 				 .siblings('li')
 				 .hide()
@@ -433,7 +452,7 @@ header li {
 			 $('#everyday').change(function() {
 				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
 				 if(dateCount == 0) {
-					 alert('우선 인증가능 요일을 선택하세요.');
+					 alert('Please select a valid day for verification.');
 					 $(this).prop('checked', false);
 				 } else {
 					if($(this).prop('checked')) {
@@ -512,14 +531,34 @@ header li {
 				$('#searchKeyword').val(textArr.join(','));
 			 });
 			 
+			 // 유효성 체크
+			 function validateCheck($input, msg) {
+				 var val = $input.val();
+				 if(val == '') {
+					 alert(msg);
+					 $input.focus();
+					 return false;
+				 }
+				 
+				 return true;
+			 }
+			 
 			 // 하단 모집 시작하기 버튼 처리
 			 $('#createChallengeDetail').click(function(e) {
 				 
-				 var minFee = $('#minFee').val();
+				 if(!validateCheck($('#minFee'), 'Please input minimum fee.')) {
+					 return false;
+				 }
 				 
-				 if(minFee == '') {
-					 alert('minfee');
-					 $('#minFee').focus();
+				 if(!validateCheck($('#maxFee'), 'Please input maximum fee.')) {
+					 return false;
+				 }
+				 
+				 if(!validateCheck($('#startDate'), 'Please input start date.')) {
+					 return false;
+				 }
+				 
+				 if(!validateCheck($('#endDate'), 'Please input end date.')) {
 					 return false;
 				 }
 				 

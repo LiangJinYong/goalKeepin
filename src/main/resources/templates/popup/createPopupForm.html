@@ -17,18 +17,18 @@
 
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left">새로운 팝업 생성하기</h1>
+			<h1 class="brand pull-left h3">Create a new pop-up message</h1>
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data">
+	<form method="post" th:action="@{/popup/processChallengeGeneration}" th:object="${popup}" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-md-12">
 				<div>
-					<label class="col-md-1">이미지</label>
+					<label class="col-md-1">Image</label>
 				</div>
 				<div class="col-md-11">
 					<input type="file" th:field="*{popupImgUrl}" required="required">
@@ -38,13 +38,13 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="col-md-1">
-					<label>타입</label>
+					<label>Type</label>
 				</div>
 				<div class="col-md-11">
 					<select th:field="*{popupTypeCd}">
-						<option value="PO00">타입</option>
-						<option value="PO01">공지사항</option>
-						<option value="PO02">챌린지</option>
+						<option value="PO00">Type</option>
+						<option value="PO01">Notice</option>
+						<option value="PO02">Challenge</option>
 					</select>
 				</div>
 			</div>
@@ -54,7 +54,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="col-md-12">
-						<label>연결 컨텐츠</label>
+						<label>Connected Content</label>
 					</div>
 				</div>
 			</div>
@@ -66,13 +66,13 @@
 								<th>
 								</th>
 								<th>
-									<h2 class="h4 text-center">NO</h2>
+									<h2 class="h5 text-center">NO</h2>
 								</th>
 								<th>
-									<h2 class="h4 text-center">제목</h2>
+									<h2 class="h5 text-center">Title</h2>
 								</th>
 								<th>
-									<h2 class="h4 text-center">동록 일자</h2>
+									<h2 class="h5 text-center">Registration Date</h2>
 								</th>
 							</tr>
 						</thead>
@@ -98,7 +98,7 @@
 			<input type="hidden" name="popupTargetNo" id="popupTargetNo">
 			<div class="row text-center" style="margin-top: 30px;">
 				<div class="col-md-11">
-					<input type="submit" value="생성하기" class="btn btn-success" id="createPopup" />
+					<input type="submit" value="Create" class="btn btn-primary" id="createPopup" />
 				</div>
 			</div>
 		</section>
@@ -120,6 +120,7 @@
 						function(data) {
 							processTableData(data);
 							processPagination(data, getUrl);
+							processTableNo();
 					});
 					
 				} else if ('PO02' == selectedType) {
@@ -132,6 +133,7 @@
 						function(data) {
 							processTableData(data);
 							processPagination(data, getUrl);
+							processTableNo();
 					});
 					
 				} else {
@@ -188,7 +190,7 @@
 			function processPagination(data, getUrl) {
 				
 				var totalPages = data.paging.totalPages;
-				var pageData = '<ul class="pagination">';
+				var pageData = '<ul class="pagination" id="pagination">';
 				for(var i=1; i<=totalPages; i++) {
 					pageData += '<li class="page-item';
 					if(data.paging.currentPageNum == i) {
@@ -209,8 +211,18 @@
 					$.getJSON(getUrl + $(this).text(),
 						function(data) {
 							processTableData(data);
+							processTableNo();
 						}
 					);
+				});
+			}
+			
+			function processTableNo() {
+				var noIndex = $('.table thead th').index($('.table thead th:contains("NO")'));
+				var pageIndex = $('#pagination li').index($('#pagination li.active'));
+
+				$('.table tbody tr td:nth-child(' + (noIndex + 1) + ')').each(function(index, item) {
+					$(item).text(pageIndex * 5 + (index+1));
 				});
 			}
 			
@@ -219,7 +231,7 @@
 				var checkedContentCount = $('#popupContentTable input:checked').length;
 				
 				if(checkedContentCount == 0) {
-					alert('연결 컨텐츠를 선택하세요.');
+					alert('Please select a connected content.');
 					e.preventDefault();
 				}
 			});

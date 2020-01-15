@@ -1,7 +1,7 @@
 package goalKeepin.constants;
 
 public enum CashReportStatus {
-	CT01("대기중"), CT02("완료");
+	CT01("Waiting"), CT02("Completed");
 	
 	private String statusName;
 	

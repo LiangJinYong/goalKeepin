@@ -16,46 +16,46 @@
 }
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left">카테고리 생성하기</h1>
+			<h1 class="brand pull-left h3">Create a category</h1>
 		</header>
 	</div>
 	
 	<form method="post" th:action="@{/category/processCagegoryCreation}" th:object="${category}">
 		<div class="row" id="categoryName">
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 명(영문)</h2>
+				<h2 class="h5">Name of category (English)</h2>
 				<input type="text" name="categoryNmEn" placeholder="내용을 입력해주세요" required="required">
 			</div>
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 명(번체)</h2>
+				<h2 class="h5">Name of category (Traditional)</h2>
 				<input type="text" name="categoryNmTc" placeholder="내용을 입력해주세요" required="required">
 			</div>
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 명(간체)</h2>
+				<h2 class="h5">Name of category (Simplified)</h2>
 				<input type="text" name="categoryNmSc" placeholder="내용을 입력해주세요" required="required">
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 한줄 설명(영문)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionEn" placeholder="내용을 입력해주세요" required="required"></textarea>
+				<h2 class="h5">Single line description (English)</h2>
+				<textarea rows="5" style="width: 100%;" name="categoryDescriptionEn" placeholder="Please enter details" required="required"></textarea>
 			</div>
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 한줄 설명(번체)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionTc" placeholder="내용을 입력해주세요" required="required"></textarea>
+				<h2 class="h5">Single line description (Traditional)</h2>
+				<textarea rows="5" style="width: 100%;" name="categoryDescriptionTc" placeholder="Please enter details" required="required"></textarea>
 			</div>
 			<div class="col-md-4">
-				<h2 class="h4">카테고리 한줄 설명(간체)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionSc" placeholder="내용을 입력해주세요" required="required"></textarea>
+				<h2 class="h5">Single line description (Simplified)</h2>
+				<textarea rows="5" style="width: 100%;" name="categoryDescriptionSc" placeholder="Please enter details" required="required"></textarea>
 			</div>
 		</div>
 		
 		<div class="row text-center" style="margin-top: 30px;">
-			<input type="submit" value="생성" class="btn btn-success" />
+			<input type="submit" value="Create" class="btn btn-primary" />
 		</div>
 	</form>
 	

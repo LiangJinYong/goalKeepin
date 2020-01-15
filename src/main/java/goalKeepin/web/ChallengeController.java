@@ -111,17 +111,21 @@ public class ChallengeController {
 			return "challenge/baseChallengeDetailForm";
 		}
 		*/
+		long fileSize = file.getSize();
 		
-		String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH, null);
+		if (fileSize > 0) {
+			
+			String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH, null);
+			baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
+		}
         
-        baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
         
         challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseAuthDescTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseDetailTrans(baseChallenge);
 		
 		challengerMapper.insertOrUpdateBaseChallenge(baseChallenge);
-		
+
 		return "redirect:/challenge/baseManagement/1";
 	}
 	

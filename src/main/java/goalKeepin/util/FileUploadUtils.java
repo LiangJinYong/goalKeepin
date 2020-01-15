@@ -24,7 +24,9 @@ public class FileUploadUtils {
         
         File imageDir = new File(basePath + datePath);
         if (!imageDir.exists()) {
-			imageDir.mkdirs();
+        	System.out.println("===>" + basePath + datePath);
+			boolean mkdirs = imageDir.mkdirs();
+			System.out.println("success? " + mkdirs);
 		}
         
         sdf = new SimpleDateFormat("HHmmss");

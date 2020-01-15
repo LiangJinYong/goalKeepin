@@ -1,6 +1,8 @@
 package goalKeepin.web;
 
+import java.util.Date;
 import java.util.Enumeration;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +86,6 @@ public class CashReportController {
 	@PostMapping("/processCashReport")
 	@ResponseBody
 	public String processCashReport(@RequestParam("cashReportIdList[]") List<String> cashReportIdList) {
-		System.out.println("@@@@");
 		try {
 			cashReportMapper.updateCashReportStatus(cashReportIdList);
 			return "success";
@@ -125,8 +126,13 @@ public class CashReportController {
 	    	sheet.autoSizeColumn(i);
 	    }
 	    
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	    String now = sdf.format(new Date());
+	    
+	    String filename = "CashReport_" + now + ".xls";
+	    
 	    response.setContentType("ms-vnd/excel");
-	    response.setHeader("Content-Disposition", "attachment;filename=CashReport.xls");
+	    response.setHeader("Content-Disposition", "attachment;filename=" + filename);
 
 	    wb.write(response.getOutputStream());
 	    wb.close();
@@ -161,13 +167,21 @@ public class CashReportController {
 	    
 	    cell = row.createCell(3);
 	    cell.setCellStyle(headStyle);
-	    cell.setCellValue("Account");
+	    cell.setCellValue("Bank");
 	    
 	    cell = row.createCell(4);
 	    cell.setCellStyle(headStyle);
-	    cell.setCellValue("Date");
+	    cell.setCellValue("Account");
 	    
 	    cell = row.createCell(5);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("Account Holder");
+	    
+	    cell = row.createCell(6);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("Date");
+	    
+	    cell = row.createCell(7);
 	    cell.setCellStyle(headStyle);
 	    cell.setCellValue("Status");
 	}
@@ -198,13 +212,21 @@ public class CashReportController {
 	        
 	        cell = row.createCell(3);
 	        cell.setCellStyle(bodyStyle);
-	        cell.setCellValue(cashReport.get("userAccount"));
+	        cell.setCellValue(cashReport.get("reportBank"));
 	        
 	        cell = row.createCell(4);
 	        cell.setCellStyle(bodyStyle);
-	        cell.setCellValue(cashReport.get("reportRegDate"));
+	        cell.setCellValue(cashReport.get("reportAccount"));
 	        
 	        cell = row.createCell(5);
+	        cell.setCellStyle(bodyStyle);
+	        cell.setCellValue(cashReport.get("reportAccountHolder"));
+	        
+	        cell = row.createCell(6);
+	        cell.setCellStyle(bodyStyle);
+	        cell.setCellValue(cashReport.get("reportRegDate"));
+	        
+	        cell = row.createCell(7);
 	        cell.setCellStyle(bodyStyle);
 	        
 	        CellStyle cellStyle = wb.createCellStyle();

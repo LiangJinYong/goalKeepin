@@ -9,6 +9,9 @@
 		<result property="reportTypeCd" column="reportTypeCd" />
 		<result property="reportStatusCd" column="reportStatusCd" />
 		<result property="reportCashAmount" column="reportCashAmount" />
+		<result property="reportBank" column="reportBank" />
+		<result property="reportAccountHolder" column="reportAccountHolder" />
+		<result property="reportAccount" column="reportAccount" />
 		<result property="reportRegDate" column="reportRegDate" />
 		<association property="user" resultMap="goalKeepin.data.ChallengeMapper.User"></association>
 	</resultMap>
@@ -21,7 +24,7 @@
 	
 	<select id="selectCashReportList" parameterType="map" resultMap="CashReport">
 		/* selectCashReportList */
-		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ut.user_account userAccount, ucrt.report_reg_dt reportRegDate, ucrt.report_st_cd reportStatusCd
+		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, ucrt.report_st_cd reportStatusCd
 		<include refid="cashReport" />
 		ORDER BY ucrt.report_reg_dt DESC
 		LIMIT ${startIndex}, 10
@@ -33,7 +36,7 @@
 		WHERE ucrt.report_tp_cd = 'CA03'
 		AND ut.user_nationality_cd = #{nationalityCd}
 		<if test="bank != null and bank != ''">
-			AND ut.user_bank = #{bank}
+			AND ucrt.report_bank = #{bank}
 		</if>
 		<if test="reportStatusCd != null and reportStatusCd != 'CT00'">
 			AND ucrt.report_st_cd = #{reportStatusCd}
@@ -66,7 +69,7 @@
 	
 	<select id="selectCashReportForDownload" parameterType="string" resultType="hashmap">
 		/* selectCashReportForDownload */
-		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ut.user_account userAccount, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN '대기중' ELSE '완료' END reportStatusCd
+		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN '대기중' ELSE '완료' END reportStatusCd
 		FROM USER_CASH_REPORT_TB ucrt
 		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
 		WHERE ucrt.report_tp_cd = 'CA03'

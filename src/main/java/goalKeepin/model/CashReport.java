@@ -9,6 +9,9 @@ public class CashReport {
 	private String reportTypeCd;
 	private String reportStatusCd;
 	private String reportCashAmount;
+	private String reportBank;
+	private String reportAccountHolder;
+	private String reportAccount;
 	private Date reportRegDate;
 	private User user;
 }

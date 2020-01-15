@@ -17,4 +17,6 @@ public interface InquiryMapper {
 	Inquiry selectInquiryDetail(Long inquiryNo);
 	
 	void updateInquiryStatus(Inquiry inquiry);
+
+	String getPushTokenByUserNo(long userNo);
 }

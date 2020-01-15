@@ -13,35 +13,35 @@
 
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
-		<header class="col-md-10 col-md-offset-1">
-			<h1 class="brand pull-left">챌린지 관리 - <span th:text="*{baseChallengeNmEn}"></span></h1>
+		<header class="col-md-12">
+			<h1 class="brand pull-left h3">Project management - <span style="color: midnightblue;" th:text="*{baseChallengeNmEn}"></span></h1>
 		</header>
 	</div>
 	
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-12">
 			<table id="detailTable" class="table table-striped table-hover">
 				<thead>
 					<tr class="info">
 						<th>
-							<h2 class="h4 text-center">NO</h2>
+							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">챌린지 명</h2>
+							<h2 class="h5 text-center">Name of Project</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">시작일</h2>
+							<h2 class="h5 text-center">Start date</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">종료일</h2>
+							<h2 class="h5 text-center">End date</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">참여자 수</h2>
+							<h2 class="h5 text-center">Number of participants</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">상태</h2>
+							<h2 class="h5 text-center">Status</h2>
 						</th>
 					</tr>
 				</thead>
@@ -52,9 +52,9 @@
 						<td th:text="${operatedChallenge.startDate}">Start Date</td>
 						<td th:text="${operatedChallenge.endDate}">End Date</td>
 						<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
-						<td th:if="${operatedChallenge.statusCd == 'CH01'}" style="color: blue;">모집중</td>
-						<td th:if="${operatedChallenge.statusCd == 'CH02'}" style="color: green;">진행중</td>
-						<td th:if="${operatedChallenge.statusCd == 'CH03'}" style="color: red;">완료</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH01'}" style="color: blue;">Recruiting</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH02'}" style="color: green;">Ongoing</td>
+						<td th:if="${operatedChallenge.statusCd == 'CH03'}" style="color: red;">Completed</td>
 					</tr>
 				</tbody>
 			</table>
@@ -63,7 +63,7 @@
 	
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation example">
-			<ul class="pagination">
+			<ul class="pagination" id="pagination">
 				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
 					<a th:text="${i}" class="page-link" th:href="@{'/challenge/showOperatedChallengeList/' + ${i} + '?baseNo=' + ${baseNo}}"></a>
 				</li>
@@ -72,6 +72,7 @@
 	</div>
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			$('#detailTable tr:gt(0)').click(function() {

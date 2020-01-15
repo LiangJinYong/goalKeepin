@@ -22,31 +22,31 @@ h2 + span {
 }
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
 		<header>
-			<h1 class="brand pull-left">인증샷 모야보기</h1>
+			<h1 class="brand pull-left h3">View verifications</h1>
 		</header>
 	</div>
 	
 	<div class="row">
 		<div class="col-md-5">
-			<h2 class="h4">챌린지 명</h2>
+			<h2 class="h5">Name of Project</h2>
 			<span th:text="*{operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</span>
 		</div>
 		<div class="col-md-5">
-			<h2 class="h4">등록 일자</h2>
+			<h2 class="h5">Registration Date</h2>
 			<span th:text="*{#dates.format(operatedChallenge.regDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
 		</div>
 	</div>
 	
 	<div class="row">
-		<div class="col-md-2">
-			<h2 class="h4">모인 금액</h2>
+		<div class="col-md-5">
+			<h2 class="h5">Sum amount</h2>
 			<span th:text="*{operatedChallenge.totalFee}"></span>
 		</div>
-		<div class="col-md-2">
-			<h2 class="h4">참여자 수</h2>
+		<div class="col-md-5">
+			<h2 class="h5">Number of participants</h2>
 			<span th:text="*{operatedChallenge.entryNum}"></span>
 		</div>
 	</div>
@@ -55,9 +55,9 @@ h2 + span {
 		<div class="col-md-12">
 			<table class="table">
 				<thead>
-					<tr class="active">
+					<tr class="info">
 						<th>
-							<h2 class="text-center h4">인증샷 목록</h2>
+							<h2 class="text-center h4">Verification list</h2>
 						</th>
 					</tr>
 				</thead>
@@ -74,7 +74,7 @@ h2 + span {
 			</div>	
 		</div>
 		<div class="text-center col-md-4" th:if="*{baseAuthMethodCd == 'AU02'}" th:each="proof: ${proofList}" style="margin-bottom: 30px;">
-			<a th:href="@{'/challenge/download/' + *{proof.fileName}}"><img th:src="@{/images/download.png}" class="download"><span th:text="*{proof.proofDate}"></span></a>
+			<a th:href="@{'/challenge/download' + *{proof.fileName}}"><img th:src="@{/images/download.png}" class="download"><span th:text="*{proof.proofDate}"></span></a>
 		</div>
 	</div>
 	

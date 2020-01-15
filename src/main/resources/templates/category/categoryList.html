@@ -19,29 +19,29 @@ header a, header li {
 }
 </style>
 </head>
-<body>
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
-		<header class="col-md-10 col-md-offset-1">
-			<h1 class="brand pull-left">카테고리 관리</h1>
+		<header class="col-md-12">
+			<h1 class="brand pull-left h3">Category management</h1>
 			<ul class="list-inline list-unstyled pull-right">
-				<li><a class="btn btn-success" th:href="@{/category/createNewCategory}">생성하기</a></li>
+				<li><a class="btn btn-primary" th:href="@{/category/createNewCategory}">Create a category</a></li>
 			</ul>
 		</header>
 	</div>
 	
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-12">
 			<table id="categoryTable" class="table table-striped table-hover">
 				<thead>
 					<tr class="info">
 						<th>
-							<h2 class="h4 text-center">NO</h2>
+							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">카테고리 명</h2>
+							<h2 class="h5 text-center">Name of category</h2>
 						</th>
 						<th>
-							<h2 class="h4 text-center">챌린지 수</h2>
+							<h2 class="h5 text-center">Number of projects</h2>
 						</th>
 					</tr>
 				</thead>
@@ -59,7 +59,7 @@ header a, header li {
 	
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation example">
-			<ul class="pagination">
+			<ul class="pagination" id="pagination">
 				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
 					<a th:text="${i}" class="page-link" th:href="@{'/category/showCategoryList/' + ${i}}"></a>
 				</li>
@@ -68,6 +68,7 @@ header a, header li {
 	</div>
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 					
