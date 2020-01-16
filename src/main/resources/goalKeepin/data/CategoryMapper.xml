@@ -17,13 +17,13 @@
 		FROM CATEGORY_TB
 	</select>
 	
-	<select id="selectCategoryList" parameterType="int" resultMap="Category">
+	<select id="selectCategoryList" parameterType="map" resultMap="Category">
 		/* selectCategoryList */
 		SELECT ct.category_no categoryNo, tt.trans_en categoryNmEn,
 			(SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB WHERE challenge_category_no = ct.category_no) challengeNum
 		FROM CATEGORY_TB ct INNER JOIN TRANSLATION_TB tt ON ct.category_nm_t_no = tt.trans_no
 		ORDER BY category_no DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<insert id="insertCategoryNmTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="categoryNmTransNo">

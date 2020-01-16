@@ -53,7 +53,7 @@
 			</if>
 		) offer
 		ORDER BY offer.offerRegDate DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<insert id="insertOfferTitleTrans" parameterType="Offer" useGeneratedKeys="true" keyColumn="TRANS_NO" keyProperty="offerTitleTransNo">

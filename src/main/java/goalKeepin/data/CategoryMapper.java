@@ -1,6 +1,7 @@
 package goalKeepin.data;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +12,7 @@ public interface CategoryMapper {
 
 	int getTotalCategoryCount();
 
-	List<Category> selectCategoryList(int startIndex);
+	List<Category> selectCategoryList(Map<String, Object> startIndex);
 
 	void insertCategoryNmTrans(Category category);
 

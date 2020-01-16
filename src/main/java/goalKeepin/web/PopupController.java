@@ -1,9 +1,10 @@
 package goalKeepin.web;
 
 import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,36 +19,44 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.PopupMapper;
+import goalKeepin.model.Page;
 import goalKeepin.model.Paging;
 import goalKeepin.model.Popup;
+import goalKeepin.service.PageService;
 import goalKeepin.util.FileUploadUtils;
 import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/popup")
 public class PopupController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private PopupMapper popupMapper;
 	
 	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/popupImage/";
-//	private final static String FILE_UPLOAD_PATH = "/Users/liangjinyong/Desktop/uploadImages/popupImage/";
 	
 	@GetMapping("/showPopupList/{pageNum}")
 	public String showPopupList(@PathVariable("pageNum") Integer pageNum, Model model) {
-		int totalPopupCount = popupMapper.getTotalPopupCount();
-		Paging paging = PagingUtils.getPaging(pageNum, totalPopupCount);
 		
-		int startIndex = (pageNum - 1) * 10;
-		
+		int pageSize = 3;
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", startIndex);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		List<Popup> popupList =  popupMapper.selectPopupList(paramMap);
+		List<Popup> pageData =  popupMapper.selectPopupList(paramMap);
+		int totalRecordNum = popupMapper.getTotalPopupCount();
 		
-		model.addAttribute("popupList", popupList);
-		model.addAttribute("paging", paging);
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
 		
 		return "popup/popupList";
 	}

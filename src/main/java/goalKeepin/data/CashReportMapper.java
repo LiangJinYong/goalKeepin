@@ -14,8 +14,6 @@ public interface CashReportMapper {
 
 	List<CashReport> selectCashReportList(Map<String, Object> paramMap);
 
-	List<String> selectBankList(String nationalityCd);
-
 	void updateCashReportStatus(List<String> cashReportIdList);
 
 	List<Map<String, String>> selectCashReportForDownload(String nationalityCd);

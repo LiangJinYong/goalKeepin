@@ -1,8 +1,8 @@
 package goalKeepin.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +31,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.CashReportMapper;
 import goalKeepin.model.CashReport;
-import goalKeepin.model.Paging;
-import goalKeepin.util.PagingUtils;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 
 @Controller
 @RequestMapping("/cashReport")
 public class CashReportController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private CashReportMapper cashReportMapper;
@@ -56,30 +63,27 @@ public class CashReportController {
 		while(parameterNames.hasMoreElements()) {
 			String param = parameterNames.nextElement();
 			String value = request.getParameter(param);
+			System.out.println("==>" + param + ":" + value);
 			model.addAttribute(param, value);
 		}
 		
-		// get bank list
-		List<String> bankList = cashReportMapper.selectBankList(nationalityCd);
-		model.addAttribute("bankList", bankList);
-		
+		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
-		Map<String, String[]> cashReportFormParam = request.getParameterMap();
-		
-		paramMap.putAll(convertParamMap(cashReportFormParam));
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		paramMap.put("nationalityCd", nationalityCd);
 		
-		int totalCashReportCount = cashReportMapper.getTotalCashReportCount(paramMap);
-		Paging paging = PagingUtils.getPaging(pageNum, totalCashReportCount);
+		Map<String, String[]> cashReportFormParam = request.getParameterMap();
+		paramMap.putAll(convertParamMap(cashReportFormParam));
 		
-		int startIndex = (pageNum - 1) * 10;
+		int totalRecordNum = cashReportMapper.getTotalCashReportCount(paramMap);
+		List<CashReport> pageData = cashReportMapper.selectCashReportList(paramMap);
 		
-		paramMap.put("startIndex", startIndex);
-		List<CashReport> cashReportList = cashReportMapper.selectCashReportList(paramMap);
-		
-		model.addAttribute("cashReportList", cashReportList);
-		model.addAttribute("paging", paging);
+
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		model.addAttribute("page", page);
 		model.addAttribute("country", country);
+		
 		return "cashReport/cashReportList";
 	}
 	
@@ -232,7 +236,7 @@ public class CashReportController {
 	        CellStyle cellStyle = wb.createCellStyle();
 	        Font font = wb.createFont();
 	        String reportStatusCd = cashReport.get("reportStatusCd");
-	        if ("완료".equals(reportStatusCd)) {
+	        if ("Completed".equals(reportStatusCd)) {
 	        	font.setColor(HSSFColor.GREEN.index);
 			} else {
 				font.setColor(HSSFColor.RED.index);

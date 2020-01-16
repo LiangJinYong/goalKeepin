@@ -1,6 +1,8 @@
 package goalKeepin.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,14 +12,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.CategoryMapper;
 import goalKeepin.model.Category;
-import goalKeepin.model.Paging;
-import goalKeepin.util.PagingUtils;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 
 @Controller
 @RequestMapping("/category")
 public class CategoryController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private CategoryMapper categoryMapper;
@@ -25,15 +34,18 @@ public class CategoryController {
 	@GetMapping("/showCategoryList/{pageNum}")
 	public String showCategoryList(@PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int totalCategoryCount = categoryMapper.getTotalCategoryCount();
-		Paging paging = PagingUtils.getPaging(pageNum, totalCategoryCount);
+		int pageSize = props.getPageSize();
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		int startIndex = (pageNum - 1) * 10;
+		List<Category> pageData = categoryMapper.selectCategoryList(paramMap);
+		int totalRecordNum = categoryMapper.getTotalCategoryCount();
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
 
-		List<Category> categoryList = categoryMapper.selectCategoryList(startIndex);
-		
-		model.addAttribute("categoryList", categoryList);
-		model.addAttribute("paging", paging);
 		return "category/categoryList";
 	}
 	

@@ -18,6 +18,19 @@
 		FROM USER_TB
 		WHERE user_nationality_cd = #{nationalityCd}
 		ORDER BY user_no DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<!--  -->
+	<select id="selectUserPageList" parameterType="map" resultMap="goalKeepin.data.ChallengeMapper.User">
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, user_reg_dt userRegDate
+		FROM USER_TB
+		ORDER BY user_no DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="selectUserTotalCount" resultType="int">
+		SELECT COUNT(*) totalUserCount
+		FROM USER_TB
 	</select>
 </mapper>

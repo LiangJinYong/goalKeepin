@@ -47,24 +47,71 @@ header a, header li {
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="notice: ${noticeList}" style="cursor: pointer;" th:id="${notice.noticeNo}">
+					<tr th:if="${page.totalRecordNum > 0}" th:each="notice: ${page.pageData}" style="cursor: pointer;" th:id="${notice.noticeNo}">
 						<td class="text-center" th:text="${notice.noticeNo}">NO</td>
 						<td class="text-center" th:text="${notice.noticeTitleEn}">Notice Title</td>
 						<td class="text-center" th:text="*{#dates.format(notice.noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}">Notice Reg Date</td>
+					</tr>
+					<tr th:if="${page.totalRecordNum == 0}">
+						<td colspan="3" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-	<div class="row text-center" th:if="${paging.totalPages > 1}">
-		<nav aria-label="Page navigation example">
+	
+	<div class="row text-center" th:if="${page.totalPageNum > 0}">
+		<nav aria-label="Page navigation">
 			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''"><a th:text="${i}" class="page-link" th:href="@{'/notice/showNoticeList/' + ${i}}"></a></li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+					<a class="page-link">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/notice/showNoticeList/1'}">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.pageNum == 1}">
+					<a class="page-link">&lt;</a>
+				</li>
+				<li th:if="${page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/notice/showNoticeList/' + ${pageNum - 1}}">&lt;</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+					<a class="page-link" th:href="@{'/notice/showNoticeList/' + ${i}}" th:text="${i}"></a>
+				</li>
+				<li th:if="${page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;</a>
+				</li>
+				<li th:if="${page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/notice/showNoticeList/' + ${pageNum + 1}}">&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/notice/showNoticeList/' + ${page.totalPageNum}}">&gt;&gt;</a>
+				</li>
 			</ul>
 		</nav>
 	</div>
+	<!-- 
+	<div class="row text-center" th:if="${paging.totalPages > 1}">
+		<nav aria-label="Page navigation example">
+			<ul class="pagination" id="pagination">
+				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
+					<a th:text="${i}" class="page-link" th:href="@{'/notice/showNoticeList/' + ${i}}"></a>
+				</li>
+			</ul>
+		</nav>
+	</div> 
+	-->
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {

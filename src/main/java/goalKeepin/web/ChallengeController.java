@@ -26,19 +26,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.ChallengeMapper;
 import goalKeepin.model.BaseChallenge;
 import goalKeepin.model.OperatedChallenge;
-import goalKeepin.model.Paging;
+import goalKeepin.model.Page;
 import goalKeepin.model.ParticipantEntry;
 import goalKeepin.model.Review;
+import goalKeepin.service.PageService;
 import goalKeepin.util.DateUtils;
 import goalKeepin.util.FileUploadUtils;
-import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/challenge")
 public class ChallengeController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
@@ -47,14 +54,17 @@ public class ChallengeController {
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int totalBaseChallengeNum = challengerMapper.getTotalBaseChallengeNum();
-		Paging paging = PagingUtils.getPaging(pageNum, totalBaseChallengeNum);
-
-		int startIndex = (pageNum - 1) * 10;
-		List<Map<String, Object>> list = challengerMapper.selectBaseChallengeList(startIndex);
+		int pageSize = props.getPageSize();
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		model.addAttribute("challengeList", list);
-		model.addAttribute("paging", paging);
+		List<Map<String, Object>> pageData = challengerMapper.selectBaseChallengeList(paramMap);
+		int totalRecordNum = challengerMapper.getTotalBaseChallengeNum();
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
 
 		return "challenge/baseManagement";
 	}
@@ -75,19 +85,20 @@ public class ChallengeController {
 			habitTypeCd = "HT00";
 		}
 		
+		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		paramMap.put("statusCd", statusCd);
 		paramMap.put("habitTypeCd", habitTypeCd);
-		int operatedChallengeCount = challengerMapper.getAllOperatedChallengeCount(paramMap);
-		Paging paging = PagingUtils.getPaging(pageNum, operatedChallengeCount);
+
 		
-		int startIndex = (pageNum - 1) * 10;
-		paramMap.put("startIndex", startIndex);
+		int totalRecordNum = challengerMapper.getAllOperatedChallengeCount(paramMap);
+		List<OperatedChallenge> pageData = challengerMapper.selectAllOperatedChallengeList(paramMap);
 		
-		List<OperatedChallenge> operatedChallengeList = challengerMapper.selectAllOperatedChallengeList(paramMap);
-		model.addAttribute("operatedChallengeList", operatedChallengeList);
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		model.addAttribute("page", page);
 		model.addAttribute("statusCd", statusCd);
-		model.addAttribute("paging", paging);
 		model.addAttribute("habitTypeCd", habitTypeCd);
 		
 		return "challenge/operatedChallengeListByStatus";
@@ -167,21 +178,21 @@ public class ChallengeController {
 	@GetMapping("/showOperatedChallengeList/{pageNum}")
 	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int operatedChallengeCount = challengerMapper.getOperatedChallengeCountByBase(baseNo);
-		Paging paging = PagingUtils.getPaging(pageNum, operatedChallengeCount);
-		
-		int startIndex = (pageNum - 1) * 10;
+		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		paramMap.put("baseNo", baseNo);
-		paramMap.put("startIndex", startIndex);
 		
-		List<OperatedChallenge> operatedChallengeList = challengerMapper.selectOperatedChallengeListByBaseNo(paramMap);
-		model.addAttribute("operatedChallengeList", operatedChallengeList);
+		List<OperatedChallenge> pageData = challengerMapper.selectOperatedChallengeListByBaseNo(paramMap);
+		int totalRecordNum = challengerMapper.getOperatedChallengeCountByBase(baseNo);
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		model.addAttribute("page", page);
 		
 		String baseChallengeNmEn = challengerMapper.selectBaseChallengeNmEn(baseNo);
 		model.addAttribute("baseChallengeNmEn", baseChallengeNmEn);
 		model.addAttribute("baseNo", baseNo);
-		model.addAttribute("paging", paging);
 		
 		return "challenge/operatedChallengeList";
 	}
@@ -204,21 +215,22 @@ public class ChallengeController {
 	@GetMapping("/showParticipantList/{pageNum}")
 	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
-		int participantCount = challengerMapper.getPaticipantCountByChallenge(operatedNo);
-		Paging paging = PagingUtils.getPaging(pageNum, participantCount);
-
-		int startIndex = (pageNum - 1) * 10;
-		
+		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
-		paramMap.put("startIndex", startIndex);
-		
-		List<ParticipantEntry> participantEntryList = challengerMapper.selectParticipantEntryList(paramMap);
-		model.addAttribute("participantEntryList", participantEntryList);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
+
+		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
 		model.addAttribute("challengeProofCount", challengeProofCount);
+		
+		int totalRecordNum = challengerMapper.getPaticipantCountByChallenge(operatedNo);
+		List<ParticipantEntry> pageData = challengerMapper.selectParticipantEntryList(paramMap);
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		model.addAttribute("page", page);
+		
 		model.addAttribute("operatedNo", operatedNo);
-		model.addAttribute("paging", paging);
 		
 		return "challenge/challengeParticipantList";
 	}
@@ -283,19 +295,19 @@ public class ChallengeController {
 	@GetMapping("/showReviewListByChallenge/{pageNum}")
 	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int reviewCount = challengerMapper.getReviewCountByChallenge(operatedNo);
-		Paging paging = PagingUtils.getPaging(pageNum, reviewCount);
-		
-		int startIndex = (pageNum - 1) * 10;
-		
+		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
-		paramMap.put("startIndex", startIndex);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		List<Review> reviewList = challengerMapper.selectReviewListByChallenge(paramMap);
-		model.addAttribute("reviewList", reviewList);
-		model.addAttribute("paging", paging);
+		List<Review> pageData = challengerMapper.selectReviewListByChallenge(paramMap);
+		int totalRecordNum = challengerMapper.getReviewCountByChallenge(operatedNo);
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		model.addAttribute("page", page);
 		model.addAttribute("operatedNo", operatedNo);
+
 		return "challenge/challengeReviewList";
 	}
 }

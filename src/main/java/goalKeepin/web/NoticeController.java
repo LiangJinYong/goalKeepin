@@ -1,6 +1,8 @@
 package goalKeepin.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,15 +15,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.NoticeMapper;
 import goalKeepin.model.Notice;
-import goalKeepin.model.Paging;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 import goalKeepin.util.FileUploadUtils;
-import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/notice")
 public class NoticeController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private NoticeMapper noticeMapper;
@@ -31,15 +40,18 @@ public class NoticeController {
 	@GetMapping("/showNoticeList/{pageNum}")
 	public String showNoticeList(@PathVariable("pageNum") Integer pageNum, Model model) {
 		
-		int totalNoticeCount = noticeMapper.getTotalNoticeCount();
-		Paging paging = PagingUtils.getPaging(pageNum, totalNoticeCount);
+		int pageSize = props.getPageSize();
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		int startIndex = (pageNum - 1) * 10;
-
-		List<Notice> noticeList = noticeMapper.selectNoticeList(startIndex);
+		List<Notice> pageData = noticeMapper.selectNoticeList(paramMap);
+		int totalRecordNum = noticeMapper.getTotalNoticeCount();
 		
-		model.addAttribute("noticeList", noticeList);
-		model.addAttribute("paging", paging);
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
+		
 		return "notice/noticeList";
 	}
 	

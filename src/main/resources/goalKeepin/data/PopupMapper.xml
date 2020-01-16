@@ -31,7 +31,7 @@
 		, popup_is_on popupIsOn
 		FROM POPUP_TB pt
 		ORDER BY popup_is_on DESC, popup_no DESC
-        LIMIT #{startIndex}, 10
+        LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="getTotalNoticeCount" resultType="int">

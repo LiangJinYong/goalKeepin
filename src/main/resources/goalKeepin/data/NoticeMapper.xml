@@ -35,12 +35,12 @@
 		<include refid="notice" />
 	</select>
 	
-	<select id="selectNoticeList" parameterType="int" resultMap="Notice">
+	<select id="selectNoticeList" parameterType="map" resultMap="Notice">
 		/* selectNoticeList */
 		SELECT nt.notice_no noticeNo, tt.trans_en noticeTitleEn, nt.notice_reg_dt noticeRegDate
 		<include refid="notice" />
 		ORDER by notice_reg_dt DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<insert id="insertOrUpdateNoticeTitle" parameterType="Notice" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="noticeTitleTransNo">

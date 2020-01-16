@@ -36,7 +36,7 @@
 		SELECT it.inquiry_no inquiryNo, ut.user_id userId, CASE WHEN LENGTH(it.inquiry_txt) > 50 THEN CONCAT(LEFT(it.inquiry_txt, 50), '......') ELSE it.inquiry_txt END inquiryContentShort, it.inquiry_txt inquiryContentFull, it.inquiry_reg_dt inquiryRegDate, it.inquiry_st_cd inquiryStatusCd
 		<include refid="inquiry" />
 		ORDER BY inquiry_reg_dt DESC
-		LIMIT #{startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="selectInquiryDetail" parameterType="long" resultMap="Inquiry">

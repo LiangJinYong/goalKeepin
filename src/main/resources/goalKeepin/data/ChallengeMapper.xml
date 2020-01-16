@@ -89,19 +89,19 @@
 	<select id="getTotalBaseChallengeNum" resultType="int">
     	/* getTotalBaseChallengeNum */
     	SELECT COUNT(*) totalBaseChallengeNum
-		<include refid="baseChallenge"></include>
+		<include refid="baseChallenge" />
 	</select>
 
-    <select id="selectBaseChallengeList" parameterType="int" resultType="hashmap">
+    <select id="selectBaseChallengeList" parameterType="map" resultType="hashmap">
     	/* selectBaseChallengeList */
         SELECT bct.BASE_NO baseNo
         	, tt.TRANS_EN name
 			, (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH01' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) recruiting
 		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH02' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) ongoing
-		    , (SELECT count(*) from OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH03' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) expired
-		<include refid="baseChallenge"></include>
+		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH03' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) expired
+		<include refid="baseChallenge" />
 		ORDER BY base_reg_dt DESC
-		limit ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
     </select>
     
     <sql id="baseChallenge">
@@ -221,7 +221,7 @@
 		SELECT oct.challenge_no operatedChallengeNo, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum, oct.challenge_st_cd statusCd
 		<include refid="operatedChallenge" />
 		ORDER BY oct.challenge_no DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="selectBaseChallengeNmEn" parameterType="long" resultType="string">
@@ -296,7 +296,7 @@
         INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
         WHERE cet.entry_challenge_no = #{operatedNo}
         ORDER BY cet.entry_reg_dt DESC
-        LIMIT ${startIndex}, 10
+        LIMIT ${startIndex}, ${pageSize}
 	</select>
 
 	<select id="selectEntryInfoByParticipant" parameterType="long" resultMap="ParticipantEntry">
@@ -331,7 +331,7 @@
 		FROM CHALLENGE_REVIEW_TB crt INNER JOIN USER_TB ut ON crt.review_user_no = ut.user_no
 		WHERE crt.review_c_no = #{operatedNo}
 		ORDER BY crt.review_no desc
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="getAllOperatedChallengeCount" parameterType="map" resultType="int">
@@ -356,7 +356,7 @@
 			AND LOCATE(#{habitTypeCd}, bct.base_habit_tp_cd) > 0
 		</if>
 		ORDER BY bct.base_no DESC, oct.challenge_no DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="selectParticipantProofList" parameterType="long" resultType="hashmap">

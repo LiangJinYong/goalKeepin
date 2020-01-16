@@ -1,6 +1,7 @@
 package goalKeepin.data;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +12,7 @@ public interface NoticeMapper {
 
 	int getTotalNoticeCount();
 
-	List<Notice> selectNoticeList(int startIndex);
+	List<Notice> selectNoticeList(Map<String, Object> paramMap);
 
 	void insertOrUpdateNoticeTitle(Notice notice);
 

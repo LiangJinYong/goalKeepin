@@ -14,4 +14,9 @@ public interface UserMapper {
 
 	List<User> selectUserList(Map<String, Object> paramMap);
 
+	// ----
+	List<User> selectUserPageList(Map<String, Object> paramMap);
+
+	int selectUserTotalCount();
+
 }

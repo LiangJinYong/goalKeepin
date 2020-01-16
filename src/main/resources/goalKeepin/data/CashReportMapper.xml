@@ -27,7 +27,7 @@
 		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, ucrt.report_st_cd reportStatusCd
 		<include refid="cashReport" />
 		ORDER BY ucrt.report_reg_dt DESC
-		LIMIT ${startIndex}, 10
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<sql id="cashReport">
@@ -50,14 +50,6 @@
 		
 	</sql>
 	
-	<select id="selectBankList" parameterType="string" resultType="string">
-		/* selectBankList */
-		SELECT DISTINCT user_bank
-		FROM USER_TB
-		WHERE user_nationality_cd = #{nationalityCd}
-		AND user_bank IS NOT NULL
-	</select>
-	
 	<update id="updateCashReportStatus" parameterType="list">
 		UPDATE USER_CASH_REPORT_TB 
 		SET report_st_cd = 'CT02' 
@@ -69,7 +61,7 @@
 	
 	<select id="selectCashReportForDownload" parameterType="string" resultType="hashmap">
 		/* selectCashReportForDownload */
-		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN '대기중' ELSE '완료' END reportStatusCd
+		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN 'Waiting' ELSE 'Completed' END reportStatusCd
 		FROM USER_CASH_REPORT_TB ucrt
 		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
 		WHERE ucrt.report_tp_cd = 'CA03'

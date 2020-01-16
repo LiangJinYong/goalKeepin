@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Push Notification</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <style type="text/css">
 .row {
@@ -29,9 +31,11 @@ input[type=text], input[type=number] {
 	
 	<div class="row">
 		<div class="col-md-12">
-			<span style="margin-right: 20px;">User ID</span>
-			<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="Please enter user id to search">
-			<a class="btn btn-primary" href="#" id="userSearch">Search</a>
+			<span id="searchArea">
+				<span style="margin-right: 20px;">User ID</span>
+				<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="Please enter user id to search">
+				<a class="btn btn-primary" href="#" id="userSearch">Search</a>
+			</span>
 			<span style="margin-left: 20px;">
 				<input type="checkbox" id="sendToAll">
 				<label for="sendToAll">Send to everyone</label>
@@ -92,6 +96,7 @@ input[type=text], input[type=number] {
 		<div class="row">
 			<div class="col-md-11 text-center">
 				<a href="#" class="btn btn-primary" id="doSend">Send</a>
+				<a href="#" class="btn btn-primary" id="doSendToAll" style="display: none;">Send To Everyone</a>
 			</div>
 		</div>
 	</section>
@@ -184,8 +189,8 @@ input[type=text], input[type=number] {
 			});
 			
 			$('#doSend').click(function() {
-				var checkedUserCount = $('#userData input:checked').length;
 				
+				var checkedUserCount = $('#userData input:checked').length;
 				
 				if(checkedUserCount == 0 && !$('#sendToAll').is(':checked')) {
 					alert('Please select user to send push notification.');
@@ -204,22 +209,26 @@ input[type=text], input[type=number] {
 					userNos.push($(this).val());
 				});
 				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
 				
-				
-				$.post({
-					url: '/goalkeepinmanager/pushNotification/sendingPushNotification',
-					data: {
-						userNos: userNos.join(','),
-						notificationMessage: notificationMessage
-					},
-					dataType: 'json',
-					success: function() {
-						alert('Push notification processed successfully.')
-					},
-					error: function() {
-						alert('Error sending push notification.');
-					}
-				});
+				$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotification',  
+					 data: {
+						 userNos: userNos.join(','),
+							notificationMessage: notificationMessage
+		 			 },  
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 alert('Push notification processed successfully.')
+					 })
+					 .fail(function() {
+						 alert('Error sending push notification.');
+					 });
 			});
 			
 			$('#sendToAll').change(function() {
@@ -227,9 +236,46 @@ input[type=text], input[type=number] {
 				if(checked) {
 					$('#searchResult').hide();
 					$('#sendArea').show();
+					$('#doSend').hide();
+					$('#searchArea').hide();
+					
+					$('#doSendToAll').show().click(function() {
+						
+						var notificationMessage = $('#notificationMessage').val();
+						
+						if(notificationMessage == '') {
+							alert('Please enter details of notification.');
+							return;
+						}
+						
+						var token = $("meta[name='_csrf']").attr("content");
+						var header = $("meta[name='_csrf_header']").attr("content");
+						
+						$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotificationToAll',  
+							data: {
+								notificationMessage: notificationMessage
+							},
+							 method: "POST",  
+							 dataType: "text", 
+							 beforeSend : function(xhr) {
+							    xhr.setRequestHeader(header, token);
+								}
+							 })
+							 .done(function(json) { 
+								 alert('Push notification processed successfully.')
+							 })
+							 .fail(function() {
+								 alert('Error sending push notification.');
+							 });
+						});
 				} else {
-					$('#searchResult').show();
-					$('#sendArea').show();
+					
+					$('#doSend').show();
+					$('#searchArea').show();
+					$('#sendArea').hide();
+					$('#doSendToAll').hide()
+					$('#searchResult').hide();
+					$('#userId').val('');
 				}
 			});
 		});

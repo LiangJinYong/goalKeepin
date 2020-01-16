@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +14,7 @@ public class FCMUtils {
 
 	final static String API_KEY = "AAAAjTvefzk:APA91bFbtlBgUl8A8zsPl6w4wyWE_osUgio2UzsbocHp9bfAptakM7zDFCKQTg0kiZnwq-0CdzhDrD1tzRtvRfdJtBy2e5XmksK3jhzMGtNv8GdMV85xe3Z84M10zDSJ7jPqQchpTVgK";
 
-	public static void sendFCMAll(String title, String body, String type) {
+	public static void sendFCMAll(String title, String body, String type) throws JSONException {
 		try {
 
 			URL url = new URL("https://fcm.googleapis.com/fcm/send");
@@ -27,12 +25,13 @@ public class FCMUtils {
 			conn.setRequestProperty("Authorization", "key=" + API_KEY);
 			conn.setDoOutput(true);
 
-			Map<String, Object> info = new HashMap<>();
-			Map<String, Object> msg = new HashMap<>();
+			JSONObject info = new JSONObject();
+			JSONObject msg = new JSONObject();
 
 			msg.put("title", title);
 			msg.put("body", body);
 			msg.put("type", type);
+			msg.put("click_action", "goalkeepin_push");
 			info.put("data", msg);
 
 			info.put("notification", msg);

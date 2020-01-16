@@ -13,14 +13,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.OfferMapper;
 import goalKeepin.model.Offer;
-import goalKeepin.model.Paging;
-import goalKeepin.util.PagingUtils;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 
 @Controller
 @RequestMapping("/offer")
 public class OfferController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private OfferMapper offerMapper;
@@ -28,23 +35,25 @@ public class OfferController {
 	@GetMapping("/showOfferList/{pageNum}")
 	public String showOfferList(@RequestParam("offerStatusCd") String offerStatusCd, @PathVariable("pageNum") Integer pageNum, Model model) {
 		
+		int pageSize = props.getPageSize();
+		
 		Map<String, Object> paramMap = new HashMap<>();
 		
 		if (offerStatusCd == null) {
 			offerStatusCd = "VO00";
 		}
 		paramMap.put("offerStatusCd", offerStatusCd);
-
-		int totalOfferCount = offerMapper.getTotalOfferCount(paramMap);
-		Paging paging = PagingUtils.getPaging(pageNum, totalOfferCount);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		int startIndex = (pageNum - 1) * 10;
-		paramMap.put("startIndex", startIndex);
-
-		List<Offer> offerList = offerMapper.selectOfferList(paramMap);
-		model.addAttribute("offerList", offerList);
-		model.addAttribute("paging", paging);
+		List<Offer> pageData = offerMapper.selectOfferList(paramMap);
+		int totalRecordNum = offerMapper.getTotalOfferCount(paramMap);
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
 		model.addAttribute("offerStatusCd", offerStatusCd);
+		
 		return "offer/offerList";
 	}
 	

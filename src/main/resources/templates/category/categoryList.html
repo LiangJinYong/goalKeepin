@@ -47,16 +47,55 @@ header a, header li {
 				</thead>
 				
 				<tbody>
-					<tr class="text-center" th:each="category: ${categoryList}">
-					<td th:text="${category.categoryNo}">NO</td>
-					<td th:text="${category.categoryNmEn}">Category Name</td>
-					<td th:text="${category.challengeNum}">Challenge Num</td>
-				</tr>
+					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="category: ${page.pageData}">
+						<td th:text="${category.categoryNo}">NO</td>
+						<td th:text="${category.categoryNmEn}">Category Name</td>
+						<td th:text="${category.challengeNum}">Challenge Num</td>
+					</tr>
+					<tr th:if="${page.totalRecordNum == 0}">
+						<td colspan="3" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 	
+	<div class="row text-center" th:if="${page.totalPageNum > 0}">
+		<nav aria-label="Page navigation">
+			<ul class="pagination" id="pagination">
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+					<a class="page-link">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/category/showCategoryList/1'}">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.pageNum == 1}">
+					<a class="page-link">&lt;</a>
+				</li>
+				<li th:if="${page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/category/showCategoryList/' + ${pageNum - 1}}">&lt;</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+					<a class="page-link" th:href="@{'/category/showCategoryList/' + ${i}}" th:text="${i}"></a>
+				</li>
+				<li th:if="${page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;</a>
+				</li>
+				<li th:if="${page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/category/showCategoryList/' + ${pageNum + 1}}">&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/category/showCategoryList/' + ${page.totalPageNum}}">&gt;&gt;</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<!-- 
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation example">
 			<ul class="pagination" id="pagination">
@@ -66,8 +105,13 @@ header a, header li {
 			</ul>
 		</nav>
 	</div>
+	 -->
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {

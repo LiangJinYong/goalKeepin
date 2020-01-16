@@ -13,15 +13,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.InquiryMapper;
 import goalKeepin.model.Inquiry;
-import goalKeepin.model.Paging;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 import goalKeepin.util.FCMUtils;
-import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/inquiry")
 public class InquiryController {
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
 
 	@Autowired
 	private InquiryMapper inquiryMapper;
@@ -29,23 +36,25 @@ public class InquiryController {
 	@GetMapping("/showInquiryList/{pageNum}")
 	public String showInquiryList(@RequestParam("inquiryStatusCd") String inquiryStatusCd,
 			@PathVariable("pageNum") Integer pageNum, Model model) {
+		int pageSize = props.getPageSize();
+		
 		Map<String, Object> paramMap = new HashMap<>();
-
+		
 		if (inquiryStatusCd == null) {
 			inquiryStatusCd = "IN00";
 		}
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		paramMap.put("inquiryStatusCd", inquiryStatusCd);
-
-		int totalInquiryCount = inquiryMapper.getTotalInquiryCount(paramMap);
-		Paging paging = PagingUtils.getPaging(pageNum, totalInquiryCount);
-
-		int startIndex = (pageNum - 1) * 10;
-		paramMap.put("startIndex", startIndex);
-
-		List<Inquiry> inquiryList = inquiryMapper.selectInquiryList(paramMap);
-		model.addAttribute("inquiryList", inquiryList);
-		model.addAttribute("paging", paging);
+		
+		List<Inquiry> pageData = inquiryMapper.selectInquiryList(paramMap);
+		int totalRecordNum = inquiryMapper.getTotalInquiryCount(paramMap);
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		model.addAttribute("page", page);
 		model.addAttribute("inquiryStatusCd", inquiryStatusCd);
+		
 		return "inquiry/inquiryList";
 	}
 	

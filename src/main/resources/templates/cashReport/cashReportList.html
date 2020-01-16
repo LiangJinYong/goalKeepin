@@ -32,7 +32,7 @@ header li {
 		<div class="row">
 			<header class="col-md-12">
 				<h1 class="brand pull-left h3">Withdrawal History</h1>
-				<ul th:if="*{cashReportList.size() > 0}" class="list-inline list-unstyled pull-right">
+				<ul class="list-inline list-unstyled pull-right">
 					<li><label>Bank</label> <select name="bank" id="bank">
 							<option value="">View all</option>
 							<!-- 
@@ -88,7 +88,7 @@ header li {
 					</thead>
 
 					<tbody>
-						<tr th:if="*{cashReportList.size() > 0}" class="text-center" th:each="cashReport: ${cashReportList}" th:id="${cashReport.cashReportNo}">
+						<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="cashReport: ${page.pageData}" th:id="${cashReport.cashReportNo}">
 							<td>
 								<input th:if="${cashReport.reportStatusCd == 'CT01'}" type="checkbox" th:value="${cashReport.reportStatusCd}" /> 
 								<input th:if="${cashReport.reportStatusCd == 'CT02'}" type="checkbox" th:value="${cashReport.reportStatusCd}" checked="checked" onclick="return false;" />
@@ -103,16 +103,51 @@ header li {
 							<td th:if="${cashReport.reportStatusCd == 'CT01'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT01.statusName}" class="waiting">Report Status Name</td>
 							<td th:if="${cashReport.reportStatusCd == 'CT02'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT02.statusName}" class="finished">Report Status Name</td>
 						</tr>
-						<tr th:if="*{cashReportList.size() == 0}">
-							<td colspan="9" class="text-center">
-								<h2 class="h5">No Data Found.</h2>
+						<tr th:if="${page.totalRecordNum == 0}">
+							<td colspan="9" class="text-center no-data">
+								<h2 class="h5">No Data Found</h2>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
+		
+		<div class="row text-center" th:if="${page.totalPageNum > 0}">
+			<nav aria-label="Page navigation">
+				<ul class="pagination" id="pagination">
+					<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+						<a class="page-link">&lt;&lt;</a>
+					</li>
+					<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/1'}">&lt;&lt;</a>
+					</li>
+					<li th:if="${page.pageNum == 1}">
+						<a class="page-link">&lt;</a>
+					</li>
+					<li th:if="${page.pageNum > 1}">
+						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${pageNum - 1}}">&lt;</a>
+					</li>
+					<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${i}}" th:text="${i}"></a>
+					</li>
+					<li th:if="${page.pageNum == page.totalPageNum}">
+						<a class="page-link">&gt;</a>
+					</li>
+					<li th:if="${page.pageNum < page.totalPageNum}">
+						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${pageNum + 1}}">&gt;</a>
+					</li>
+					<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+						<a class="page-link">&gt;&gt;</a>
+					</li>
+					<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${page.totalPageNum}}">&gt;&gt;</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 
+		<!--  
 		<div class="row text-center" th:if="${paging.totalPages > 0}">
 			<nav aria-label="Page navigation">
 				<ul class="pagination" id="pagination">
@@ -122,19 +157,23 @@ header li {
 				</ul>
 			</nav>
 		</div>
-
-		<div th:if="*{cashReportList.size() > 0}" class="row">
+-->
+		<div th:if="${page.totalRecordNum > 0}" class="row">
 				<div class="col-md-4">
 					<a id="downloadExcel" th:href="@{/cashReport/excelDownload/} + ${country}" class="btn btn-primary">Download Excel</a>
 					<a id="processCashReport" class="btn btn-primary">Selected request withdrawal</a>
 				</div>
-				<div class="col-md-3 pull-right">
-					<input type="date" name="reportRegDate" id="reportRegDate" placeholder="Date search" /> <input type="submit" value="Search" /> <br /> <input type="text" name="userId" id="userId" placeholder="ID search" style="margin-top: 8px;" /> <input type="submit" value="Search" />
-				</div>
+		</div>
+		<div class="col-md-3 pull-right">
+			<input type="date" name="reportRegDate" id="reportRegDate" placeholder="Date search" /> <input type="submit" value="Search" /> <br /> <input type="text" name="userId" id="userId" placeholder="ID search" style="margin-top: 8px;" /> <input type="submit" value="Search" />
 		</div>
 	</form>
 
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script th:inline="javascript">
 	var bank = /*[[*{bank}]]*/ null;
@@ -156,6 +195,16 @@ header li {
 			
 			if(userId != null)
 				$('#userId').val(userId);
+			
+			$('.page-link[href]').each(function(index, item) {
+				var href = $(item).attr('href');
+				href += '?bank=' + $('#bank').val();
+				href += '&reportStatusCd=' + $('#reportStatusCd').val();
+				href += '&reportRegDate=' + $('#reportRegDate').val();
+				href += '&userId=' + $('#userId').val();
+				
+				$(item).attr('href', href);
+			});
 			
 			$('#cashReportTable tbody tr')
 			.css('cursor', 'pointer')
@@ -187,7 +236,7 @@ header li {
 				var length = $checkedItems.length;
 
 				if(length == 0) {
-					alert('처리할 출금 내역을 선택하세요.');
+					alert('Please select a withdrawal history record.');
 				} else {
 					var idArr = [];
 					$checkedItems.each(function(index, item) {
@@ -206,17 +255,17 @@ header li {
 							}
 					 })
 					 .done(function(json) { 
-						alert('출금 처리되었습니다.');
+						alert('Successfully processed.');
 						$checkedItems.each(function(index, item) {
 							$(item).find('input').val('CT02').change(function(e) {
 								$(this).val('CT02').prop('checked', true);
 							});
 							
-							$(item).children().last().text('완료').attr('class', 'finished');
+							$(item).children().last().text('Completed').attr('class', 'finished');
 						}); 
 					 })
 					 .fail(function() {
-						 alert('출금 처리 실패했습니다.');
+						 alert('Process failed.');
 					 });
 				}
 			});

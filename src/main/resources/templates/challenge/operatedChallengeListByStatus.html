@@ -64,18 +64,68 @@ header li {
 				</thead>
 				
 				<tbody>
-					<tr class="text-center" th:each="operatedChallenge: ${operatedChallengeList}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
+					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="operatedChallenge: ${page.pageData}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
 						<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
 						<td th:text="${operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</td>
 						<td th:text="${operatedChallenge.startDate}">Start Date</td>
 						<td th:text="${operatedChallenge.endDate}">End Date</td>
 						<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
 					</tr>
+					<tr th:if="${page.totalRecordNum == 0}">
+						<td colspan="5" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 	
+	<div class="row text-center" th:if="${page.totalPageNum > 0}">
+		<nav aria-label="Page navigation">
+			<ul class="pagination" id="pagination">
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+					<a class="page-link">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+					<a th:if="*{statusCd == 'CH01'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/1?habitTypeCd=' + ${habitTypeCd}}">&lt;&lt;</a>
+					<a th:if="*{statusCd == 'CH02'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=' + ${habitTypeCd}}">&lt;&lt;</a>
+					<a th:if="*{statusCd == 'CH03'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=' + ${habitTypeCd}}">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.pageNum == 1}">
+					<a class="page-link">&lt;</a>
+				</li>
+				<li th:if="${page.pageNum > 1}">
+					<a th:if="*{statusCd == 'CH01'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${pageNum - 1} + '?habitTypeCd=' + ${habitTypeCd}}">&lt;</a>
+					<a th:if="*{statusCd == 'CH02'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${pageNum - 1} + '?habitTypeCd=' + ${habitTypeCd}}">&lt;</a>
+					<a th:if="*{statusCd == 'CH03'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${pageNum - 1} + '?habitTypeCd=' + ${habitTypeCd}}">&lt;</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+					<a th:if="*{statusCd == 'CH01'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}" th:text="${i}"></a>
+					<a th:if="*{statusCd == 'CH02'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}" th:text="${i}"></a>
+					<a th:if="*{statusCd == 'CH03'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}" th:text="${i}"></a>
+				</li>
+				<li th:if="${page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;</a>
+				</li>
+				<li th:if="${page.pageNum < page.totalPageNum}">
+					<a th:if="*{statusCd == 'CH01'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${pageNum + 1} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;</a>
+					<a th:if="*{statusCd == 'CH02'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${pageNum + 1} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;</a>
+					<a th:if="*{statusCd == 'CH03'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${pageNum + 1} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+					<a th:if="*{statusCd == 'CH01'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${page.totalPageNum} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;&gt;</a>
+					<a th:if="*{statusCd == 'CH02'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${page.totalPageNum} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;&gt;</a>
+					<a th:if="*{statusCd == 'CH03'}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${page.totalPageNum} + '?habitTypeCd=' + ${habitTypeCd}}">&gt;&gt;</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	
+	<!-- 
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation">
 			<ul class="pagination" id="pagination">
@@ -87,8 +137,13 @@ header li {
 			</ul>
 		</nav>
 	</div>
+	 -->
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script th:inline="javascript">
 		var statusCd = /*[[*{statusCd}]]*/ null;

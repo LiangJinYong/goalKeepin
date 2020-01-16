@@ -42,18 +42,58 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="text-center" th:each="review: ${reviewList}">
+					<tr th:if="*{page.totalRecordNum > 0}" class="text-center" th:each="review: ${page.pageData}">
 						<td th:text="${review.reviewNo}">NO</td>
 						<td th:text="${review.user.userId}">User Id</td>
 						<td th:text="${review.user.nickName}">Nick Name</td>
 						<td th:text="${review.reviewContent}" style="width: 400px;">Review Content</td>
 						<td th:text="*{#dates.format(review.reviewRegDate, 'yyyy.MM.dd HH:mm:ss')}">Review Reg Date</td>
 					</tr>
+					<tr th:if="*{page.totalRecordNum == 0}">
+						<td colspan="5" class="text-center">
+							<h2 class="h5">No Data Found</h2>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 	
+	<div th:if="${page.totalPageNum > 0}" class="row text-center">
+		<nav aria-label="Page navigation">
+			<ul class="pagination" id="pagination">
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+					<a class="page-link">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/challenge/showReviewListByChallenge/1?operatedNo=' + ${operatedNo}}">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.pageNum == 1}">
+					<a class="page-link">&lt;</a>
+				</li>
+				<li th:if="${page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${pageNum - 1} + '?operatedNo=' + ${operatedNo}}">&lt;</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+					<a class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}" th:text="${i}"></a>
+				</li>
+				<li th:if="${page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;</a>
+				</li>
+				<li th:if="${page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${pageNum + 1} + '?operatedNo=' + ${operatedNo}}">&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${page.totalPageNum} + '?operatedNo=' + ${operatedNo}}">&gt;&gt;</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	
+	<!-- 
 	<div class="row text-center" th:if="${paging.totalPages > 0}">
 		<nav aria-label="Page navigation example">
 			<ul class="pagination" id="pagination">
@@ -68,8 +108,13 @@
 			<a th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}" th:text="${i}"></a>
 		</span>
 	</div>
+	 -->
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {

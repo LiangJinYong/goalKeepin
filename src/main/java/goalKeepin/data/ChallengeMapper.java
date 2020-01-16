@@ -16,7 +16,7 @@ public interface ChallengeMapper {
 
 	Map<String, Object> selectHomepageHeaderInfo();
 	
-	List<Map<String, Object>> selectBaseChallengeList(int startIndex);
+	List<Map<String, Object>> selectBaseChallengeList(Map<String, Object> paramMap);
 
 	int getTotalBaseChallengeNum();
 
