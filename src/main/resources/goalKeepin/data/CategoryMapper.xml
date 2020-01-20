@@ -31,7 +31,7 @@
 		INSERT INTO TRANSLATION_TB
 		(trans_no, trans_en, trans_s_cn, trans_t_cn)
 		VALUES
-		(#{categoryNmTransNo}, #{categoryNmEn}, #{categoryNmSC}, #{categoryNmTc})
+		(#{categoryNmTransNo}, #{categoryNmEn}, #{categoryNmSc}, #{categoryNmTc})
 	</insert>
 	
 	<insert id="insertCategoryDescriptionTrans" parameterType="Category" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="categoryDescriptionTransNo">
@@ -39,7 +39,7 @@
 		INSERT INTO TRANSLATION_TB
 		(trans_no, trans_en, trans_s_cn, trans_t_cn)
 		VALUES
-		(#{categoryDescriptionTransNo}, #{categoryDescriptionEn}, #{categoryDescriptionSC}, #{categoryDescriptionTc})
+		(#{categoryDescriptionTransNo}, #{categoryDescriptionEn}, #{categoryDescriptionSc}, #{categoryDescriptionTc})
 	</insert>
 	
 	<insert id="insertNewCategory" parameterType="Category">

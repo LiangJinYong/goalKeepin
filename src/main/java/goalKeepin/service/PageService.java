@@ -1,9 +1,10 @@
 package goalKeepin.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import goalKeepin.model.Page;
-import java.util.List;
 
 @Service
 public class PageService {
@@ -39,7 +40,6 @@ public class PageService {
 		page.setFirstPageNum(firstPageNum);
 		page.setLastPageNum(lastPageNum);
 		
-		System.out.println("===>" + pageSize + "@" + pageNum + "@" + totalPageNum + "@" + totalRecordNum + "@" + pageData);
 		return page;
 	}
 }

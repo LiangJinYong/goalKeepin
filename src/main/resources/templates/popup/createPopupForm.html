@@ -15,6 +15,10 @@
 	display: none;
 }
 
+table {
+	border: 1px solid #ccc;
+}
+
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -24,7 +28,7 @@
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/popup/processChallengeGeneration}" th:object="${popup}" enctype="multipart/form-data">
+	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-md-12">
 				<div>
@@ -84,13 +88,7 @@
 			<div class="row text-center">
 				<div class="col-md-11">
 					<nav aria-label="Page navigation" id="pagingArea">
-						<!-- 
-						<ul class="pagination">
-							<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-								<a class="page-link" th:href="@{'/user/showUserList/' + *{country} + '/' + ${i}}" th:text="${i}"></a>
-							</li>
-						</ul>
-						 -->
+						
 					</nav>
 				</div>
 			</div>
@@ -143,23 +141,30 @@
 			
 			function processTableData(data) {
 				$('#contentData').empty();
-				var contentList = data.contentList;
+				var contentList = data.page.pageData;
 				var contentData = '';
-				for(var i=0; i < contentList.length; i++) {
-					contentData += '<tr class="text-center" ';
-					contentData += 'id="' + contentList[i].contentNo + '">';
-					contentData += '<td>';
-					contentData += '<input type="checkbox">';
-					contentData += '</td>';
-					contentData += '<td>';
-					contentData += contentList[i].contentNo;
-					contentData += '</td>';
-					contentData += '<td>';
-					contentData += contentList[i].contentTitleEn;
-					contentData += '</td>';
-					contentData += '<td>';
-					contentData += contentList[i].contentRegDate;
-					contentData += '</td>';
+				
+				if(contentList.length > 0) {
+					for(var i=0; i < contentList.length; i++) {
+						contentData += '<tr class="text-center" ';
+						contentData += 'id="' + contentList[i].contentNo + '">';
+						contentData += '<td>';
+						contentData += '<input type="checkbox">';
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentNo;
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentTitleEn;
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentRegDate;
+						contentData += '</td>';
+						contentData += '</tr>';
+					}
+				} else {
+					contentData += '<tr class="text-center">';
+					contentData += '<td colspan="4">No Data Found</td>';
 					contentData += '</tr>';
 				}
 				
@@ -188,41 +193,97 @@
 			}
 			
 			function processPagination(data, getUrl) {
+				$('#pagingArea').empty();
+				var currentPageNum = data.page.pageNum;
+				var totalPageNum = data.page.totalPageNum;
 				
-				var totalPages = data.paging.totalPages;
-				var pageData = '<ul class="pagination" id="pagination">';
-				for(var i=1; i<=totalPages; i++) {
-					pageData += '<li class="page-item';
-					if(data.paging.currentPageNum == i) {
-						pageData += ' active';
+				if(totalPageNum > 0) {
+					var pagination = '<ul class="pagination" id="pagination">';
+					
+					if(totalPageNum > 10 && currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;&lt;</a></li>';
 					}
-					pageData += '">';
-					pageData += '<a style="cursor: pointer" class="page-link">';
-					pageData += i;
-					pageData += '</a>';
-					pageData += '</li>';
-				}
-				pageData += '</ul>';
-				
-				$('#pagingArea').append(pageData);
-				
-				$('.pagination a').click(function() {
-					$(this).parent().addClass('active').siblings().removeClass('active');
-					$.getJSON(getUrl + $(this).text(),
-						function(data) {
-							processTableData(data);
-							processTableNo();
+					
+					if(totalPageNum > 10 && currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-1">'
+						pagination += '&lt;&lt;</a></li>';
+					}
+					
+					if(currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;</a></li>';
+					}
+					
+					if(currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum - 1) + '">'
+						pagination += '&lt;</a></li>';
+					}
+					
+					for(var i=data.page.firstPageNum; i<=data.page.lastPageNum; i++) {
+						pagination += '<li class="page-item page-no';
+						if(data.page.pageNum == i) {
+							pagination += ' active';
 						}
-					);
-				});
+						pagination += '">';
+						pagination += '<a style="cursor: pointer" class="page-link"';
+						pagination += ' id="page-' + i + '"';
+						pagination += '>';
+						pagination += i;
+						pagination += '</a>';
+						pagination += '</li>';
+					}
+					
+					if(currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;</a></li>';
+					}
+					
+					if(currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum + 1) + '">'
+						pagination += '&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + totalPageNum + '">'
+						pagination += '&gt;&gt;</a></li>';
+					}
+					
+					pagination += '</ul>';
+					
+					$('#pagingArea').append(pagination);
+					
+					$('.pagination a[id]').click(function() {
+						
+						var id = $(this).attr('id');
+						// id: page-xxx
+						var pageNum = id.substring(5);
+						$.getJSON(getUrl + pageNum,
+							function(data) {
+								processTableData(data);
+								processPagination(data, getUrl);
+								processTableNo();
+							}
+						);
+					});
+				}
 			}
 			
 			function processTableNo() {
 				var noIndex = $('.table thead th').index($('.table thead th:contains("NO")'));
-				var pageIndex = $('#pagination li').index($('#pagination li.active'));
-
+				var pageNum = parseInt($('#pagination li.active a').text());
+				
 				$('.table tbody tr td:nth-child(' + (noIndex + 1) + ')').each(function(index, item) {
-					$(item).text(pageIndex * 5 + (index+1));
+					$(item).text((pageNum - 1) * 5 + (index+1));
 				});
 			}
 			

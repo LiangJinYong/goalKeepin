@@ -14,4 +14,5 @@ public class ParticipantEntry {
 	private Date entryRegDate;
 	private String entryYear;
 	private Long entryQuarter;
+	private String rewardAmount;
 }

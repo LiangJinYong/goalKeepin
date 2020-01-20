@@ -20,6 +20,10 @@ input[type=text], input[type=number] {
 #searchResult, #noResult {
 	display: none;
 }
+
+table {
+	border: 1px solid #ccc;
+}
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -190,6 +194,7 @@ input[type=text], input[type=number] {
 				
 				if(rewardAmount == '') {
 					alert('Please enter amout to pay.');
+					$('#rewardAmount').focus();
 					return;
 				}
 				
@@ -219,24 +224,6 @@ input[type=text], input[type=number] {
 						 alert('Error processing reward payment.');
 					 });
 				 });
-				
-			/*
-				$.post({
-					url: '/goalkeepinmanager/rewardPayment/processRewardPayment',
-					data: {
-						userNos: userNos.join(','),
-						rewardAmount: rewardAmount
-					},
-					dataType: 'json',
-					success: function() {
-						alert('Reward payment processed successfully')
-					},
-					error: function() {
-						alert('Error processing reward payment.');
-					}
-				});
-			});
-			*/
 		});
 	</script>
 </body>

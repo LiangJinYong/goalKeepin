@@ -93,7 +93,8 @@ header li {
 				</div>
 				<div class="col-md-4">
 					<h3 class="h5">Category setting</h3>
-					<span th:text="*{category.categoryNmEn}"></span>
+					<span th:if="*{category.categoryNo != 0}" th:text="*{category.categoryNmEn}"></span>
+					<span th:if="*{category.categoryNo == 0}">No category</span>
 				</div>
 				<div class="col-md-4">
 					<h3 class="h5">Level Restriction</h3>

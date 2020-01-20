@@ -19,14 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
-import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.PopupMapper;
 import goalKeepin.model.Page;
-import goalKeepin.model.Paging;
 import goalKeepin.model.Popup;
 import goalKeepin.service.PageService;
 import goalKeepin.util.FileUploadUtils;
-import goalKeepin.util.PagingUtils;
 
 @Controller
 @RequestMapping("/popup")
@@ -34,9 +31,6 @@ public class PopupController {
 	
 	@Autowired
 	private PageService pageService;
-	
-	@Autowired
-	private GoalKeepinProps props;
 
 	@Autowired
 	private PopupMapper popupMapper;
@@ -55,7 +49,6 @@ public class PopupController {
 		int totalRecordNum = popupMapper.getTotalPopupCount();
 		
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
-		
 		model.addAttribute("page", page);
 		
 		return "popup/popupList";
@@ -73,17 +66,17 @@ public class PopupController {
 		Gson gson = new Gson();
 		Map<String, Object> result = new HashMap<>();
 		
-		int totalNoticeCount = popupMapper.getTotalNoticeCount();
-		Paging paging = PagingUtils.getPaging(pageNum, totalNoticeCount);
-		paging.setPageSize(5);
-		int startIndex = (pageNum - 1) * 5;
-		
+		int pageSize = 5;
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", startIndex);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		List<Map<String, String>> noticeList = popupMapper.selectNoticeList(paramMap);
-		result.put("contentList", noticeList);
-		result.put("paging", paging);
+		List<Map<String, String>> pageData = popupMapper.selectNoticeList(paramMap);
+		int totalRecordNum = popupMapper.getTotalNoticeCount();
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		result.put("page", page);
+		
 		return gson.toJson(result);
 	}
 	
@@ -93,18 +86,17 @@ public class PopupController {
 		Gson gson = new Gson();
 		Map<String, Object> result = new HashMap<>();
 		
-		int totalChallengeCount = popupMapper.getTotalChallengeCount();
-		Paging paging = PagingUtils.getPaging(pageNum, totalChallengeCount);
-		paging.setPageSize(5);
-		
-		int startIndex = (pageNum - 1) * 5;
-		
+		int pageSize = 5;
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", startIndex);
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
 		
-		List<Map<String, String>> challengeList = popupMapper.selectChallengeList(paramMap);
-		result.put("contentList", challengeList);
-		result.put("paging", paging);
+		List<Map<String, String>> pageData = popupMapper.selectChallengeList(paramMap);
+		int totalRecordNum = popupMapper.getTotalChallengeCount();
+		
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		result.put("page", page);
+		
 		return gson.toJson(result);
 	}
 	

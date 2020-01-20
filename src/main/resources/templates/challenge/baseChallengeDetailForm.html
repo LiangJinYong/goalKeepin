@@ -25,7 +25,7 @@ header li {
 }
 
 #challengeName input {
-	width: 230px;
+	width: 100%;
 }
 
 .forRecruiting, .forModifying {
@@ -111,7 +111,7 @@ header li {
 			<div class="row">
 				<div class="col-md-4" id="thumbnailImg">
 					<h3 class="h5">Thumbnail image</h3>
-					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" />
+					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" />
 					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
 				</div>
 				<div class="col-md-4 forRecruiting">
@@ -133,11 +133,11 @@ header li {
 					<div class="col-md-12">
 						<div class="col-md-4">
 							<h3 class="h5">Minimum participation fee</h3>
-							<input type="number" name="minFee" id="minFee" style="width: 200px;" />
+							<input type="number" name="minFee" id="minFee" style="width: 200px;" min="1"  />
 						</div>
 						<div class="col-md-4">
 							<h3 class="h5">Maximum participation fee</h3>
-							<input type="number" name="minFee" id="maxFee" style="width: 200px;" />
+							<input type="number" name="minFee" id="maxFee" style="width: 200px;" min="1" />
 						</div>
 					</div>
 				</div>
@@ -181,10 +181,12 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" />Days per week <input type="checkbox" id="everyday" /><label for="everyday">Everyday</label>
+							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" min="1" /> Days per week <input type="checkbox" id="everyday" /><label for="everyday">Everyday</label>
 						</div>
 						<div class="view">
-							<span th:text="*{baseAuthFrequency}"></span> <span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
+							<span th:text="*{baseAuthFrequency}"></span>
+							<span th:text="*{baseAuthFrequency == 1 ? 'Day' : 'Days'}"></span>
+							<span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
 										or (baseAuthDateCd == 'AD02' and baseAuthFrequency == 2)
 										or (baseAuthDateCd == 'AD03' and baseAuthFrequency == 7)}" th:text="'(Everyday)'"></span>
 						</div>
@@ -211,7 +213,7 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="number" id="baseAuthNumDaily" name="baseAuthNumDaily" th:field="*{baseAuthNumDaily}" required /> Times
+							<input type="number" id="baseAuthNumDaily" name="baseAuthNumDaily" th:field="*{baseAuthNumDaily}" required="required" min="1" /> Times
 						</div>
 						<div class="view">
 							<span th:text="*{baseAuthNumDaily}"></span> Times
@@ -253,7 +255,7 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" /><label>Hours</label>
+							<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" min="1" /><label>Hours</label>
 							</span> <input type="checkbox" id="noLimit" /><label for="noLimit">No limit</label>
 						</div>
 						<div class="view">
@@ -361,6 +363,7 @@ header li {
     	var baseDetailEn = /*[[*{baseChallenge.baseDetailEn}]]*/ null;
     	var baseDetailTc = /*[[*{baseChallenge.baseDetailTc}]]*/ null;
     	var baseDetailSc = /*[[*{baseChallenge.baseDetailSc}]]*/ null;
+    	var categoryCount = /*[[*{categoryList.size()}]]*/ 0;
 	</script>
 
 	<script type="text/javascript">
@@ -429,6 +432,21 @@ header li {
 			
 			 // 모집 시작하기 버튼 처리
 			 $('#startRecruiting').click(function() {
+				 
+				 if(categoryCount == 0) {
+					 if(confirm('No category created, do you want to forward to category creation page?')) {
+						 var parentWindow = window.parent;
+						 var category = parentWindow.document.getElementById('category');
+						 $(category).parents('ul').parent('ul').find('a').removeClass('highlight');
+						 $(category).addClass('highlight');
+						 
+						 window.location = '/goalkeepinmanager/category/createNewCategory';
+						 return;
+					 } else {
+						 return;
+					 }
+				 }
+				 
 				 $('.forRecruiting').fadeIn('slow');
 				 $('.forRecruiting input').attr('required', 'required');
 				 
@@ -589,7 +607,6 @@ header li {
 					 });
 				 });
 
-			 
 			 // 등록한 챌린지 목록 버튼 처리
 			 $('#showOperatedChallengeList').click(function() {
 				 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val();

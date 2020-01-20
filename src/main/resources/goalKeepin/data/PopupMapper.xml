@@ -45,7 +45,7 @@
 		/* selectNoticeList */
 		SELECT nt.notice_no contentNo, tt.trans_en contentTitleEn, DATE_FORMAT(nt.notice_reg_dt, '%Y-%m-%d %H:%i:%s') contentRegDate
 		FROM NOTICE_TB nt INNER JOIN TRANSLATION_TB tt ON nt.notice_title_t_no = tt.trans_no
-		LIMIT #{startIndex}, 5
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<select id="getTotalChallengeCount" resultType="int">
@@ -62,7 +62,7 @@
 		FROM OPERATED_CHALLENGE_TB oct inner join BASE_CHALLENGE_TB bct on oct.CHALLENGE_BASE_NO = bct.BASE_NO
 		INNER join TRANSLATION_TB tt on bct.BASE_NM_T_NO = tt.TRANS_NO
 		WHERE oct.CHALLENGE_ST_CD = 'CH01'
-		LIMIT #{startIndex}, 5
+		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
 	<insert id="insertNewPopup" parameterType="Popup">

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -107,6 +108,7 @@ public class ChallengeController {
 	@GetMapping("/showBaseChallengeDetailForm")
 	public String showChallengeGenerationForm(Model model) {
 		model.addAttribute("baseChallenge", new BaseChallenge());
+		model.addAttribute("categoryList", new ArrayList<Map<Integer, String>>());
 		return "challenge/baseChallengeDetailForm";
 		
 	}

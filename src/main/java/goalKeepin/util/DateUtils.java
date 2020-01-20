@@ -7,6 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 
+ * @author liangjinyong
+ * Caculate the max result when starting a new project
+ */
 public class DateUtils {
 
 	private DateUtils() {}
@@ -63,7 +68,7 @@ public class DateUtils {
 				cl1.add(Calendar.DAY_OF_MONTH, 1);
 			}
 		}
-		System.out.println("res" + result);
+		
 		return result;
 	}
 
@@ -86,7 +91,6 @@ public class DateUtils {
 			result.add(authableDays);
 		}
 		
-		System.out.println("**" + result);
 		return result;
 	}
 	

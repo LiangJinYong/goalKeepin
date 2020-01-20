@@ -63,20 +63,20 @@ h2 + div {
 		<div class="row" id="offerTitle">
 			<div class="col-md-4">
 				<h2 class="h5">Subject (English)</h2>
-				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
-				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
+				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
+				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleEn}"></span>
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Subject (Traditional)</h2>
-				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
-				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
+				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
+				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleTc}"></span>
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Subject (Simplified)</h2>
-				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == null}" placeholder="주제" required="required" />
-				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="주제" required="required" />
+				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
+				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
 				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleSc}"></span>
 			</div>
 		</div>

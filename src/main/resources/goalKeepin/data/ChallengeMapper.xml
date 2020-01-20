@@ -68,6 +68,8 @@
 		<result property="entryRegDate" column="entryRegDate" />
 		<result property="entryYear" column="entryYear" />
 		<result property="entryQuarter" column="entryQuarter" />
+		<result property="rewardAmount" column="rewardAmount" />
+		
 		<association property="participant" resultMap="User"></association>
 		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
 	</resultMap>
@@ -137,7 +139,7 @@
 		/* insertOrUpdateBaseAuthDescTrans */
 		INSERT INTO TRANSLATION_TB 
 		(TRANS_NO, TRANS_EN, TRANS_S_CN, TRANS_T_CN)
-		VALUES (#{baseAuthDescTransNo}, #{baseAuthDescEn}, #{baseAuthDescTc}, #{baseAuthDescSc})
+		VALUES (#{baseAuthDescTransNo}, #{baseAuthDescEn}, #{baseAuthDescSc}, #{baseAuthDescTc})
 		ON DUPLICATE KEY UPDATE trans_en = #{baseAuthDescEn}, trans_s_cn = #{baseAuthDescSc}, trans_t_cn = #{baseAuthDescTc}
 	</insert>
 	
@@ -159,9 +161,9 @@
 		/* selectBaseChallengeByNo */
 		SELECT bct.base_no baseNo
 		, bct.base_nm_t_no baseNmTransNo
-		, (SELECT TRANS_EN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
-		, (SELECT TRANS_T_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
-		, (SELECT TRANS_S_CN FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_nm_t_no) baseNmSc
 		, bct.base_thumbnail_url baseThumbnailUrl
 		, bct.base_habit_tp_cd baseHabitTypeCd
 		, bct.base_auth_date_cd baseAuthDateCd
@@ -174,13 +176,13 @@
 		, bct.base_auth_interval baseAuthInterval
 		, bct.base_auth_is_album baseAuthIsAlbum
 		, bct.base_auth_desc_t_no baseAuthDescTransNo
-		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescEn
-		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescTc
-		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_auth_desc_t_no) baseAuthDescSc
 		, bct.base_detail_t_no baseDetailTransNo
-		, (SELECT TRANS_EN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailEn
-		, (SELECT TRANS_T_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailTc
-		, (SELECT TRANS_S_CN from TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.TRANS_NO = bct.base_detail_t_no) baseDetailSc
 		, bct.base_reg_dt baseRegDate
 		, bct.search_keyword searchKeyword
 		FROM BASE_CHALLENGE_TB bct
@@ -251,18 +253,18 @@
 		, bct.base_auth_interval baseAuthInterval
 		, bct.base_auth_is_album baseAuthIsAlbum
 		, bct.base_auth_desc_t_no baseAuthDescTransNo
-		, (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescEn
-		, (SELECT trans_t_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescTc
-		, (SELECT trans_s_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_auth_desc_t_no) baseAuthDescSc
 		, bct.base_detail_t_no baseDetailTransNo
-		, (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailEn
-		, (SELECT trans_t_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailTc
-		, (SELECT trans_s_cn from TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailSc
+		, (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = bct.base_detail_t_no) baseDetailSc
 		, bct.base_reg_dt baseRegDate
 		, bct.search_keyword searchKeyword
         , oct.challenge_no operatedChallengeNo
         , oct.challenge_category_no categoryNo
-        , (SELECT trans_en from TRANSLATION_TB tt WHERE tt.trans_no = oct.challenge_category_no) categoryNmEn
+        , (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = oct.challenge_category_no) categoryNmEn
         , oct.challenge_grade_cd gradeCd
         , oct.challenge_min_fee minFee
         , oct.challenge_max_fee maxFee
@@ -272,7 +274,7 @@
         , oct.challenge_reg_dt regDate
 		FROM BASE_CHALLENGE_TB bct
         INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
-        where oct.CHALLENGE_NO = #{operatedNo}
+        WHERE oct.CHALLENGE_NO = #{operatedNo}
 	</select>
 	
 	<select id="getChallengeProofCount" parameterType="long" resultType="int">
@@ -302,6 +304,7 @@
 	<select id="selectEntryInfoByParticipant" parameterType="long" resultMap="ParticipantEntry">
 		/* selectEntryInfoByParticipant */
 		SELECT tt.trans_en baseNmEn, ut.user_id userId, cet.entry_fee entryFee, cet.entry_result entryResult, cet.entry_reg_dt entryRegDate, bct.base_auth_method_cd baseAuthMethodCd
+			, CASE WHEN entry_result &lt; 85 THEN 0 WHEN entry_result &gt;= 85 AND entry_result &lt; 100 THEN entry_fee ELSE  entry_fee * 1.1 END rewardAmount
         FROM CHALLENGE_ENTRY_TB cet
         INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON cet.entry_challenge_no = oct.challenge_no
