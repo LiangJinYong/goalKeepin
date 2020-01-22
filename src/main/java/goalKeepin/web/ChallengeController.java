@@ -3,9 +3,12 @@ package goalKeepin.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +53,8 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
-	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/";
+	private final static String THUMBNAIL_IMG_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/";
+	private final static String DETAIL_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeDetailImage/";
 
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
@@ -128,7 +132,7 @@ public class ChallengeController {
 		
 		if (fileSize > 0) {
 			
-			String filePath = FileUploadUtils.processFileUpload(file, FILE_UPLOAD_PATH, null);
+			String filePath = FileUploadUtils.processFileUpload(file, THUMBNAIL_IMG_UPLOAD_PATH, null);
 			baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
 		}
         
@@ -155,6 +159,24 @@ public class ChallengeController {
 		model.addAttribute("modifiable", modifiable);
 		int operatedChallengeCount = challengerMapper.getOperatedChallengeCountByBase(baseNo);
 		model.addAttribute("operatedChallengeCount", operatedChallengeCount);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Date dt = new Date();
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(dt); 
+		c.add(Calendar.DATE, 1);
+		dt = c.getTime();
+		
+		String minStartDate = sdf.format(dt);
+		
+		c.add(Calendar.DATE, 1);
+		dt = c.getTime();
+		
+		String minEndDate = sdf.format(dt);
+
+		model.addAttribute("minStartDate", minStartDate);
+		model.addAttribute("minEndDate", minEndDate);
 		
 		return "challenge/baseChallengeDetailForm";
 	}
@@ -311,6 +333,20 @@ public class ChallengeController {
 		model.addAttribute("operatedNo", operatedNo);
 
 		return "challenge/challengeReviewList";
+	}
+	
+	@PostMapping("/detailImage")
+	@ResponseBody
+	public ResponseEntity<?> uploadDetailImages(@RequestParam("file") MultipartFile file) {
+		try {
+			String filePath = FileUploadUtils.processFileUpload(file, DETAIL_UPLOAD_PATH, null);
+			System.out.println("====>" + filePath);
+			return ResponseEntity.ok().body("/app/goalkeepinImage/challengeDetailImage/" + filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+		
 	}
 }
 

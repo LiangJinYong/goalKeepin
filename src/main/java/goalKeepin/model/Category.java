@@ -10,12 +10,12 @@ public class Category {
 	private Long categoryNmTransNo;
 	private String categoryNmEn;
 	private String categoryNmTc;
-	private String categoryNmSC;
+	private String categoryNmSc;
 	
 	private Long categoryDescriptionTransNo;
 	private String categoryDescriptionEn;
 	private String categoryDescriptionTc;
-	private String categoryDescriptionSC;
+	private String categoryDescriptionSc;
 	
 	private int challengeNum;
 }

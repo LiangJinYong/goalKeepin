@@ -19,6 +19,12 @@ table {
 	border: 1px solid #ccc;
 }
 
+#imgPreview {
+	width: 150px;
+	height: 150px;
+	border: 2px solid black;
+}
+
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -35,7 +41,8 @@ table {
 					<label class="col-md-1">Image</label>
 				</div>
 				<div class="col-md-11">
-					<input type="file" th:field="*{popupImgUrl}" required="required">
+					<input type="file" th:field="*{popupImgUrl}" required="required" accept="image/jpeg,image/jpg,image/png">
+					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
 				</div>
 			</div>
 		</div>
@@ -105,6 +112,29 @@ table {
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
+			
+			//팝업 이미지 사이즈 제한
+			 $('#popupImgUrl').change(function() {
+				 if(this.files[0].size > 1048576){
+				        alert("Popup image can't be larger than 1MB.");
+				        this.value = "";
+				        $('#imgPreview').hide();
+			     } else {
+				     readURL(this);
+			     }
+			     
+			 });
+			
+			 function readURL(input) {
+	            if (input.files && input.files[0]) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+	                    $('#imgPreview').attr('src', e.target.result).show();
+	                }
+	                reader.readAsDataURL(input.files[0]);
+	            }
+	         }
+			
 			$('#popupTypeCd').change(function() {
 				var selectedType = $(this).val();
 				

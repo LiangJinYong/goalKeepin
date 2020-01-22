@@ -129,7 +129,7 @@ img {
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h5">Title (English)</h2>
-				<input th:field="*{noticeTitleEn}" type="text" name="noticeTitleEn" placeholder="Please input a title"
+				<input th:field="*{noticeTitleEn}" type="text" name="noticeTitleEn" placeholder="Please enter a title"
 					required="required">
 			</div>
 			<div th:if="*{noticeNo != null}" class="col-md-6">
@@ -140,14 +140,14 @@ img {
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h5">Title (Traditional)</h2>
-				<input th:field="*{noticeTitleTc}" type="text" name="noticeTitleTc" placeholder="Please input a title"
+				<input th:field="*{noticeTitleTc}" type="text" name="noticeTitleTc" placeholder="Please enter a title"
 					required="required">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
 				<h2 class="h5">Title (Simplified)</h2>
-				<input th:field="*{noticeTitleSc}" type="text" name="noticeTitleSc" placeholder="Please input a title"
+				<input th:field="*{noticeTitleSc}" type="text" name="noticeTitleSc" placeholder="Please enter a title"
 					required="required">
 			</div>
 		</div>
@@ -155,21 +155,21 @@ img {
 			<div class="col-md-12">
 				<h2 class="h5">Contents (English)</h2>
 				<textarea th:field="*{noticeContentEn}" rows="4" cols="100" name="noticeContentEn"
-					placeholder="Please input contents." required="required"></textarea>
+					placeholder="Please enter contents." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h5">Contents (Traditional)</h2>
 				<textarea th:field="*{noticeContentTc}" rows="4" cols="100" name="noticeContentTc"
-					placeholder="Please input contents." required="required"></textarea>
+					placeholder="Please enter contents." required="required"></textarea>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h5">Contents (Simplified)</h2>
 				<textarea th:field="*{noticeContentSc}" rows="4" cols="100" name="noticeContentSc"
-					placeholder="Please input contents." required="required"></textarea>
+					placeholder="Please enter contents." required="required"></textarea>
 			</div>
 		</div>
 		
@@ -181,7 +181,8 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgEn">Image (English)</label>
 						<input type="file" id="noticeImgEn" class="upload-hidden"
-							required="required" name="noticeImgs">
+							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						<img name="imgPreview" id="imgPreviewEn" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
 					</div>
 				</div>
 			</div>
@@ -193,7 +194,8 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgTc">Image (Traditional)</label>
 						<input type="file" id="noticeImgTc" class="upload-hidden"
-							required="required" name="noticeImgs">
+							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						<img name="imgPreview" id="imgPreviewTc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
 					</div>
 				</div>
 			</div>
@@ -205,7 +207,8 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgSc">Image (Simplified)</label>
 						<input type="file" id="noticeImgSc" class="upload-hidden"
-							required="required" name="noticeImgs">
+							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						<img name="imgPreview" id="imgPreviewSc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
 					</div>
 				</div>
 			</div>
@@ -269,7 +272,26 @@ img {
 				}
 
 				$(this).siblings('.upload-name').val(filename);
+				
+				if(this.files[0].size > 1048576) {
+			        alert("Notice image can't be larger than 1MB.");
+			        this.value = "";
+			        $(this).siblings('.upload-name').val('Select an image');
+			        $(this).next().hide();
+			    } else {
+			    	readURL(this);
+			    }
 			});
+			
+			function readURL(input) {
+	            if (input.files && input.files[0]) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+	                    $(input).next().attr('src', e.target.result).css('display', 'block');
+	                }
+	                reader.readAsDataURL(input.files[0]);
+	            }
+	         }
 			
 			$('#noticeIsMain').change(function() {
 				if($(this).prop('checked')) {
@@ -323,7 +345,6 @@ img {
 					 });
 				}
 			});
-			
 		});
 	</script>
 </body>

@@ -8,6 +8,7 @@
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" th:href="@{/css/richtext.min.css}">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
 header a, header li {
 	margin-top: 10px;
@@ -101,22 +102,61 @@ header li {
 			<div class="row">
 				<div class="col-md-12">
 					<h3 class="h5">Habit type</h3>
-					<select multiple="multiple" style="width: 100px;" th:size="${T(goalKeepin.constants.BaseHabitType).values().length}" name="baseHabitTypeCd" id="baseHabitTypeCd" th:field="*{baseHabitTypeCd}" class="add" required="required">
-						<option th:each="habitType: ${T(goalKeepin.constants.BaseHabitType).values()}" th:value="${habitType}" th:text="${habitType.baseHabitTypeName}"></option>
-					</select> <input type="hidden" name="searchKeyword" id="searchKeyword"> <span th:text="*{searchKeyword}" class="view">Base Habit Type Text</span>
+					<input type="hidden" name="baseHabitTypeCd" id="baseHabitTypeCd">
+					<input type="hidden" name="searchKeyword" id="searchKeyword"> 
+					<div class="add">
+						<div class="row">
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT01" id="Health">
+								<label for="Health" style="font-weight: normal;">Health</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT02" id="Lifestyle">
+								<label for="Lifestyle" style="font-weight: normal;">Lifestyle</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT03" id="Relationships">
+								<label for="Relationships" style="font-weight: normal;">Relationships</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT04" id="Ability">
+								<label for="Ability" style="font-weight: normal;">Ability</label>
+							</div>
+						</div>
+					
+						<div class="row">
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT05" id="Hobby">
+								<label for="Hobby" style="font-weight: normal;">Hobby</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT06" id="Asset">
+								<label for="Asset" style="font-weight: normal;">Asset</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT07" id="Event">
+								<label for="Event" style="font-weight: normal;">Event</label>
+							</div>
+							<div class="col-md-2">
+								<input type="checkbox" name="baseHabitTypeItem" value="HT08" id="Premium">
+								<label for="Premium" style="font-weight: normal;">Premium</label>
+							</div>
+						</div>
+					</div>
+					<span th:text="*{searchKeyword}" class="view" id="searchKeywordText">Base Habit Type Text</span>
 				</div>
 			</div>
-	
-	
+			
 			<div class="row">
 				<div class="col-md-4" id="thumbnailImg">
-					<h3 class="h5">Thumbnail image</h3>
+					<h3 class="h5">Thumbnail image (jpg/jpeg/png)</h3>
 					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" />
-					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-left: 100px;">
+					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
 				</div>
 				<div class="col-md-4 forRecruiting">
 					<h3 class="h5">Category setting</h3>
-					<select name="categoryNo" id="categoryNo">
+					<select name="categoryNo" id="categoryNo" style="width: 200px; text-overflow: ellipsis;">
 						<option th:each="category : ${categoryList}" th:value="${category.categoryNo}" th:utext="${category.categoryContent}">
 					</select>
 				</div>
@@ -148,7 +188,7 @@ header li {
 							<input type="date" name="startDate" id="startDate" style="width: 200px;" />
 						</div>
 						<div class="col-md-4">
-							<h3 class="h5">Start date</h3>
+							<h3 class="h5">End date</h3>
 							<input type="date" name="endDate" id="endDate" style="width: 200px;" />
 						</div>
 					</div>
@@ -181,14 +221,11 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" min="1" /> Days per week <input type="checkbox" id="everyday" /><label for="everyday">Everyday</label>
+							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" readonly="readonly" min="1" /> Days per week
 						</div>
 						<div class="view">
 							<span th:text="*{baseAuthFrequency}"></span>
 							<span th:text="*{baseAuthFrequency == 1 ? 'Day' : 'Days'}"></span>
-							<span th:if="*{(baseAuthDateCd == 'AD01' and baseAuthFrequency == 5)
-										or (baseAuthDateCd == 'AD02' and baseAuthFrequency == 2)
-										or (baseAuthDateCd == 'AD03' and baseAuthFrequency == 7)}" th:text="'(Everyday)'"></span>
 						</div>
 					</div>
 				</div>
@@ -255,7 +292,7 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" min="1" /><label>Hours</label>
+							<span id="intervalItem"> <input type="number" name="baseAuthInterval" id="baseAuthInterval" th:field="*{baseAuthInterval}" required="required" min="0" /><label>Hours</label>
 							</span> <input type="checkbox" id="noLimit" /><label for="noLimit">No limit</label>
 						</div>
 						<div class="view">
@@ -317,6 +354,7 @@ header li {
 			</section>
 		</section>
 		
+				 <!-- 
 		<section>
 			<div class="row">
 				<div>
@@ -343,6 +381,28 @@ header li {
 				</div>
 			</div>
 		</section>
+		 -->
+
+		 <section>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (English)</h2>
+			 		<textarea class="summernote" th:field="*{baseDetailEn}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (Traditional)</h2>
+			 		<textarea class="summernote" th:field="*{baseDetailTc}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (Simplified)</h2>
+			 		<textarea class="summernote" th:field="*{baseDetailSc}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 </section>
 		
 		<section style="margin-bottom: 40px;">
 			<div class="row text-center col-md-11">
@@ -358,19 +418,77 @@ header li {
 	</form>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery.richtext.js}"></script>
+	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
+	
 	<script th:inline="javascript" th:if="*{baseChallenge != null}">
     	var baseHabitTypeCd = /*[[*{baseChallenge.baseHabitTypeCd}]]*/ null;
     	var baseDetailEn = /*[[*{baseChallenge.baseDetailEn}]]*/ null;
     	var baseDetailTc = /*[[*{baseChallenge.baseDetailTc}]]*/ null;
     	var baseDetailSc = /*[[*{baseChallenge.baseDetailSc}]]*/ null;
     	var categoryCount = /*[[*{categoryList.size()}]]*/ 0;
+    	var minStartDate = /*[[*{minStartDate}]]*/ null;
+    	var minEndDate = /*[[*{minEndDate}]]*/ null;
 	</script>
 
 	<script type="text/javascript">
 		$(function() {
-			 $('.content1').richText();
-			 $('.content2').richText();
-			 $('.content3').richText();
+			 var token = $("meta[name='_csrf']").attr("content");
+			 var header = $("meta[name='_csrf_header']").attr("content");
+			 
+			 $('.summernote').summernote({
+			        placeholder: 'Please enter project details',
+			        tabsize: 2,
+			        height: 300,
+			        disableDragAndDrop: true,
+			        toolbar: [
+	                    ['style', ['style']],
+	                    ['font', ['bold', 'underline', 'clear']],
+	                    ['fontname', ['fontname']],
+	                    ['fontsize', ['fontsize']],
+	                    ['color', ['color']],
+	                    ['para', ['ul', 'ol', 'paragraph']],
+	                    ['table', ['table']],
+	                    ['insert', ['link', 'picture']],
+	                    ['view', ['fullscreen', 'codeview', 'help']]
+	                    ], 
+	                    callbacks: 
+	                     {
+	                        onImageUpload: function(files, editor, welEditable) 
+	                        {
+	                           for (var i = files.length - 1; i >= 0; i--)
+	                           {
+	                              sendFile(files[i], this, editor);
+	                           }
+	                        }
+	                     }
+			      });
+			 
+			 function sendFile(file, el, editor) 
+		     {
+			      var form_data = new FormData();
+			      
+			      form_data.append('file', file);
+			      
+			      $.ajax(
+			            {
+			               data: form_data,
+			               type: "POST",
+			               url: '/goalkeepinmanager/challenge/detailImage',
+			               cache: false,
+			               contentType: false,
+			               enctype: 'multipart/form-data',
+			               processData: false,
+			               beforeSend : function(xhr) {
+						       xhr.setRequestHeader(header, token);
+						   },
+			               success: function(url) 
+			               {
+			                  var image = $('<img>').attr({src : url, style : "width:200px; height:auto;"});
+			                  $(el).summernote("insertNode", image[0]);
+			               }
+			            }
+			      );
+		    }
 			 
 			 var isCreatingBaseChallenge = [[*{baseChallenge != null and baseChallenge.baseNo == null}]];
 			 
@@ -379,16 +497,73 @@ header li {
 				 $('.view').css('display', 'none');
 			 } else {
 				 // 보기
-				 $('.richText-editor').attr('contenteditable', false);
+				 $('#baseDetailEn').summernote('disable');
+				 $('#baseDetailTc').summernote('disable');
+				 $('#baseDetailSc').summernote('disable');
 				 $('.add').css('display', 'none');
 				 
-				 // 선택된 습관 타입 보여주기
-				 $("#baseHabitTypeCd").val(baseHabitTypeCd.split(','));
+				 // 선택된 습관 타입 보여주기 todo
+				 var baseHabitArr = baseHabitTypeCd.split(',');
+				 
+				 $('input[name=baseHabitTypeItem]').each(function() {
+					 
+					 if(baseHabitArr.indexOf($(this).val()) != -1) {
+						 $(this).prop('checked', 'checked');
+					 }
+				 });
+				 
+				 var searchKeywordText = $('#searchKeywordText').text();
+				 var searchKeywordArr = searchKeywordText.split(',');
+				 $('#searchKeywordText').text(searchKeywordArr.join(', '));
+					 
 			 }
+			
+			 // 습관타입 처리
+			 $('input[name=baseHabitTypeItem]').change(function() {
+				 processHabitType();
+			 });
+			 
+			 function processHabitType() {
+				 var baseHabitTypeArr = [];
+				 var searchKeywordArr = [];
+				 $('input[name=baseHabitTypeItem]:checked').each(function(index, ele) {
+					 baseHabitTypeArr.push($(this).val());
+					 searchKeywordArr.push($(this).attr('id'));
+				 });
+
+				 $('#baseHabitTypeCd').val(baseHabitTypeArr.join(','));
+				 $('#searchKeyword').val(searchKeywordArr.join(','));
+			 }
+			 
+			 //썸네일 이미지 사이즈 제한
+			 $('#baseThumbnailUrl').change(function() {
+				 if(this.files[0].size > 1048576){
+				        alert("Thumbnail image can't be larger than 1MB.");
+				        this.value = "";
+				        $('#imgPreview').hide();
+			     } else {
+					 readURL(this);
+			     }
+			 });
+			 
+			 function readURL(input) {
+	            if (input.files && input.files[0]) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+	                    $('#imgPreview').attr('src', e.target.result).show();
+	                }
+	                reader.readAsDataURL(input.files[0]);
+	            }
+	         }
+			 
+			 $('#startDate').attr('min', minStartDate);
+			 $('#endDate').attr('min', minEndDate);
 			 
 			 // 챌린지 정보 수정하기 버튼 처리
 			 $('#modifyChallengeDetail').click(function() {
-				 $('.richText-editor').attr('contenteditable', true);
+				 $('#baseDetailEn').summernote('enable');
+				 $('#baseDetailTc').summernote('enable');
+				 $('#baseDetailSc').summernote('enable');
 				 $('.add').fadeIn('slow');
 				 $('.view').css('display', 'none');
 				 $('.forModifying').show('slow');
@@ -409,10 +584,13 @@ header li {
 					 $('.add').css('display', 'none');
 					 $('.view').css('display', 'block');
 					 
-					 $('.richText-editor:eq(0)').html(baseDetailEn);
-					 $('.richText-editor:eq(1)').html(baseDetailTc);
-					 $('.richText-editor:eq(2)').html(baseDetailSc);
-					 $('.richText-editor').attr('contenteditable', false);
+					 $('#baseDetailEn').summernote('code', baseDetailEn);
+					 $('#baseDetailTc').summernote('code', baseDetailTc);
+					 $('#baseDetailSc').summernote('code', baseDetailSc);
+					 
+					 $('#baseDetailEn').summernote('disable');
+					 $('#baseDetailTc').summernote('disable');
+					 $('#baseDetailSc').summernote('disable');
 					 
 					 $('.forModifying').hide();
 					 $('#baseThumbnailUrl').attr('required', 'required');
@@ -420,16 +598,6 @@ header li {
 				 
 			 });
 			 
-			// 수정하기 실행
-			 $('#doModifyChallengeDetail').click(function() {
-				 var textArr = [];
-					$('#baseHabitTypeCd').children(':selected').each(function(index, element) {
-						textArr.push($(element).text());
-					});
-					
-					$('#searchKeyword').val(textArr.join(','));
-			 });
-			
 			 // 모집 시작하기 버튼 처리
 			 $('#startRecruiting').click(function() {
 				 
@@ -466,37 +634,12 @@ header li {
 				 });
 			 });
 			 
-			 // 인증 빈도 매일 체크박스 처리
-			 $('#everyday').change(function() {
-				 var dateCount = $('[name=baseAuthDateCd]:checked').length;
-				 if(dateCount == 0) {
-					 alert('Please select a valid day for verification.');
-					 $(this).prop('checked', false);
-				 } else {
-					if($(this).prop('checked')) {
-						
-						var daysArr = [5, 2, 7];
-						for(var i=0; i<daysArr.length; i++) {
-							if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
-								 $('#baseAuthFrequency').val(daysArr[i]);
-							}	
-						}
-						
-						$('#baseAuthFrequency').attr('readonly', true);
-					} else {
-						$('#baseAuthFrequency').attr('readonly', false);
-					}
-				 }
-			 });
-			 
 			 // 인증 가능 요일 라디오 처리
 			 $('input[name=baseAuthDateCd]').change(function() {
 				var daysArr = [5, 2, 7];
 				for(var i=0; i<daysArr.length; i++) {
 					if($('#baseAuthDateCd' + (i+1)).prop('checked')) {
-						if($('#everyday').prop('checked')) {
-							$('#baseAuthFrequency').val(daysArr[i]);
-						}
+						$('#baseAuthFrequency').val(daysArr[i]);
 					}	
 				}
 			 });
@@ -520,7 +663,7 @@ header li {
 			 // 24시간 체크박스 처리 
 			 $('#allHours').change(function() {
 				if($(this).prop('checked')) {
-					$('#baseAuthFromTime').val('01:00').attr('readonly', true);
+					$('#baseAuthFromTime').val('00:00').attr('readonly', true);
 					$('#baseAuthToTime').val('23:59').attr('readonly', true);
 				} else {
 					$('#baseAuthFromTime').attr('readonly', false);
@@ -537,16 +680,6 @@ header li {
 					 $('#intervalItem').show();
 					 $('#baseAuthInterval').val('');
 				 }
-			 });
-			 
-			 // 제출시 습관타입을 키원드로 전환
-			 $('#baseHabitTypeCd').change(function() {
-				var textArr = [];
-				$(this).children(':selected').each(function(index, element) {
-					textArr.push($(element).text());
-				});
-				
-				$('#searchKeyword').val(textArr.join(','));
 			 });
 			 
 			 // 유효성 체크
@@ -580,8 +713,35 @@ header li {
 					 return false;
 				 }
 				 
-				 var token = $("meta[name='_csrf']").attr("content");
-				 var header = $("meta[name='_csrf_header']").attr("content");
+				 var minFee = parseInt($('#minFee').val());
+				 var maxFee = parseInt($('#maxFee').val());
+				 
+				 if(minFee < 0) {
+					 alert("Minimum Participation fee can't be negative value.");
+					 $('#minFee').focus();
+					 return false;
+				 }
+				 
+				 if(maxFee < 0) {
+					 alert("Maximum Participation fee can't be negative value.");
+					 $('#maxFee').focus();
+					 return false;
+				 }
+				 
+				 if(maxFee < minFee) {
+					 alert("Maximum participation fee must be greater then minimum participation fee.")
+					 $('#minFee').focus();
+					 return false;
+				 }
+				 
+				 var startDateVal = $('#startDate').val();
+				 var endDateVal = $('#endDate').val();
+					 
+				 if(startDateVal >= endDateVal) {
+					 alert('End date must be later than start date.');	
+					 $('#startDate').focus();
+					 return false;
+				 }
 				 
 				 $.ajax({ url: '/goalkeepinmanager/challenge/createNewOperatedChallenge',  
 					 data: {
@@ -612,6 +772,27 @@ header li {
 				 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val();
 			 });
 			 
+			 $('#createChallenge, #doModifyChallengeDetail').click(function(e) {
+				 var baseDetailEn = $('#baseDetailEn').summernote('code');
+				 var baseDetailTc = $('#baseDetailTc').summernote('code');
+				 var baseDetailSc = $('#baseDetailSc').summernote('code');
+				 alert(baseDetailEn);
+				 alert(baseDetailTc);
+				 alert(baseDetailSc);
+				 alert($('#baseDetailEn').val());
+				 
+				 checked = $("input[name=baseHabitTypeItem]:checked").length;
+
+			      if(!checked) {
+			        alert("At lease one habit type needs to be selected.");
+			        $('#Health').focus();
+			        return false;
+			      }
+			 });
+			 
+			 $('#doModifyChallengeDetail').click(function(e) {
+				 processHabitType();
+			 });
 		});
 	</script>
 </body>

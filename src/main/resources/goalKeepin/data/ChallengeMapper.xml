@@ -84,7 +84,7 @@
 	
 	<select id="selectHomepageHeaderInfo" resultType="hashmap">
     	/* selectHomepageHeaderInfo */
-		SELECT SUM(challenge_entry_num) totalParicipantCount, SUM(challenge_total_fee) totalFeeAmount 
+		SELECT IFNULL(SUM(challenge_entry_num), 0) totalParicipantCount, IFNULL(SUM(challenge_total_fee), 0) totalFeeAmount
 		FROM OPERATED_CHALLENGE_TB
 	</select>
 	
