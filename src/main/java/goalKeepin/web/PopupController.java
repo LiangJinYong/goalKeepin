@@ -38,12 +38,22 @@ public class PopupController {
 	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/popupImage/";
 	
 	@GetMapping("/showPopupList/{pageNum}")
-	public String showPopupList(@PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showPopupList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = 3;
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Popup> pageData =  popupMapper.selectPopupList(paramMap);
 		int totalRecordNum = popupMapper.getTotalPopupCount();

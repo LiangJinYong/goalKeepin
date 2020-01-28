@@ -6,9 +6,8 @@
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" th:href="@{/css/richtext.min.css}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
 header a, header li {
 	margin-top: 10px;
@@ -113,11 +112,11 @@ header li {
 			<div class="row">
 				<div class="col-md-12">
 					<div class="col-md-4">
-						<h3 class="h5">Minimum participation fee</h3>
+						<h3 class="h5">Minimum participation fee (SGD)</h3>
 						<span th:text="*{minFee}"></span>
 					</div>
 					<div class="col-md-4">
-						<h3 class="h5">Maximum participation fee</h3>
+						<h3 class="h5">Maximum participation fee (SGD)</h3>
 						<span th:text="*{maxFee}"></span>
 					</div>
 				</div>
@@ -137,12 +136,13 @@ header li {
 			</div>
 		</section>
 		
+		<div class="row">
+			<div class="col-md-12">
+				<h2 class="h3">Verification Method</h2>
+			</div>
+		</div>
 		<section id="bottomPart">
 			<section id="authMethod">
-				<div class="row">
-					<h2 class="h3">Verification Method</h2>
-				</div>
-				
 				<div class="row">
 					<div class="col-md-3">
 						<span>Available day for verification</span>
@@ -256,45 +256,52 @@ header li {
 		</section>
 			
 		<section>
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (English)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (Traditional)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (Simplified)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
-				</div>
-			</div>
-		</section>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (English)</h2>
+			 		<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (Traditional)</h2>
+			 		<textarea id="baseDetailTc" class="summernote" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="col-md-12">
+			 		<h2 class="h5">Project details (Simplified)</h2>
+			 		<textarea id="baseDetailSc" class="summernote" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
+		 		</div>
+		 	</div>
+		 </section>
 		
 	</div>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
-	<script type="text/javascript" th:src="@{/js/jquery.richtext.js}"></script>
+	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
 	
 	<script type="text/javascript">
 		$(function() {
-			 $('.content1').richText();
-			 $('.content2').richText();
-			 $('.content3').richText();
-			 
-			 $('.richText-editor').attr('contenteditable', false);
+			$('.summernote').summernote({
+		        tabsize: 2,
+		        height: 300,
+		        disableDragAndDrop: true,
+		        toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'italic', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
+		      });
+			
+			 $('#baseDetailEn').summernote('disable');
+			 $('#baseDetailTc').summernote('disable');
+			 $('#baseDetailSc').summernote('disable');
 		});
 	</script>
 </body>

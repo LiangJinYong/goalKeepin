@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.UserMapper;
@@ -31,7 +32,7 @@ public class UserController {
 	private UserMapper userMapper;
 	
 	@GetMapping("/showUserList/{country}/{pageNum}")
-	public String showUserList(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showUserList(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		String nationalityCd = "NA02";
 		
@@ -44,6 +45,16 @@ public class UserController {
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("nationalityCd", nationalityCd);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<User> pageData = userMapper.selectUserList(paramMap);
 		int totalRecordNum = userMapper.getTotalUserCount(nationalityCd);

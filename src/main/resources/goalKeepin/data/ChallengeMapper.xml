@@ -102,7 +102,11 @@
 		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH02' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) ongoing
 		    , (SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB oct WHERE oct.CHALLENGE_ST_CD = 'CH03' AND oct.CHALLENGE_BASE_NO = bct.BASE_NO) expired
 		<include refid="baseChallenge" />
-		ORDER BY base_reg_dt DESC
+		ORDER BY 
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		base_reg_dt DESC
 		LIMIT ${startIndex}, ${pageSize}
     </select>
     
@@ -222,7 +226,11 @@
 		/* selectOperatedChallengeListByBaseNo */
 		SELECT oct.challenge_no operatedChallengeNo, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum, oct.challenge_st_cd statusCd
 		<include refid="operatedChallenge" />
-		ORDER BY oct.challenge_no DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		oct.challenge_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
@@ -297,7 +305,11 @@
         FROM CHALLENGE_ENTRY_TB cet
         INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
         WHERE cet.entry_challenge_no = #{operatedNo}
-        ORDER BY cet.entry_reg_dt DESC
+        ORDER BY
+        <if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+        cet.entry_reg_dt DESC
         LIMIT ${startIndex}, ${pageSize}
 	</select>
 
@@ -333,7 +345,11 @@
 		SELECT crt.review_no reviewNo, ut.user_id userId, ut.user_nickname nickName, crt.review_txt reviewContent, crt.review_reg_dt reviewRegDate
 		FROM CHALLENGE_REVIEW_TB crt INNER JOIN USER_TB ut ON crt.review_user_no = ut.user_no
 		WHERE crt.review_c_no = #{operatedNo}
-		ORDER BY crt.review_no desc
+		ORDER BY 
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		crt.review_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
@@ -358,7 +374,11 @@
 		<if test="habitTypeCd != 'HT00'">
 			AND LOCATE(#{habitTypeCd}, bct.base_habit_tp_cd) > 0
 		</if>
-		ORDER BY bct.base_no DESC, oct.challenge_no DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		bct.base_no DESC, oct.challenge_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

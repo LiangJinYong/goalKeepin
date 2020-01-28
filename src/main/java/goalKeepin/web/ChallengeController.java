@@ -57,10 +57,20 @@ public class ChallengeController {
 	private final static String DETAIL_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeDetailImage/";
 
 	@GetMapping("/baseManagement/{pageNum}")
-	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model) {
+	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
+		
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		
@@ -68,14 +78,13 @@ public class ChallengeController {
 		int totalRecordNum = challengerMapper.getTotalBaseChallengeNum();
 		
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
-		
 		model.addAttribute("page", page);
-
+		
 		return "challenge/baseManagement";
 	}
 
 	@GetMapping("/showOperatedChallengeListByStatus/{status}/{pageNum}")
-	public String showOperatedChallengeListByStatus(@RequestParam(value="habitTypeCd", required=false) String habitTypeCd, @PathVariable("status") String status, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showOperatedChallengeListByStatus(@RequestParam(value="habitTypeCd", required=false) String habitTypeCd, @PathVariable("status") String status, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		String statusCd;
 		if ("recruiting".equals(status)) {
@@ -96,7 +105,16 @@ public class ChallengeController {
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("statusCd", statusCd);
 		paramMap.put("habitTypeCd", habitTypeCd);
-
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		int totalRecordNum = challengerMapper.getAllOperatedChallengeCount(paramMap);
 		List<OperatedChallenge> pageData = challengerMapper.selectAllOperatedChallengeList(paramMap);
@@ -191,7 +209,6 @@ public class ChallengeController {
 		Integer baseAuthFrequency = challengeDetail.getBaseAuthFrequency();
 		Integer baseAuthNumDaily = challengeDetail.getBaseAuthNumDaily();
 		
-			
 		int maxResult = DateUtils.getMaxResult(startDate, endDate, baseAuthMethodCd, baseAuthFrequency, baseAuthNumDaily);
 		challengeDetail.setMaxResult(maxResult);
 		
@@ -200,13 +217,23 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/showOperatedChallengeList/{pageNum}")
-	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("baseNo", baseNo);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<OperatedChallenge> pageData = challengerMapper.selectOperatedChallengeListByBaseNo(paramMap);
 		int totalRecordNum = challengerMapper.getOperatedChallengeCountByBase(baseNo);
@@ -237,14 +264,24 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/showParticipantList/{pageNum}")
-	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
-
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
+		
 		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
 		model.addAttribute("challengeProofCount", challengeProofCount);
 		
@@ -317,13 +354,23 @@ public class ChallengeController {
 	}
 
 	@GetMapping("/showReviewListByChallenge/{pageNum}")
-	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("operatedNo", operatedNo);
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Review> pageData = challengerMapper.selectReviewListByChallenge(paramMap);
 		int totalRecordNum = challengerMapper.getReviewCountByChallenge(operatedNo);

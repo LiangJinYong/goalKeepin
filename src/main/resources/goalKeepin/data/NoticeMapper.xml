@@ -39,7 +39,11 @@
 		/* selectNoticeList */
 		SELECT nt.notice_no noticeNo, tt.trans_en noticeTitleEn, nt.notice_reg_dt noticeRegDate
 		<include refid="notice" />
-		ORDER by notice_reg_dt DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		notice_reg_dt DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

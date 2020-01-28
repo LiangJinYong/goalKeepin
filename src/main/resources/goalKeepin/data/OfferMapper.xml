@@ -52,7 +52,11 @@
 				AND cot.offer_st_cd = #{offerStatusCd}
 			</if>
 		) offer
-		ORDER BY offer.offerRegDate DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		offer.offerRegDate DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

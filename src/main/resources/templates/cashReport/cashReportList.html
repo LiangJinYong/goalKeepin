@@ -34,10 +34,7 @@ header li {
 				<h1 class="brand pull-left h3">Withdrawal History</h1>
 				<ul class="list-inline list-unstyled pull-right">
 					<li><label>Bank</label> <select name="bank" id="bank">
-							<option value="">View all</option>
-							<!-- 
-							<option th:each="bank: ${bankList}" th:value="${bank}" th:text="${bank}"></option>
-							 -->
+							 <option value="">View all</option>
 							 <option value="은행1">은행1</option>
 							 <option value="은행2">은행2</option>
 							 <option value="은행3">은행3</option>
@@ -64,25 +61,25 @@ header li {
 								<h2 class="h5 text-center">NO</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">User ID</h2>
+								<h2 class="h5 text-center sortable" id="userId">User ID</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Request amount</h2>
+								<h2 class="h5 text-center sortable" id="reportCashAmount">Request amount</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Name of Bank</h2>
+								<h2 class="h5 text-center sortable" id="reportBank">Name of Bank</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Bank account</h2>
+								<h2 class="h5 text-center sortable" id="reportAccount">Bank account</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Account name</h2>
+								<h2 class="h5 text-center sortable" id="reportAccountHolder">Account name</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Date</h2>
+								<h2 class="h5 text-center sortable" id="reportRegDate">Date</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center">Processing status</h2>
+								<h2 class="h5 text-center sortable" id="reportStatusCd">Processing status</h2>
 							</th>
 						</tr>
 					</thead>
@@ -147,17 +144,6 @@ header li {
 			</nav>
 		</div>
 
-		<!--  
-		<div class="row text-center" th:if="${paging.totalPages > 0}">
-			<nav aria-label="Page navigation">
-				<ul class="pagination" id="pagination">
-					<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-						<a class="page-link" th:href="@{'/cashReport/showCashReportList/' + ${country} + '/' + ${i}}" th:text="${i}"></a>
-					</li>
-				</ul>
-			</nav>
-		</div>
--->
 		<div th:if="${page.totalRecordNum > 0}" class="row">
 				<div class="col-md-4">
 					<a id="downloadExcel" th:href="@{/cashReport/excelDownload/} + ${country}" class="btn btn-primary">Download Excel</a>
@@ -165,22 +151,27 @@ header li {
 				</div>
 		</div>
 		<div class="col-md-3 pull-right">
-			<input type="date" name="reportRegDate" id="reportRegDate" placeholder="Date search" /> <input type="submit" value="Search" /> <br /> <input type="text" name="userId" id="userId" placeholder="ID search" style="margin-top: 8px;" /> <input type="submit" value="Search" />
+			<input type="date" name="reportRegDate" id="reportRegDateField" placeholder="Date search" /><input type="submit" value="Search" /><br />
+			<input type="text" name="userId" id="userIdField" placeholder="ID search" style="margin-top: 8px;" /> <input type="submit" value="Search" />
 		</div>
 	</form>
 
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
-		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
-		var pageSize = /*[[*{page.pageSize}]]*/;
-	</script>
-	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
-	<script th:inline="javascript">
+	var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+	var pageSize = /*[[*{page.pageSize}]]*/;
+	
 	var bank = /*[[*{bank}]]*/ null;
 	var reportStatusCd = /*[[*{reportStatusCd}]]*/ null;
 	var reportRegDate = /*[[*{reportRegDate}]]*/ null;
 	var userId = /*[[*{userId}]]*/ null;
+	
+	var sortField = /*[[*{sortField}]]*/ null;
+	var sortOrder = /*[[*{sortOrder}]]*/ null;
+	
+	var country = /*[[*{country}]]*/ null;
 	</script>
+	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			
@@ -190,11 +181,12 @@ header li {
 			if(reportStatusCd != null)
 				$('#reportStatusCd').val(reportStatusCd);
 			
-			if(reportRegDate != null)
-				$('#reportRegDate').val(reportRegDate);
+			if(reportRegDate != null) {
+				$('#reportRegDateField').val(reportRegDate);
+			}
 			
 			if(userId != null)
-				$('#userId').val(userId);
+				$('#userIdField').val(userId);
 			
 			$('.page-link[href]').each(function(index, item) {
 				var href = $(item).attr('href');
@@ -269,6 +261,8 @@ header li {
 					 });
 				}
 			});
+			
+			addSortLink('/goalkeepinmanager/cashReport/showCashReportList/' + country + '/1');
 		});
 	</script>
 </body>

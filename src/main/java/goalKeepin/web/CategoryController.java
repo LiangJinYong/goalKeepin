@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.CategoryMapper;
@@ -32,12 +33,22 @@ public class CategoryController {
 	private CategoryMapper categoryMapper;
 	
 	@GetMapping("/showCategoryList/{pageNum}")
-	public String showCategoryList(@PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showCategoryList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Category> pageData = categoryMapper.selectCategoryList(paramMap);
 		int totalRecordNum = categoryMapper.getTotalCategoryCount();

@@ -32,16 +32,16 @@
 							<h2 class="h5 text-center">Name of Project</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Start date</h2>
+							<h2 class="h5 text-center sortable" id="startDate">Start date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">End date</h2>
+							<h2 class="h5 text-center sortable" id="endDate">End date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Number of participants</h2>
+							<h2 class="h5 text-center sortable" id="entryNum">Number of participants</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Status</h2>
+							<h2 class="h5 text-center sortable" id="statusCd">Status</h2>
 						</th>
 					</tr>
 				</thead>
@@ -104,13 +104,20 @@
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
+		
+		var baseNo = /*[[*{baseNo}]]*/ 0;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#detailTable tr:gt(0)').click(function() {
+			$('#detailTable tr:gt(0)[id]').click(function() {
 				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
-			});			
+			});
+			
+			addSortLink('/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + baseNo);
 		});
 	</script>
 </body>

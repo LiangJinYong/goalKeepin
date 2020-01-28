@@ -51,7 +51,7 @@ public class CashReportController {
 	private CashReportMapper cashReportMapper;
 	
 	@GetMapping("/showCashReportList/{country}/{pageNum}")
-	public String showCashReportList(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, Model model, HttpServletRequest request) {
+	public String showCashReportList(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, Model model, HttpServletRequest request, @RequestParam(value="sort", required=false) String sort) {
 		
 		String nationalityCd = "NA02";
 		
@@ -76,9 +76,18 @@ public class CashReportController {
 		Map<String, String[]> cashReportFormParam = request.getParameterMap();
 		paramMap.putAll(convertParamMap(cashReportFormParam));
 		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
+		
 		int totalRecordNum = cashReportMapper.getTotalCashReportCount(paramMap);
 		List<CashReport> pageData = cashReportMapper.selectCashReportList(paramMap);
-		
 
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
 		model.addAttribute("page", page);

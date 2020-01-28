@@ -20,6 +20,13 @@
 h2 + span {
 	margin-left: 30px;
 }
+
+.proofImage {
+	 max-width:300px;
+	 max-height:300px;
+	 width: auto;
+ 	 height: auto;
+}
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -66,7 +73,7 @@ h2 + span {
 		
 		<div class="text-center col-md-4" th:if="*{baseAuthMethodCd == 'AU01'}" th:each="proof: ${proofList}">
 			<div class="col-md-10 col-md-offset-1">
-				<img th:src="*{proof.proofUrl}" style="border: 1px solid grey; width: 250px; height: 250px; margin-bottom: 10px;">
+				<img th:src="*{proof.proofUrl}" class="proofImage">
 			</div>
 			<div style="margin-bottom: 20px;">
 				<span class="text-center" th:text="*{#dates.format(proof.proofDate, 'yyyy.MM.dd HH:mm:ss')}"></span><br />

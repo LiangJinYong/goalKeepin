@@ -33,7 +33,7 @@ public class OfferController {
 	private OfferMapper offerMapper;
 	
 	@GetMapping("/showOfferList/{pageNum}")
-	public String showOfferList(@RequestParam("offerStatusCd") String offerStatusCd, @PathVariable("pageNum") Integer pageNum, Model model) {
+	public String showOfferList(@RequestParam("offerStatusCd") String offerStatusCd, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
 		
@@ -45,6 +45,16 @@ public class OfferController {
 		paramMap.put("offerStatusCd", offerStatusCd);
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Offer> pageData = offerMapper.selectOfferList(paramMap);
 		int totalRecordNum = offerMapper.getTotalOfferCount(paramMap);

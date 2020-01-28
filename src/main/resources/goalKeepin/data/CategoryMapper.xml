@@ -22,7 +22,11 @@
 		SELECT ct.category_no categoryNo, tt.trans_en categoryNmEn,
 			(SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB WHERE challenge_category_no = ct.category_no) challengeNum
 		FROM CATEGORY_TB ct INNER JOIN TRANSLATION_TB tt ON ct.category_nm_t_no = tt.trans_no
-		ORDER BY category_no DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		category_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

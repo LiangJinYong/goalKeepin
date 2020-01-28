@@ -49,16 +49,16 @@ header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Name of Project</h2>
+							<h2 class="h5 text-center sortable" id="baseNmEn">Name of Project</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Start date</h2>
+							<h2 class="h5 text-center sortable" id="startDate">Start date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">End date</h2>
+							<h2 class="h5 text-center sortable" id="endDate">End date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Number of participants</h2>
+							<h2 class="h5 text-center sortable" id="entryNum">Number of participants</h2>
 						</th>
 					</tr>
 				</thead>
@@ -125,24 +125,13 @@ header li {
 		</nav>
 	</div>
 	
-	<!-- 
-	<div class="row text-center" th:if="${paging.totalPages > 0}">
-		<nav aria-label="Page navigation">
-			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-					<a th:if="*{statusCd == 'CH01'}" th:text="${i}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/recruiting/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}"></a>
-					<a th:if="*{statusCd == 'CH02'}" th:text="${i}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/ongoing/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}"></a>
-					<a th:if="*{statusCd == 'CH03'}" th:text="${i}" class="page-link" th:href="@{'/challenge/showOperatedChallengeListByStatus/expired/' + ${i} + '?habitTypeCd=' + ${habitTypeCd}}"></a>
-				</li>
-			</ul>
-		</nav>
-	</div>
-	 -->
-	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script th:inline="javascript">
@@ -161,13 +150,15 @@ header li {
 	<script type="text/javascript">
 		$(function() {
 			$('#baseHabitTypeCd').val(selectedHabitTypeCd);
-			$('#statusTable tr:gt(0)').click(function() {
+			$('#statusTable tr:gt(0)[id]').click(function() {
 				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeDetail?operatedNo=' + $(this).attr('id');
 			});
 			
 			$('#baseHabitTypeCd').change(function() {
 				window.location = '/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/' + status + '/1?habitTypeCd=' + $(this).val();
 			});
+			
+			addSortLink('/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/' + status + '/1?habitTypeCd=' + $('#baseHabitTypeCd').val());
 		});
 	</script>
 </body>

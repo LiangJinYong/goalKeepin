@@ -28,16 +28,16 @@
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">ID</h2>
+							<h2 class="h5 text-center sortable" id="userId">ID</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Nickname</h2>
+							<h2 class="h5 text-center sortable" id="nickName">Nickname</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Contents</h2>
+							<h2 class="h5 text-center sortable" id="reviewContent">Contents</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Registration Date</h2>
+							<h2 class="h5 text-center sortable" id="reviewRegDate">Registration Date</h2>
 						</th>
 					</tr>
 				</thead>
@@ -93,32 +93,20 @@
 		</nav>
 	</div>
 	
-	<!-- 
-	<div class="row text-center" th:if="${paging.totalPages > 0}">
-		<nav aria-label="Page navigation example">
-			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-					<a th:text="${i}" class="page-link" th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}"></a>
-				</li>
-			</ul>
-		</nav>
-	</div>
-	<div id="pagination" th:if="${paging.totalPages > 1}">
-		<span th:each="i: ${#numbers.sequence(1, paging.totalPages)}">
-			<a th:href="@{'/challenge/showReviewListByChallenge/' + ${i} + '?operatedNo=' + ${operatedNo}}" th:text="${i}"></a>
-		</span>
-	</div>
-	 -->
-	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
+		
+		var operatedNo = /*[[*{operatedNo}]]*/ 0;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-					
+			addSortLink('/goalkeepinmanager/challenge/showReviewListByChallenge/1?operatedNo=' + operatedNo);
 		});
 	</script>
 </body>

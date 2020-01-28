@@ -39,10 +39,10 @@ header a, header li {
 							<h2 class="text-center h5">NO</h2>
 						</th>
 						<th>
-							<h2 class="text-center h5">Title</h2>
+							<h2 class="text-center h5 sortable" id="noticeTitleEn">Title</h2>
 						</th>
 						<th>
-							<h2 class="text-center h5">Registration Date</h2>
+							<h2 class="text-center h5 sortable" id="noticeRegDate">Registration Date</h2>
 						</th>
 					</tr>
 				</thead>
@@ -95,29 +95,23 @@ header a, header li {
 			</ul>
 		</nav>
 	</div>
-	<!-- 
-	<div class="row text-center" th:if="${paging.totalPages > 1}">
-		<nav aria-label="Page navigation example">
-			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-					<a th:text="${i}" class="page-link" th:href="@{'/notice/showNoticeList/' + ${i}}"></a>
-				</li>
-			</ul>
-		</nav>
-	</div> 
-	-->
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#noticeTable tbody tr').click(function() {
+			$('#noticeTable tbody tr[id]').click(function() {
 				window.location = '/goalkeepinmanager/notice/showNoticeDetail?noticeNo=' + $(this).attr('id');
 			});
+			
+			addSortLink('/goalkeepinmanager/notice/showNoticeList/1');
 		});
 	</script>
 </body>

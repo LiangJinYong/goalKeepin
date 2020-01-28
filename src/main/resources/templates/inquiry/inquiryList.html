@@ -52,16 +52,16 @@ header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">User ID</h2>
+							<h2 class="h5 text-center sortable" id="userId">User ID</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Inquiry contents</h2>
+							<h2 class="h5 text-center sortable" id="inquiryContentShort">Inquiry contents</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Registration Date</h2>
+							<h2 class="h5 text-center sortable" id="inquiryRegDate">Registration Date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Status</h2>
+							<h2 class="h5 text-center sortable" id="inquiryStatusCd">Status</h2>
 						</th>
 					</tr>
 				</thead>
@@ -119,27 +119,17 @@ header li {
 		</nav>
 	</div>
 	
-	<!-- 
-	<div class="row text-center" th:if="${paging.totalPages > 0}">
-		<nav aria-label="Page navigation">
-			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-					<a class="page-link" th:href="@{'/inquiry/showInquiryList/' + ${i} + '?inquiryStatusCd=' + ${inquiryStatusCd}}" th:text="${i}"></a>
-				</li>
-			</ul>
-		</nav>
-	</div>
-	 -->
-	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
+		var selectedInquiryStatusCd = /*[[*{inquiryStatusCd}]]*/ null;
+		
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
-	<script th:inline="javascript">
-		var selectedInquiryStatusCd = /*[[*{inquiryStatusCd}]]*/ null;
-	</script>
 	<script type="text/javascript">
 		$('#inquiryStatusCd').val(selectedInquiryStatusCd);
 		
@@ -148,9 +138,11 @@ header li {
 				window.location = '/goalkeepinmanager/inquiry/showInquiryList/1?inquiryStatusCd=' + $(this).val();
 			});
 			
-			$('#inquiryTable tbody tr').click(function() {
+			$('#inquiryTable tbody tr[id]').click(function() {
 				window.location = '/goalkeepinmanager/inquiry/showInquiryDetail?inquiryNo=' + $(this).attr('id');
 			});
+			
+			addSortLink('/goalkeepinmanager/inquiry/showInquiryList/1?inquiryStatusCd=' + selectedInquiryStatusCd);
 		});
 	</script>
 </body>

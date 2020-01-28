@@ -37,16 +37,16 @@ header a, header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Name of Project</h2>
+							<h2 class="h5 text-center sortable" id="name">Name of Project</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Recruiting projects</h2>
+							<h2 class="h5 text-center sortable" id="recruiting">Recruiting projects</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Ongoing projects</h2>
+							<h2 class="h5 text-center sortable" id="ongoing">Ongoing projects</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Completed projects</h2>
+							<h2 class="h5 text-center sortable" id="expired">Completed projects</h2>
 						</th>
 					</tr>
 				</thead>
@@ -106,13 +106,18 @@ header a, header li {
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#baseTable tbody tr').click(function() {
+			$('#baseTable tbody tr[id]').click(function() {
 				window.location = '/goalkeepinmanager/challenge/showBaseChallengeDetail?baseNo=' + $(this).attr('id');
 			});
+			
+			addSortLink('/goalkeepinmanager/challenge/baseManagement/1');
 		});
 	</script>
 

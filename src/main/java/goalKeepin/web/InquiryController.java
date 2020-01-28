@@ -35,7 +35,7 @@ public class InquiryController {
 
 	@GetMapping("/showInquiryList/{pageNum}")
 	public String showInquiryList(@RequestParam("inquiryStatusCd") String inquiryStatusCd,
-			@PathVariable("pageNum") Integer pageNum, Model model) {
+			@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		int pageSize = props.getPageSize();
 		
 		Map<String, Object> paramMap = new HashMap<>();
@@ -46,6 +46,16 @@ public class InquiryController {
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("inquiryStatusCd", inquiryStatusCd);
+		
+		if (sort != null) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Inquiry> pageData = inquiryMapper.selectInquiryList(paramMap);
 		int totalRecordNum = inquiryMapper.getTotalInquiryCount(paramMap);

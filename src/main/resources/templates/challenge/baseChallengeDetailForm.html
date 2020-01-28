@@ -7,7 +7,6 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" th:href="@{/css/richtext.min.css}">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
 header a, header li {
@@ -34,9 +33,12 @@ header li {
 }
 
 #thumbnailImg img {
-	width: 150px;
-	height: 150px;
-	border: 2px solid black;
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
 }
 
 #authMethod label {
@@ -173,11 +175,11 @@ header li {
 					<div class="col-md-12">
 						<div class="col-md-4">
 							<h3 class="h5">Minimum participation fee</h3>
-							<input type="number" name="minFee" id="minFee" style="width: 200px;" min="1"  />
+							<input type="number" name="minFee" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma"  />
 						</div>
 						<div class="col-md-4">
 							<h3 class="h5">Maximum participation fee</h3>
-							<input type="number" name="minFee" id="maxFee" style="width: 200px;" min="1" />
+							<input type="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
 						</div>
 					</div>
 				</div>
@@ -196,11 +198,13 @@ header li {
 			</section>
 		</section>
 
+		<div class="row">
+			<div class="col-md-12">
+				<h2 class="h3">Verification Method</h2>
+			</div>
+		</div>
 		<section id="bottomPart">
 			<section id="authMethod">
-				<div class="row">
-					<h2 class="h3">Verification Method</h2>
-				</div>
 				<div class="row">
 					<div class="col-md-3">
 						<span>Available day for verification</span>
@@ -264,10 +268,26 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">Photo</label> <input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">Voice</label>
+							<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">Photo</label>
+							<input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">Voice</label>
 						</div>
 						<div class="view">
 							<span th:if="*{baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span> <span th:if="*{baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row" style="display: none;" id="albumAvailability">
+					<div class="col-md-3">
+						<span>Photo album Availability</span>
+					</div>
+					<div class="col-md-9">
+						<div class="add">
+							<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumAvaliable">Possible</label>
+							<input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumNotavaliable">Impossible</label>
+						</div>
+						<div class="view">
+							<span th:if="*{baseAuthIsAlbum == 1}" th:text="'Possible'"></span> <span th:if="*{baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
 						</div>
 					</div>
 				</div>
@@ -297,21 +317,6 @@ header li {
 						</div>
 						<div class="view">
 							<span th:if="*{baseAuthInterval != 0}" th:text="*{baseAuthInterval} + ' Hours'"></span> <span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
-						</div>
-					</div>
-				</div>
-				
-	
-				<div class="row">
-					<div class="col-md-3">
-						<span>Photo album Availability</span>
-					</div>
-					<div class="col-md-9">
-						<div class="add">
-							<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumAvaliable">Possible</label> <input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" required="required" /><label for="albumNotavaliable">Impossible</label>
-						</div>
-						<div class="view">
-							<span th:if="*{baseAuthIsAlbum == 1}" th:text="'Possible'"></span> <span th:if="*{baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
 						</div>
 					</div>
 				</div>
@@ -354,35 +359,6 @@ header li {
 			</section>
 		</section>
 		
-				 <!-- 
-		<section>
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (English)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content1" name="baseDetailEn" id="baseDetailEn" th:field="*{baseDetailEn}" required></textarea>
-				</div>
-			</div>
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (Traditional)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content2" name="baseDetailTc" id="baseDetailTc" th:field="*{baseDetailTc}" required></textarea>
-				</div>
-			</div>
-			<div class="row">
-				<div>
-					<h2 class="h5">Project details (Simplified)</h2>
-				</div>
-				<div class="page-wrapper box-content col-md-11">
-					<textarea class="content3" name="baseDetailSc" id="baseDetailSc" th:field="*{baseDetailSc}" required></textarea>
-				</div>
-			</div>
-		</section>
-		 -->
-
 		 <section>
 		 	<div class="row">
 		 		<div class="col-md-12">
@@ -416,10 +392,9 @@ header li {
 			</div>
 		</section>
 	</form>
-	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
-	<script type="text/javascript" th:src="@{/js/jquery.richtext.js}"></script>
-	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
 	
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
 	<script th:inline="javascript" th:if="*{baseChallenge != null}">
     	var baseHabitTypeCd = /*[[*{baseChallenge.baseHabitTypeCd}]]*/ null;
     	var baseDetailEn = /*[[*{baseChallenge.baseDetailEn}]]*/ null;
@@ -428,6 +403,8 @@ header li {
     	var categoryCount = /*[[*{categoryList.size()}]]*/ 0;
     	var minStartDate = /*[[*{minStartDate}]]*/ null;
     	var minEndDate = /*[[*{minEndDate}]]*/ null;
+    	
+    	var baseAuthMethodCd = /*[[*{baseChallenge.baseAuthMethodCd}]]*/ null;
 	</script>
 
 	<script type="text/javascript">
@@ -442,7 +419,7 @@ header li {
 			        disableDragAndDrop: true,
 			        toolbar: [
 	                    ['style', ['style']],
-	                    ['font', ['bold', 'underline', 'clear']],
+	                    ['font', ['bold', 'underline', 'italic', 'clear']],
 	                    ['fontname', ['fontname']],
 	                    ['fontsize', ['fontsize']],
 	                    ['color', ['color']],
@@ -502,6 +479,10 @@ header li {
 				 $('#baseDetailSc').summernote('disable');
 				 $('.add').css('display', 'none');
 				 
+				 if(baseAuthMethodCd == 'AU01') {
+					 $('#albumAvailability').css('display', 'block');
+				 }
+				 
 				 // 선택된 습관 타입 보여주기 todo
 				 var baseHabitArr = baseHabitTypeCd.split(',');
 				 
@@ -520,6 +501,10 @@ header li {
 			
 			 // 습관타입 처리
 			 $('input[name=baseHabitTypeItem]').change(function() {
+				 if($('input[name=baseHabitTypeItem]:checked').length > 2) {
+					 alert("The number of habit types can't be more than 2.")
+					 this.checked = false;
+				 }
 				 processHabitType();
 			 });
 			 
@@ -666,8 +651,8 @@ header li {
 					$('#baseAuthFromTime').val('00:00').attr('readonly', true);
 					$('#baseAuthToTime').val('23:59').attr('readonly', true);
 				} else {
-					$('#baseAuthFromTime').attr('readonly', false);
-					$('#baseAuthToTime').attr('readonly', false);
+					$('#baseAuthFromTime').val('').attr('readonly', false);
+					$('#baseAuthToTime').val('').attr('readonly', false);
 				}
 			 });
 			 
@@ -693,6 +678,18 @@ header li {
 				 
 				 return true;
 			 }
+			 
+			 // 인증방식 처리: 사진일때만 앱범 사용 여부 영역 보여줌
+			 $('input[name=baseAuthMethodCd]').change(function() {
+				 if($(this).val() == 'AU01') {
+					 $('#albumAvailability').show(500);
+					 $('input[name=baseAuthIsAlbum]').attr('required', 'required');
+				 } else {
+					 $('#albumAvailability').hide();
+					 $('input[name=baseAuthIsAlbum]').removeAttr('required');
+				 }
+				 
+			 });
 			 
 			 // 하단 모집 시작하기 버튼 처리
 			 $('#createChallengeDetail').click(function(e) {
@@ -752,7 +749,7 @@ header li {
 						 maxFee: $('#maxFee').val(),
 						 startDate: $('#startDate').val(),
 						 endDate: $('#endDate').val(),
-						 baseAuthMethodCd: $('input[name=baseAuthDateCd]:checked').val(),
+						 baseAuthDateCd: $('input[name=baseAuthDateCd]:checked').val(),
 						 baseAuthFrequency: $('#baseAuthFrequency').val(),
 						 baseAuthNumDaily: $('#baseAuthNumDaily').val()
 		 			 },  
@@ -773,20 +770,21 @@ header li {
 			 });
 			 
 			 $('#createChallenge, #doModifyChallengeDetail').click(function(e) {
-				 var baseDetailEn = $('#baseDetailEn').summernote('code');
-				 var baseDetailTc = $('#baseDetailTc').summernote('code');
-				 var baseDetailSc = $('#baseDetailSc').summernote('code');
-				 alert(baseDetailEn);
-				 alert(baseDetailTc);
-				 alert(baseDetailSc);
-				 alert($('#baseDetailEn').val());
 				 
-				 checked = $("input[name=baseHabitTypeItem]:checked").length;
+				  checked = $("input[name=baseHabitTypeItem]:checked").length;
 
 			      if(!checked) {
 			        alert("At lease one habit type needs to be selected.");
 			        $('#Health').focus();
 			        return false;
+			      }
+			      
+			      if($('input[name=baseAuthMethodCd]:checked').val() == 'AU02') {
+			    	  $('input[name=baseAuthIsAlbum]').val(0);
+			      }
+			      
+			      if(!confirm('Do you really want to save the information?')) {
+			    	  e.preventDefault();
 			      }
 			 });
 			 

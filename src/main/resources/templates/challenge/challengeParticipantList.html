@@ -39,16 +39,16 @@ header a, header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">ID</h2>
+							<h2 class="h5 text-center sortable" id="userId">ID</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Participation fee</h2>
+							<h2 class="h5 text-center sortable" id="entryFee">Participation fee</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Participation date</h2>
+							<h2 class="h5 text-center sortable" id="entryRegDate">Participation date</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Achievement rate(%)</h2>
+							<h2 class="h5 text-center sortable" id="entryResult">Achievement rate(%)</h2>
 						</th>
 					</tr>
 				</thead>
@@ -108,13 +108,20 @@ header a, header li {
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
+		
+		var operatedNo = /*[[*{operatedNo}]]*/ 0;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#participantTable tr:gt(0)').click(function() {
+			$('#participantTable tr:gt(0)[id]').click(function() {
 				window.location = '/goalkeepinmanager/challenge/showParticipantProofInfo?entryNo=' + $(this).attr('id');
 			});
+			
+			addSortLink('/goalkeepinmanager/challenge/showParticipantList/1?operatedNo=' + operatedNo);
 		});
 	</script>
 </body>

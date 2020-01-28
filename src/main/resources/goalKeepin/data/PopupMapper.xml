@@ -30,7 +30,11 @@
 		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no WHERE oct.challenge_no = pt.popup_target_no) END popupTargetNameEn
 		, popup_is_on popupIsOn
 		FROM POPUP_TB pt
-		ORDER BY popup_is_on DESC, popup_no DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if> 
+		popup_is_on DESC, popup_no DESC
         LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

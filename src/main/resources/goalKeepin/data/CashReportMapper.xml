@@ -26,7 +26,11 @@
 		/* selectCashReportList */
 		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder reportAccountHolder, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, ucrt.report_st_cd reportStatusCd
 		<include refid="cashReport" />
-		ORDER BY ucrt.report_reg_dt DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		ucrt.report_reg_dt DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

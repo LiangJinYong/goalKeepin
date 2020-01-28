@@ -28,19 +28,16 @@
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">User ID</h2>
+							<h2 class="h5 text-center sortable" id="userId">User ID</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Country</h2>
+							<h2 class="h5 text-center sortable" id="nickName">Nickname</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Nickname</h2>
+							<h2 class="h5 text-center sortable" id="loginTypeCd">Login Type</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Login Type</h2>
-						</th>
-						<th>
-							<h2 class="h5 text-center">Sign up Date</h2>
+							<h2 class="h5 text-center sortable" id="userRegDate">Sign up Date</h2>
 						</th>
 					</tr>
 				</thead>
@@ -49,8 +46,6 @@
 					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="user: ${page.pageData}">
 						<td th:text="${user.userNo}">NO</td>
 						<td th:text="${user.userId}">User Id</td>
-						<td th:if="${user.nationalityCd == 'NA01'}" th:text="${T(goalKeepin.constants.Country).NA01.countryName}">Country</td>
-						<td th:if="${user.nationalityCd == 'NA02'}" th:text="${T(goalKeepin.constants.Country).NA02.countryName}">Country</td>
 						<td th:text="${user.nickName}">Nickname</td>
 						<td th:if="${user.loginTypeCd == 'LT01'}" th:text="${T(goalKeepin.constants.LoginType).LT01.loginTypeName}">Login Type</td>
 						<td th:if="${user.loginTypeCd == 'LT02'}" th:text="${T(goalKeepin.constants.LoginType).LT02.loginTypeName}">Login Type</td>
@@ -102,25 +97,22 @@
 			</ul>
 		</nav>
 	</div>
-	
-	<!-- 
-	<div class="row text-center" th:if="${paging.totalPages > 0}">
-		<nav aria-label="Page navigation">
-			<ul class="pagination" id="pagination">
-				<li th:each="i: ${#numbers.sequence(1, paging.totalPages)}" class="page-item" th:classappend="${paging.currentPageNum == i} ? 'active' : ''">
-					<a class="page-link" th:href="@{'/user/showUserList/' + *{country} + '/' + ${i}}" th:text="${i}"></a>
-				</li>
-			</ul>
-		</nav>
-	</div>
-	 -->
+
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
+		
+		var country = /*[[*{country}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
+		$(function() {
+			addSortLink('/goalkeepinmanager/user/showUserList/' + country + '/1');
+		});
 	</script>
 </body>
 </html>

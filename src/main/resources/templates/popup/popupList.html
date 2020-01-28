@@ -21,9 +21,11 @@ header a, header li {
 }
 
 img {
-	width: 150px;
-	height: 150px;
-	border: 2px solid black;
+	border: 1px solid gray;
+	max-width:150px;
+	max-height:150px;
+	width: auto;
+	height: auto;
 }
 
 #popupTable tbody td {
@@ -65,13 +67,13 @@ img {
 							<h2 class="h5 text-center">Image</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Type</h2>
+							<h2 class="h5 text-center sortable" id="popupTypeCd">Type</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Connected Content</h2>
+							<h2 class="h5 text-center sortable" id="popupTargetNameEn">Connected Content</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Status</h2>
+							<h2 class="h5 text-center sortable" id="popupIsOn">Status</h2>
 						</th>
 					</tr>
 				</thead>
@@ -140,12 +142,15 @@ img {
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
 			
-			$('#popupTable tbody tr').css('cursor', 'pointer')
+			$('#popupTable tbody tr[id]').css('cursor', 'pointer')
 			.click(function() {
 				var checkbox = $(this).find('input');
 				
@@ -213,6 +218,8 @@ img {
 					}
 				}
 			});
+			
+			addSortLink('/goalkeepinmanager/popup/showPopupList/1');
 		});
 	</script>
 </body>
