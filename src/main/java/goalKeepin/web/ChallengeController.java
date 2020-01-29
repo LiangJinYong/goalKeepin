@@ -137,15 +137,7 @@ public class ChallengeController {
 	
 	@PostMapping("/processChallengeGeneration")
 	public String processChallengeGeneration(BaseChallenge baseChallenge, Errors errors, @RequestParam("baseThumbnailUrl") MultipartFile file) {
-		/*
-		if (errors.hasErrors()) {
-			List<FieldError> fieldErrors = errors.getFieldErrors();
-			for(FieldError error: fieldErrors) {
-				System.out.println("===>" + error.getField());
-			}
-			return "challenge/baseChallengeDetailForm";
-		}
-		*/
+		
 		long fileSize = file.getSize();
 		
 		if (fileSize > 0) {

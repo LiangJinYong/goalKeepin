@@ -71,7 +71,7 @@
 					<a class="page-link">&lt;&lt;</a>
 				</li>
 				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
-					<a class="page-link" th:href="@{'/user/showUserList/1' + ${country} + '/1'}">&lt;&lt;</a>
+					<a class="page-link" th:href="@{'/user/showUserList/' + ${country} + '/1'}">&lt;&lt;</a>
 				</li>
 				<li th:if="${page.pageNum == 1}">
 					<a class="page-link">&lt;</a>

@@ -272,7 +272,7 @@
 		, bct.search_keyword searchKeyword
         , oct.challenge_no operatedChallengeNo
         , oct.challenge_category_no categoryNo
-        , (SELECT trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = oct.challenge_category_no) categoryNmEn
+        , (SELECT trans_en FROM TRANSLATION_TB tt INNER JOIN CATEGORY_TB ct ON tt.trans_no = ct.category_nm_t_no WHERE ct.category_no = oct.challenge_category_no) categoryNmEn
         , oct.challenge_grade_cd gradeCd
         , oct.challenge_min_fee minFee
         , oct.challenge_max_fee maxFee

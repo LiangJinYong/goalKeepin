@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,33 +16,54 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.constants.LoginType;
 import goalKeepin.data.RewardPaymentMapper;
+import goalKeepin.model.Page;
+import goalKeepin.service.PageService;
 
 @Controller
 @RequestMapping("/rewardPayment")
 public class RewardPaymentController {
-
+	
+	@Autowired
+	private PageService pageService;
+	
+	@Autowired
+	private GoalKeepinProps props;
+	
 	@Autowired
 	private RewardPaymentMapper rewardPaymentMapper;
 	
 	@GetMapping("/showRewardPaymentDetail")
-	public String showRewardPaymentPage() {
+	public String showRewardPaymentPage(Model model) {
 		
 		return "rewardPayment/rewardPaymentDetail";
 	}
 	
-	@GetMapping("/searchUserList")
+	@GetMapping("/searchUserList/{pageNum}")
 	@ResponseBody
-	public String searchUserList(@RequestParam("userId") String userId) {
+	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userId") String userId) {
 		Gson gson = new Gson();
-		List<Map<String, String>> userList = rewardPaymentMapper.selectUserListById(userId);
-		for(Map<String, String> user : userList) {
+		Map<String, Object> result = new HashMap<>();
+		
+		int pageSize = props.getPageSize();
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startIndex", (pageNum - 1) * pageSize);
+		paramMap.put("pageSize", pageSize);
+		paramMap.put("userId", userId);
+		
+		List<Map<String, String>> pageData = rewardPaymentMapper.selectUserListById(paramMap);
+		int totalRecordNum = rewardPaymentMapper.getTotalUserCount(paramMap);
+		for(Map<String, String> user : pageData) {
 			String loginTypeCd = user.get("loginTypeCd");
 			String loginTypeName = LoginType.valueOf(loginTypeCd).getLoginTypeName();
 			user.put("loginTypeCd", loginTypeName);
 		}
-		return gson.toJson(userList);
+		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
+		
+		result.put("page", page);
+		return gson.toJson(result);
 	}
 	
 	@PostMapping("/processRewardPayment")

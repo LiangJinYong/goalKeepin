@@ -25,9 +25,12 @@ header li {
 }
 
 #thumbnailImg img {
-	width: 150px;
-	height: 150px;
-	border: 2px solid grey;
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
 }
 
 #authMethod .col-md-3 span {
@@ -98,7 +101,6 @@ header li {
 				<div class="col-md-4">
 					<h3 class="h5">Level Restriction</h3>
 	 				<span th:if="*{gradeCd} == 'LV00'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV00.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV01'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV01.gradeName}"></span>
 					<span th:if="*{gradeCd} == 'LV02'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV02.gradeName}"></span>
 					<span th:if="*{gradeCd} == 'LV03'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV03.gradeName}"></span>
 					<span th:if="*{gradeCd} == 'LV04'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV04.gradeName}"></span>

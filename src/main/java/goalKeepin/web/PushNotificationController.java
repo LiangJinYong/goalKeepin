@@ -38,6 +38,7 @@ public class PushNotificationController {
 	@ResponseBody
 	public String searchUserList(@RequestParam("userId") String userId) {
 		Gson gson = new Gson();
+		/*
 		List<Map<String, String>> userList = rewardPaymentMapper.selectUserListById(userId);
 		for(Map<String, String> user : userList) {
 			String loginTypeCd = user.get("loginTypeCd");
@@ -45,6 +46,8 @@ public class PushNotificationController {
 			user.put("loginTypeCd", loginTypeName);
 		}
 		return gson.toJson(userList);
+		*/
+		return null;
 	}
 	
 	@PostMapping("/sendingPushNotification")

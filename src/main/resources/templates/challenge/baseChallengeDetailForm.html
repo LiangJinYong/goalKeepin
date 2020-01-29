@@ -460,7 +460,7 @@ header li {
 						   },
 			               success: function(url) 
 			               {
-			                  var image = $('<img>').attr({src : url, style : "width:200px; height:auto;"});
+			                  var image = $('<img>').attr({src : 'http://ec2-13-124-238-163.ap-northeast-2.compute.amazonaws.com:8080' + url, style : "width:auto; height:auto;"});
 			                  $(el).summernote("insertNode", image[0]);
 			               }
 			            }

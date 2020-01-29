@@ -17,16 +17,19 @@ input[type=text], input[type=number] {
 	width: 200px;
 }
 
-#searchResult, #noResult {
-	display: none;
-}
-
 table {
 	border: 1px solid #ccc;
 }
+
+#rewardTo div {
+	background-color: #fff5ee;
+	margin: 5px;
+	padding: 15px;
+	border-radius: 20px;
+}
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
+<body style="background-color: rgb(245, 247, 250); min-width: 500px;">
 	<div class="row">
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Reward payment</h1>
@@ -37,68 +40,67 @@ table {
 		<div class="col-md-12">
 			<span style="margin-right: 20px;">User ID</span>
 			<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="Please enter user ID">
-			<a class="btn btn-primary" href="#" id="userSearch">Search</a>
 		</div>
 	</div>
 	
-	<section id="searchResult">
-		<div class="row">
-			<div class="col-md-12">
-				<h2 class="h5">Search Results</h2>
-			</div>
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="h5">Search Results</h2>
 		</div>
-		<div class="row">
-			<div class="col-md-11">
-				<table class="table table-striped table-hover" style="border-bottom: 1px solid grey;">
-					<thead>
-						<tr class="info">
-							<th>
-								<h2 class="h5 text-center">
-									<input type="checkbox" id="selectAll">
-								</h2>
-							</th>
-							<th>
-								<h2 class="h5 text-center">NO</h2>
-							</th>
-							<th>
-								<h2 class="h5 text-center">User ID</h2>
-							</th>
-							<th>
-								<h2 class="h5 text-center">Nickname</h2>
-							</th>
-							<th>
-								<h2 class="h5 text-center">Login Type</h2>
-							</th>
-							<th>
-								<h2 class="h5 text-center">Sign up Date</h2>
-							</th>
-						</tr>
-					</thead>
-					
-					<tbody id="userData">
-						
-					</tbody>
-				</table>
-			</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-striped table-hover" style="border-bottom: 1px solid grey;">
+				<thead>
+					<tr class="info">
+						<th>
+							<h2 class="h5 text-center">
+								<input type="checkbox" id="selectAll">
+							</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">NO</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">User ID</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Nickname</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Login Type</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Sign up Date</h2>
+						</th>
+					</tr>
+				</thead>
+				
+				<tbody id="userData">
+				</tbody>
+			</table>
 		</div>
-		
-		<div class="row">
-			<div class="col-md-12">
-				<span style="margin-right: 20px;">Paid amount</span>
-				<input type="number" name="rewardAmount" id="rewardAmount" placeholder="Enter amount to pay" >
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-11 text-center">
-				<a href="#" class="btn btn-primary" id="doPay">Pay</a>
-			</div>
-		</div>
-	</section>
+	</div>
 	
-	<div class="row" id="noResult">
-		<div class="col-md-12" style="border-top: 1px solid grey;">
-			<h2 class="h3">No data found.</h2>
+	<div class="row text-center">
+		<nav aria-label="Page navigation" id="pagingArea">
+			
+		</nav>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<span class="h4">Reward to:</span>
+		</div>
+		<div id="rewardTo">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<span style="margin-right: 20px;">Paid amount</span>
+			<input type="number" name="rewardAmount" id="rewardAmount" placeholder="Enter amount to pay" style="margin-right: 20px;" >
+			<a href="#" class="btn btn-primary" id="doPay">Pay</a>
 		</div>
 	</div>
 	
@@ -106,84 +108,274 @@ table {
 	<script type="text/javascript">
 		$(function() {
 			$('#userId').focus();
+			loadUserData('%');
 			
-			$('#userSearch').click(function() {
-				var userIdVal = $('#userId').val();
-				
-				if(userIdVal != '') {
-					$.get({
-						url: '/goalkeepinmanager/rewardPayment/searchUserList',
-						data: {
-							userId: userIdVal
-						},
-						dataType: 'json',
-						success: function(data) {
-							$('#searchResult, #noResult').hide();
+			$('#userId').keyup(function() {
+				loadUserData($(this).val());
+			});
+			
+			function loadUserData(userId) {
+				$.get({
+					url: '/goalkeepinmanager/rewardPayment/searchUserList/1',
+					data: {
+						userId: userId
+					},
+					dataType: 'json',
+					success: function(data) {
+						console.log(data);
+						var pageData = data.page.pageData;
+						
+						if(pageData.length > 0) {
+							var getUrl = '/goalkeepinmanager/rewardPayment/searchUserList/';
+							var pageData = data.page.pageData;
+							processTableData(pageData);
+							processPagination(data, getUrl);
+							tableEffect();
+						} else {
 							$('#userData').empty();
-							$('#selectAll').prop('checked', false);
-							if(data.length > 0) {
-								$('#searchResult').show();
-								
-								for(var i=0; i<data.length; i++) {
-									var row = '<tr class="text-center"><td>';
-									row += '<input type="checkbox" value="' + data[i].userNo + '">';
-									row += '</td><td>';
-									row += (i + 1);
-									row += '</td><td>';
-									row += data[i].userId;
-									row += '</td><td>';
-									row += data[i].nickName;
-									row += '</td><td>';
-									row += data[i].loginTypeCd;
-									row += '</td><td>';
-									row += data[i].userRegDate;
-									row += '</td></tr>';
-									
-									$('#userData').append(row);
-								}
-								
-								$('#userData tr').css('cursor', 'pointer')
-								.click(function() {
-									var checkbox = $(this).find('input');
-									checkbox.prop('checked', !checkbox.prop('checked'));
-								});
-								
-								$('#userData input').click(function(e) {
-									e.stopPropagation();
-								});
-								
-								$('#userData input[type=checkbox]').change(function() {
-									if($('#userData input[type=checkbox]:checked').length == 0) {
-										$('#selectAll').prop('checked', false);
-									}
-								});
-							} else {
-								$('#noResult').show();
-							}
-							
-						}, error: function() {
-							alert('Error searching users');
+							var row = '<tr class="text-center"><td colspan="6">No Data Found</td></tr>';
+							$('#userData').append(row);
+							$('#pagingArea').empty();
 						}
-					});
-				} else {
-					alert('Please enter user id to search.');
-					$('#userId').focus();
-				}
-			});
+						
+					}, error: function() {
+						alert('Error searching users');
+					}
+				});
+			}
 			
-			$('#userId').keydown(function(e) {
-				if (e.keyCode == 13) {
-					$('#userSearch').click();
-		        }
-			});
+			function processTableData(pageData) {
+				$('#userData').empty();
+				
+				var selectedUserNos = [];
+				$('#rewardTo div').each(function(index, ele) {
+					var userNo = parseInt($(ele).attr('id').substring(5));
+					selectedUserNos.push(userNo);
+				});
+				
+				// table data
+				for(var i=0; i<pageData.length; i++) {
+					var row = '<tr class="text-center"><td>';
+					if($.inArray(pageData[i].userNo, selectedUserNos) != -1) {
+						row += '<input type="checkbox" value="' + pageData[i].userNo + '" checked="checked">';
+					} else {
+						row += '<input type="checkbox" value="' + pageData[i].userNo + '">';
+					}
+					row += '</td><td>';
+					row += (i + 1);
+					row += '</td><td>';
+					row += pageData[i].userId;
+					row += '</td><td>';
+					row += pageData[i].nickName;
+					row += '</td><td>';
+					row += pageData[i].loginTypeCd;
+					row += '</td><td>';
+					row += pageData[i].userRegDate;
+					row += '</td></tr>';
+					
+					$('#userData').append(row);
+				}
+				
+				var checkboxCount = $('#userData input[type=checkbox]').length;
+				var checkedCheckboxCount = $('#userData input[type=checkbox]:checked').length;
+				$('#selectAll').prop('checked', checkboxCount == checkedCheckboxCount);						
+			}
+			
+			function processPagination(data, getUrl) {
+				$('#pagingArea').empty();
+				var currentPageNum = data.page.pageNum;
+				var totalPageNum = data.page.totalPageNum;
+				
+				if(totalPageNum > 0) {
+					var pagination = '<ul class="pagination" id="pagination">';
+					
+					if(totalPageNum > 10 && currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;&lt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-1">'
+						pagination += '&lt;&lt;</a></li>';
+					}
+					
+					if(currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;</a></li>';
+					}
+					
+					if(currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum - 1) + '">'
+						pagination += '&lt;</a></li>';
+					}
+					
+					for(var i=data.page.firstPageNum; i<=data.page.lastPageNum; i++) {
+						pagination += '<li class="page-item page-no';
+						if(data.page.pageNum == i) {
+							pagination += ' active';
+						}
+						pagination += '">';
+						pagination += '<a style="cursor: pointer" class="page-link"';
+						pagination += ' id="page-' + i + '"';
+						pagination += '>';
+						pagination += i;
+						pagination += '</a>';
+						pagination += '</li>';
+					}
+					
+					if(currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;</a></li>';
+					}
+					
+					if(currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum + 1) + '">'
+						pagination += '&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + totalPageNum + '">'
+						pagination += '&gt;&gt;</a></li>';
+					}
+					
+					pagination += '</ul>';
+					
+					$('#pagingArea').append(pagination);
+					
+					$('.pagination a[id]').click(function() {
+						var id = $(this).attr('id');
+						// id: page-xxx
+						var pageNum = id.substring(5);
+						$.getJSON(getUrl + pageNum,
+							{
+								userId: $('#userId').val() == '' ? '%' : $('#userId').val()	
+							},
+							function(data) {
+								processTableData(data.page.pageData);
+								processPagination(data, getUrl);
+							//	processTableNo();
+								tableEffect();
+							}
+						);
+					});
+				}
+			}
+			
+			function tableEffect() {
+				$('#userData tr').css('cursor', 'pointer')
+				.click(function() {
+					var checkbox = $(this).find('input');
+					checkbox.prop('checked', !checkbox.prop('checked'));
+					
+					var userNo = $(this).children().eq(0).children('input').val();
+					var userId = $(this).children().eq(2).text();
+					
+					if(checkbox.prop('checked')) {
+						var closeKey = $('<span class="close">x</span>');
+						var userItem = $('<div>').addClass('col-md-5').attr('id', 'item-' + userNo).text(userId);
+						userItem.append(closeKey);
+						userItem.appendTo($('#rewardTo'));
+						
+						$('#rewardTo').find('.close').click(function() {
+							var userNo = $(this).parent().attr('id').substring(5);
+							$('#userData input[value=' + userNo + ']').prop('checked', false);
+							if($('#userData input[value=' + userNo + ']').length == 1) {
+								$('#selectAll').prop('checked', false);	
+							}
+							$(this).parent().remove();
+						});
+						
+						var checkboxCount = $('#userData input[type=checkbox]').length;
+						var checkedCheckboxCount = $('#userData input[type=checkbox]:checked').length;
+						if(checkboxCount == checkedCheckboxCount) {
+							$('#selectAll').prop('checked', true);						
+						}
+					} else {
+						$('#item-' + userNo).remove();
+						$('#selectAll').prop('checked', false);						
+					}
+				});
+				
+				$('#userData input').click(function(e) {
+					e.stopPropagation();
+				});
+				
+				$('#userData input[type=checkbox]').change(function() {
+					if($('#userData input[type=checkbox]:checked').length == 0) {
+						$('#selectAll').prop('checked', false);
+					}
+					
+					var userNo = $(this).val();
+					var userId = $(this).parent().next().next().text();
+					
+					if($(this).prop('checked')) {
+						var closeKey = $('<span class="close">x</span>');
+						var userItem = $('<div>').addClass('col-md-5').attr('id', 'item-' + userNo).text(userId);
+						userItem.append(closeKey);
+						userItem.appendTo($('#rewardTo'));
+						
+						$('#rewardTo').find('.close').click(function() {
+							var userNo = $(this).parent().attr('id').substring(5);
+							$('#userData input[value=' + userNo + ']').prop('checked', false);
+							if($('#userData input[value=' + userNo + ']').length == 1) {
+								$('#selectAll').prop('checked', false);	
+							}
+							$(this).parent().remove();
+						});
+						
+						var checkboxCount = $('#userData input[type=checkbox]').length;
+						var checkedCheckboxCount = $('#userData input[type=checkbox]:checked').length;
+						if(checkboxCount == checkedCheckboxCount) {
+							$('#selectAll').prop('checked', true);						
+						}
+						
+					} else {
+						$('#item-' + userNo).remove();
+						$('#selectAll').prop('checked', false);
+					}
+				});
+			}
 			
 			$('#selectAll').change(function() {
 				var isChecked = $(this).is(':checked');
+				if(isChecked) {
+					$('#userData input:not(:checked)').each(function() {
+						var userNo = $(this).val();
+						var userId = $(this).parent().next().next().text();
+						var closeKey = $('<span class="close">x</span>');
+						var userItem = $('<div>').addClass('col-md-5').attr('id', 'item-' + userNo).text(userId);
+						userItem.append(closeKey);
+						userItem.appendTo($('#rewardTo'));
+						
+						$('#rewardTo').find('.close').click(function() {
+							var userNo = $(this).parent().attr('id').substring(5);
+							$('#userData input[value=' + userNo + ']').prop('checked', false);
+							if($('#userData input[value=' + userNo + ']').length == 1) {
+								$('#selectAll').prop('checked', false);	
+							}
+							$(this).parent().remove();
+						});
+					});
+				} else {
+					$('#userData input:checked').each(function() {
+						$('#item-' + $(this).val()).remove();
+					});
+				}
+				
 				$('#userData input').prop('checked', isChecked);
 			});
 			
 			$('#doPay').click(function() {
-				var checkedUserCount = $('#userData input:checked').length;
+				var checkedUserCount = $('#rewardTo div').length;
 				
 				if(checkedUserCount == 0) {
 					alert('Please select user to pay out.');
@@ -193,37 +385,40 @@ table {
 				var rewardAmount = $('#rewardAmount').val();
 				
 				if(rewardAmount == '') {
-					alert('Please enter amout to pay.');
+					alert('Please enter amount to pay.');
 					$('#rewardAmount').focus();
 					return;
 				}
 				
-				var userNos = [];
-				$('#userData input:checked').each(function() {
-					userNos.push($(this).val());
-				});
-				
-				 var token = $("meta[name='_csrf']").attr("content");
-				 var header = $("meta[name='_csrf_header']").attr("content");
-				 
-				 $.ajax({ url: '/goalkeepinmanager/rewardPayment/processRewardPayment',  
-					 data: {
-						 userNos: userNos.join(','),
-						 rewardAmount: rewardAmount
-		 			 },  
-					 method: "POST",  
-					 dataType: "text", 
-					 beforeSend : function(xhr) {
-					    xhr.setRequestHeader(header, token);
-						}
-					 })
+				if(confirm('Do your really want to pay the reward?')) {
+					var userNos = [];
+					$('#rewardTo div').each(function() {
+						var userNo = $(this).attr('id').substring(5);
+						userNos.push(userNo);
+					});
+					
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					 
+					$.ajax({ url: '/goalkeepinmanager/rewardPayment/processRewardPayment',  
+						 data: {
+							 userNos: userNos.join(','),
+							 rewardAmount: rewardAmount
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
 					 .done(function(json) {
 						 alert('Reward payment processed successfully') 
 					 })
 					 .fail(function() {
 						 alert('Error processing reward payment.');
 					 });
-				 });
+				}
+			 });
 		});
 	</script>
 </body>
