@@ -40,7 +40,7 @@
 		WHERE ucrt.report_tp_cd = 'CA03'
 		AND ut.user_nationality_cd = #{nationalityCd}
 		<if test="bank != null and bank != ''">
-			AND ucrt.report_bank = #{bank}
+			AND UPPER(ucrt.report_bank) = UPPER(#{bank})
 		</if>
 		<if test="reportStatusCd != null and reportStatusCd != 'CT00'">
 			AND ucrt.report_st_cd = #{reportStatusCd}

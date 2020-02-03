@@ -37,7 +37,7 @@
 	
 	<select id="selectNoticeList" parameterType="map" resultMap="Notice">
 		/* selectNoticeList */
-		SELECT nt.notice_no noticeNo, tt.trans_en noticeTitleEn, nt.notice_reg_dt noticeRegDate
+		SELECT nt.notice_no noticeNo, tt.trans_en noticeTitleEn, nt.notice_reg_dt noticeRegDate, nt.notice_is_main noticeIsMain
 		<include refid="notice" />
 		ORDER BY
 		<if test="sortField != null">
@@ -71,9 +71,41 @@
 		(trans_no, trans_en, trans_s_cn, trans_t_cn)
 		VALUES
 		(#{noticeImgUrlTransNo}, #{noticeImgUrlEn}, #{noticeImgUrlSc}, #{noticeImgUrlTc})
-		ON DUPLICATE KEY UPDATE trans_en = #{noticeImgUrlEn}, trans_s_cn = #{noticeImgUrlSc}, trans_t_cn = #{noticeImgUrlTc}
+		ON DUPLICATE KEY UPDATE
+		<choose>
+			<when test="noticeImgUrlEn != null">
+				trans_en = #{noticeImgUrlEn},
+			</when>
+			<when test="noticeImgUrlEn == null and editOptionEn == 1">
+				trans_en = trans_en,
+			</when>
+			<otherwise>
+				trans_en = null,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="noticeImgUrlSc != null">
+				trans_s_cn = #{noticeImgUrlSc},
+			</when>
+			<when test="noticeImgUrlSc == null and editOptionSc == 1">
+				trans_s_cn = trans_s_cn,
+			</when>
+			<otherwise>
+				trans_s_cn = null,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="noticeImgUrlTc != null">
+				trans_t_cn = #{noticeImgUrlTc}
+			</when>
+			<when test="noticeImgUrlTc == null and editOptionTc == 1">
+				trans_t_cn = trans_t_cn
+			</when>
+			<otherwise>
+				trans_t_cn = null
+			</otherwise>
+		</choose>
 	</insert>
-	
 	
 	<insert id="insertOrUpdateNotice" parameterType="Notice">
 		/* insertOrUpdateNotice */
@@ -109,4 +141,5 @@
 		/* deleteNotice */
 		DELETE FROM NOTICE_TB WHERE notice_no = #{noticeNo}
 	</delete>
+	
 </mapper>

@@ -78,7 +78,7 @@ header li {
 		</header>
 	</div>
 
-	<form th:if="*{baseChallenge != null}" method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}" enctype="multipart/form-data">
+	<form th:if="*{baseChallenge != null}" method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}" enctype="multipart/form-data" id="challengeForm">
 		<input th:if="*{baseNo != null}" type="hidden" id="baseNo" name="baseNo" th:value="*{baseNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseNmTransNo" name="baseNmTransNo" th:value="*{baseNmTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseAuthDescTransNo" name="baseAuthDescTransNo" th:value="*{baseAuthDescTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseDetailTransNo" name="baseDetailTransNo" th:value="*{baseDetailTransNo}" />
 	
 		<section id="middlePart">
@@ -380,14 +380,14 @@ header li {
 		 	</div>
 		 </section>
 		
-		<section style="margin-bottom: 40px;">
-			<div class="row text-center col-md-11">
+		<section>
+			<div class="row text-center col-md-11" style="margin-bottom: 20px; margin-top: 20px;">
 				<input th:if="*{baseNo == null}" type="submit" value="Create a project" class="btn btn-primary" id="createChallenge" />
 			</div>
-			<div class="row forRecruiting text-center col-md-11">
+			<div class="row forRecruiting text-center col-md-11" style="margin-bottom: 20px; margin-top: -20px;">
 				<a id="createChallengeDetail" class="btn btn-primary">Start a project</a>
 			</div>
-			<div class="row forModifying text-center col-md-11">
+			<div class="row forModifying text-center col-md-11" style="margin-bottom: 20px; margin-top: 20px;">
 				<input id="doModifyChallengeDetail" type="submit" class="btn btn-primary" value="Edit" />
 			</div>
 		</section>
@@ -587,7 +587,7 @@ header li {
 			 $('#startRecruiting').click(function() {
 				 
 				 if(categoryCount == 0) {
-					 if(confirm('No category created, do you want to forward to category creation page?')) {
+					 if(confirm('No category created, do you want to go to the category creation page?')) {
 						 var parentWindow = window.parent;
 						 var category = parentWindow.document.getElementById('category');
 						 $(category).parents('ul').parent('ul').find('a').removeClass('highlight');
@@ -603,7 +603,7 @@ header li {
 				 $('.forRecruiting').fadeIn('slow');
 				 $('.forRecruiting input').attr('required', 'required');
 				 
-				 $('<li><a href="#" class="btn btn-primary">Cancel Editing</a></li>')
+				 $('<li><a href="#" class="btn btn-primary">Cancel</a></li>')
 				 .appendTo('#headerBtn')
 				 .siblings('li')
 				 .hide()
@@ -694,19 +694,19 @@ header li {
 			 // 하단 모집 시작하기 버튼 처리
 			 $('#createChallengeDetail').click(function(e) {
 				 
-				 if(!validateCheck($('#minFee'), 'Please input minimum fee.')) {
+				 if(!validateCheck($('#minFee'), 'Please enter minimum fee.')) {
 					 return false;
 				 }
 				 
-				 if(!validateCheck($('#maxFee'), 'Please input maximum fee.')) {
+				 if(!validateCheck($('#maxFee'), 'Please enter maximum fee.')) {
 					 return false;
 				 }
 				 
-				 if(!validateCheck($('#startDate'), 'Please input start date.')) {
+				 if(!validateCheck($('#startDate'), 'Please enter start date.')) {
 					 return false;
 				 }
 				 
-				 if(!validateCheck($('#endDate'), 'Please input end date.')) {
+				 if(!validateCheck($('#endDate'), 'Please enter end date.')) {
 					 return false;
 				 }
 				 
@@ -726,7 +726,7 @@ header li {
 				 }
 				 
 				 if(maxFee < minFee) {
-					 alert("Maximum participation fee must be greater then minimum participation fee.")
+					 alert("Maximum participation fee must be greater than minimum participation fee.")
 					 $('#minFee').focus();
 					 return false;
 				 }
@@ -740,28 +740,30 @@ header li {
 					 return false;
 				 }
 				 
-				 $.ajax({ url: '/goalkeepinmanager/challenge/createNewOperatedChallenge',  
-					 data: {
-						 baseChallengeNo: $('#baseNo').val(),
-						 categoryNo: $('#categoryNo').val(),
-						 gradeCd: $('#gradeCd').val(),
-						 minFee: $('#minFee').val(),
-						 maxFee: $('#maxFee').val(),
-						 startDate: $('#startDate').val(),
-						 endDate: $('#endDate').val(),
-						 baseAuthDateCd: $('input[name=baseAuthDateCd]:checked').val(),
-						 baseAuthFrequency: $('#baseAuthFrequency').val(),
-						 baseAuthNumDaily: $('#baseAuthNumDaily').val()
-		 			 },  
-					 method: "POST",  
-					 dataType: "text", 
-					 beforeSend : function(xhr) {
-					    xhr.setRequestHeader(header, token);
-						}
-					 })
-					 .done(function(json) { 
-						 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val(); 
-					 });
+				 if(confirm('Are you sure to start a project?')) {
+					 $.ajax({ url: '/goalkeepinmanager/challenge/createNewOperatedChallenge',  
+						 data: {
+							 baseChallengeNo: $('#baseNo').val(),
+							 categoryNo: $('#categoryNo').val(),
+							 gradeCd: $('#gradeCd').val(),
+							 minFee: $('#minFee').val(),
+							 maxFee: $('#maxFee').val(),
+							 startDate: $('#startDate').val(),
+							 endDate: $('#endDate').val(),
+							 baseAuthDateCd: $('input[name=baseAuthDateCd]:checked').val(),
+							 baseAuthFrequency: $('#baseAuthFrequency').val(),
+							 baseAuthNumDaily: $('#baseAuthNumDaily').val()
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+						 .done(function(json) { 
+							 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val(); 
+						 });
+				 	}
 				 });
 
 			 // 등록한 챌린지 목록 버튼 처리
@@ -782,14 +784,14 @@ header li {
 			      if($('input[name=baseAuthMethodCd]:checked').val() == 'AU02') {
 			    	  $('input[name=baseAuthIsAlbum]').val(0);
 			      }
-			      
-			      if(!confirm('Do you really want to save the information?')) {
-			    	  e.preventDefault();
-			      }
 			 });
 			 
 			 $('#doModifyChallengeDetail').click(function(e) {
 				 processHabitType();
+			 });
+			 
+			 $('#challengeForm').submit(function() {
+				 return confirm('Are you sure to save the challenge infomation?');
 			 });
 		});
 	</script>

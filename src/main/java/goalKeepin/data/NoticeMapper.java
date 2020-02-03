@@ -26,4 +26,6 @@ public interface NoticeMapper {
 
 	void deleteNotice(Long noticeNo);
 
+	void deleteNoticeImage(Map<String, Object> paramMap);
+
 }

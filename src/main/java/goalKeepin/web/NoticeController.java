@@ -72,19 +72,30 @@ public class NoticeController {
 	}
 	
 	@PostMapping("/processNoticeDetail")
-	public String processNoticeDetail(Notice notice, @RequestParam("noticeImgs") MultipartFile[] noticeImgs) {
+	public String processNoticeDetail(Notice notice, @RequestParam("noticeImgs") MultipartFile[] noticeImgs, @RequestParam(value="editOption", required=false) String editOption) {
+		System.out.println("===>" + notice);
+		System.out.println("===>" + editOption);
 		
-		if (noticeImgs.length > 0) {
+		long imageSizeEn = noticeImgs[0].getSize();
+		long imageSizeTc = noticeImgs[1].getSize();
+		long imageSizeSc = noticeImgs[2].getSize();
+		
+		if (imageSizeEn > 0) {
 			String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], FILE_UPLOAD_PATH, "en");
-			String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
-			String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
-			
 			notice.setNoticeImgUrlEn("/app/goalkeepinImage/noticeImage/" + noticeImgUrlEn);
-			notice.setNoticeImgUrlTc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlTc);
-			notice.setNoticeImgUrlSc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlSc);
-			
-			noticeMapper.insertOrUpdateNoticeImgUrl(notice);
 		}
+		
+		if (imageSizeTc > 0) {
+			String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
+			notice.setNoticeImgUrlTc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlTc);
+		}
+		
+		if (imageSizeSc > 0) {
+			String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
+			notice.setNoticeImgUrlSc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlSc);
+		}
+		
+		noticeMapper.insertOrUpdateNoticeImgUrl(notice);
 		
 		noticeMapper.insertOrUpdateNoticeTitle(notice);
 		noticeMapper.insertOrUpdateNoticeContent(notice);

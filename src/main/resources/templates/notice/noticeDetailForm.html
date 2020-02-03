@@ -102,21 +102,24 @@ input[name^=noticeTitle] {
 	width: 100%;
 }
 
-img {
-	width: 200px;
-	height: 200px;
-	border: 1px solid black;
+img[name=imgPreview] {
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
 }
 
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
-	<form method="post" th:action="@{/notice/processNoticeDetail}" th:object="${notice}" enctype="multipart/form-data">
+	<form method="post" th:action="@{/notice/processNoticeDetail}" th:object="${notice}" enctype="multipart/form-data" id="createNotice">
 		<input type="hidden" th:field="*{noticeNo}">
 		<input type="hidden" th:field="*{noticeTitleTransNo}">
 		<input type="hidden" th:field="*{noticeContentTransNo}">
 		<input type="hidden" th:field="*{noticeImgUrlTransNo}">
-		
+
 		<div class="row">
 			<header class="col-md-11">
 				<h1 class="brand pull-left h3">Create a notice</h1>
@@ -173,7 +176,7 @@ img {
 			</div>
 		</div>
 		
-		<section id="imgUploadArea" th:class="*{noticeNo == null ? 'forAdd' : 'forEdit'}">
+		<section id="imgUploadArea">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="filebox bs3-primary preview-image">
@@ -181,8 +184,11 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgEn">Image (English)</label>
 						<input type="file" id="noticeImgEn" class="upload-hidden"
-							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						<img name="imgPreview" id="imgPreviewEn" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						<div>
+							<img name="imgPreview" id="imgPreviewEn" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+						</div>
+						<input type="hidden" name="editOptionEn" id="editOptionEn" value="0">
 					</div>
 				</div>
 			</div>
@@ -194,8 +200,11 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgTc">Image (Traditional)</label>
 						<input type="file" id="noticeImgTc" class="upload-hidden"
-							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						<img name="imgPreview" id="imgPreviewTc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
+							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						 <div>
+							<img name="imgPreview" id="imgPreviewTc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
+						 </div>
+						 <input type="hidden" name="editOptionTc" id="editOptionTc" value="0">
 					</div>
 				</div>
 			</div>
@@ -207,60 +216,67 @@ img {
 						<input class="upload-name" value="Select an image" disabled="disabled"
 							style="width: 200px;"> <label for="noticeImgSc">Image (Simplified)</label>
 						<input type="file" id="noticeImgSc" class="upload-hidden"
-							required="required" name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						<img name="imgPreview" id="imgPreviewSc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
+							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+						<div>
+							<img name="imgPreview" id="imgPreviewSc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+						</div>
+						<input type="hidden" name="editOptionSc" id="editOptionSc" value="0">
 					</div>
 				</div>
 			</div>
 		</section>
-		
-		<section th:if="*{noticeNo != null}" id="imgDisplayArea">
-			<div class="row">
-				<div class="col-md-4">
-					<h2 class="h5">Image (English)</h2>
-					<div class="col-md-offset-1 col-md-10">
-						<img th:src="*{noticeImgUrlEn}">
-					</div>
-				</div>
-				<div class="col-md-4">
-					<h2 class="h5">Image (Traditional)</h2>
-					<div class="col-md-offset-1 col-md-10">
-						<img th:src="*{noticeImgUrlTc}">
-					</div>
-				</div>
-				<div class="col-md-4">
-					<h2 class="h5">Image (Simplified)</h2>
-					<div class="col-md-offset-1 col-md-10">
-						<img th:src="*{noticeImgUrlSc}">
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<div th:if="*{noticeNo != null}" class="row">
-			<a class="btn btn-primary" id="changeImages">Change image</a>
-			<a class="btn btn-primary" id="cancelImagesChanging" style="display: none;">Cancel</a>
-		</div>
 		
 		<div class="row">
 			<div class="form-group">
 				<div class="col-md-offset-1 col-md-11">
 					<label class="checkbox">
-						<input th:field="*{noticeIsMain}" type="checkbox" value="0">Do you want to be exposed to the banner at top of main page? When exposed, the title will be exposed
+						<input th:field="*{noticeIsMain}" type="checkbox" value="0">Do you want the notice to be exposed to the banner at top of main page? If so, the title will be exposed.
 					</label>
 				</div>
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" style="margin-bottom: 30px;">
 			<div class="col-md-10 text-center">
 				<input type="submit" class="btn btn-primary" value="Save">
 			</div>
 		</div>
 	</form>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var previewImgEn = /*[[*{notice.noticeImgUrlEn}]]*/;
+		var previewImgTc = /*[[*{notice.noticeImgUrlTc}]]*/;
+		var previewImgSc = /*[[*{notice.noticeImgUrlSc}]]*/;
+		
+		var noticeNo = /*[[*{notice.noticeNo}]]*/;
+	</script>
 	<script type="text/javascript">
 		$(function() {
+			if(previewImgEn != null) {
+				$('#imgPreviewEn').attr('src', previewImgEn).css('display', 'inline');
+				$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter('#imgPreviewEn');
+				$('#editOptionEn').val('1');
+			}
+			
+			if(previewImgTc != null) {
+				$('#imgPreviewTc').attr('src', previewImgTc).css('display', 'inline');
+				$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter('#imgPreviewTc');
+				$('#editOptionTc').val('1');
+			}
+			
+			if(previewImgSc != null) {
+				$('#imgPreviewSc').attr('src', previewImgSc).css('display', 'inline');
+				$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter('#imgPreviewSc');
+				$('#editOptionSc').val('1');
+			}
+			
+			$('.close').click(function() {
+        		$(this).parent().prev().prev().prev().val('Select an image');
+        		$(this).prev('img').attr('src', '#').css('display', 'none');
+        		$(this).parent().next('input').val('0');
+        		$(this).remove();
+        	});
+			
 			var fileTarget = $('.filebox .upload-hidden');
 
 			fileTarget.on('change', function() {
@@ -275,9 +291,6 @@ img {
 				
 				if(this.files[0].size > 1048576) {
 			        alert("Notice image can't be larger than 1MB.");
-			        this.value = "";
-			        $(this).siblings('.upload-name').val('Select an image');
-			        $(this).next().hide();
 			    } else {
 			    	readURL(this);
 			    }
@@ -287,7 +300,17 @@ img {
 	            if (input.files && input.files[0]) {
 		            var reader = new FileReader();
 		            reader.onload = function (e) {
-	                    $(input).next().attr('src', e.target.result).css('display', 'block');
+		            	var img = $(input).next().children('img');
+	                    img.attr('src', e.target.result).css('display', 'inline');
+		            	if(img.next('.close').length == 0) {
+			            	$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter(img)
+			            	.click(function() {
+			            		img.parent().prev().prev().prev().val('Select an image');
+			            		img.attr('src', '#').css('display', 'none');
+			            		$(this).remove();
+			            		img.parent().prev().val('');
+			            	});
+		            	}
 	                }
 	                reader.readAsDataURL(input.files[0]);
 	            }
@@ -301,30 +324,6 @@ img {
 				}
 			});
 			
-			//process images
-			$('.forEdit').hide();
-			
-			$('#changeImages').click(function() {
-				$('#imgDisplayArea').hide();
-				$('#imgUploadArea').show();
-				
-				$('#imgUploadArea .upload-hidden').attr('required', 'required').removeAttr('disabled');
-				
-				$(this).hide();
-				$('#cancelImagesChanging').show()
-				.click(function() {
-					$('#imgDisplayArea').show();
-					$('#imgUploadArea').hide();
-					$(this).hide();
-					$('#changeImages').show();
-					
-					$('#imgUploadArea .upload-hidden').removeAttr('required').attr('disabled', 'disabled');
-				});
-			});
-			
-			$('.forEdit .upload-hidden').removeAttr('required');
-			$('.forEdit .upload-hidden').attr('disabled', 'disabled');
-			
 			$('#deleteNotice').click(function() {
 				if(confirm('Are you sure to delete this notice?')) {
 					var token = $("meta[name='_csrf']").attr("content");
@@ -333,17 +332,21 @@ img {
 					$.ajax({ url: '/goalkeepinmanager/notice/deleteNotice',  
 						 data: {
 							 noticeNo: $('#noticeNo').val() 
-		 			 },  
-					 method: "POST",  
-					 dataType: "text", 
-					 beforeSend : function(xhr) {
-					    xhr.setRequestHeader(header, token);
-						}
-					 })
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
 					 .done(function(json) { 
 						 window.location = '/goalkeepinmanager/notice/showNoticeList/1'; 
 					 });
 				}
+			});
+			
+			$('#createNotice').submit(function() {
+				return confirm('Are you sure to save the notice?');
 			});
 		});
 	</script>

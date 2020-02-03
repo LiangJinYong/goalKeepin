@@ -27,6 +27,11 @@ table {
 	padding: 15px;
 	border-radius: 20px;
 }
+
+#rewardTo div:hover {
+	background-color: #dcdcdc;
+	color: #fff;
+}
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250); min-width: 500px;">
@@ -90,13 +95,13 @@ table {
 	
 	<div class="row">
 		<div class="col-md-12">
-			<span class="h4">Reward to:</span>
+			<span class="h5">Reward to:</span>
 		</div>
 		<div id="rewardTo">
 		</div>
 	</div>
 	
-	<div class="row">
+	<div class="row" style="margin-bottom: 30px;">
 		<div class="col-md-12">
 			<span style="margin-right: 20px;">Paid amount</span>
 			<input type="number" name="rewardAmount" id="rewardAmount" placeholder="Enter amount to pay" style="margin-right: 20px;" >
@@ -390,7 +395,7 @@ table {
 					return;
 				}
 				
-				if(confirm('Do your really want to pay the reward?')) {
+				if(confirm('Are you sure to pay the reward?')) {
 					var userNos = [];
 					$('#rewardTo div').each(function() {
 						var userNo = $(this).attr('id').substring(5);

@@ -23,6 +23,10 @@ public class Notice {
 	private String noticeImgUrlTc;
 	private String noticeImgUrlSc;
 	
+	private int editOptionEn;
+	private int editOptionTc;
+	private int editOptionSc;
+	
 	private boolean noticeIsMain;
 	private Date noticeRegDate;
 }

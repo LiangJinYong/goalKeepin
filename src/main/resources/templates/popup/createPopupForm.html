@@ -34,7 +34,7 @@ table {
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data">
+	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data" id="createPopupForm">
 		<div class="row">
 			<div class="col-md-12">
 				<div>
@@ -325,6 +325,10 @@ table {
 					alert('Please select a connected content.');
 					e.preventDefault();
 				}
+			});
+			
+			$('#createPopupForm').submit(function() {
+				return confirm('Are you sure to create a popup?');
 			});
 		});
 	</script>

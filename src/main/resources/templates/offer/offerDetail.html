@@ -45,7 +45,7 @@ h2 + div {
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/offer/processOfferCreation}" th:object=${offer}>
+	<form method="post" th:action="@{/offer/processOfferCreation}" th:object=${offer} id="createOffer">
 		<input type="hidden" name="offerNo" th:field="*{offerNo}" />
 		<input type="hidden" name="offerStatusCd" th:field="*{offerStatusCd}" />
 		
@@ -127,5 +127,12 @@ h2 + div {
 		</div>
 	</form>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript">
+	$(function() {
+		$('#createOffer').submit(function(e) {
+			return confirm('Are you sure to create this project suggestion?');
+		});
+	});
+	</script>
 </body>
 </html>

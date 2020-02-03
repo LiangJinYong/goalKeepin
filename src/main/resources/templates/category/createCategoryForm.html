@@ -23,7 +23,7 @@
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/category/processCagegoryCreation}" th:object="${category}">
+	<form method="post" th:action="@{/category/processCagegoryCreation}" th:object="${category}" id="createCategory">
 		<div class="row" id="categoryName">
 			<div class="col-md-4">
 				<h2 class="h5">Name of category (English)</h2>
@@ -62,7 +62,9 @@
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-					
+			$('#createCategory').submit(function(e) {
+				return confirm('Are you sure to create a category?');
+			});
 		});
 	</script>
 </body>

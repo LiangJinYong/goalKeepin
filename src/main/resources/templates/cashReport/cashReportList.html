@@ -33,11 +33,18 @@ header li {
 			<header class="col-md-12">
 				<h1 class="brand pull-left h3">Withdrawal History</h1>
 				<ul class="list-inline list-unstyled pull-right">
-					<li><label>Bank</label> <select name="bank" id="bank">
-							 <option value="">View all</option>
-							 <option value="은행1">은행1</option>
-							 <option value="은행2">은행2</option>
-							 <option value="은행3">은행3</option>
+					<li><label>Bank</label> 
+					<select name="bank" id="bank">
+						<option value="">View All</option>
+						<option value="DBS">DBS</option>
+						<option value="UOB">UOB</option>
+						<option value="OCBC Bank">OCBC Bank</option>
+						<option value="HSBC">HSBC</option>
+						<option value="Standard Chartered">Standard Chartered</option>
+						<option value="Bank of China">Bank of China</option>
+						<option value="Citi">Citi</option>
+						<option value="ICBC">ICBC</option>
+						<option value="May bank">May bank</option>
 					</select></li>
 					<li><label>Processing status</label> <select name="reportStatusCd" id="reportStatusCd">
 							<option value="CT00">View all</option>
@@ -230,35 +237,38 @@ header li {
 				if(length == 0) {
 					alert('Please select a withdrawal history record.');
 				} else {
-					var idArr = [];
-					$checkedItems.each(function(index, item) {
-						idArr.push($(item).attr('id'));
-					});
-					
-					var token = $("meta[name='_csrf']").attr("content"); 
-					var header = $("meta[name='_csrf_header']").attr("content");
-					
-					$.ajax({ url: '/goalkeepinmanager/cashReport/processCashReport',  
-						 data: {cashReportIdList: idArr},  
-						 method: "POST",  
-						 dataType: "text", 
-						 beforeSend : function(xhr) {
-						    xhr.setRequestHeader(header, token);
-							}
-					 })
-					 .done(function(json) { 
-						alert('Successfully processed.');
+					if(confirm('Are you sure to complete this withdrawal record?')) {
+						
+						var idArr = [];
 						$checkedItems.each(function(index, item) {
-							$(item).find('input').val('CT02').change(function(e) {
-								$(this).val('CT02').prop('checked', true);
-							});
-							
-							$(item).children().last().text('Completed').attr('class', 'finished');
-						}); 
-					 })
-					 .fail(function() {
-						 alert('Process failed.');
-					 });
+							idArr.push($(item).attr('id'));
+						});
+						
+						var token = $("meta[name='_csrf']").attr("content"); 
+						var header = $("meta[name='_csrf_header']").attr("content");
+						
+						$.ajax({ url: '/goalkeepinmanager/cashReport/processCashReport',  
+							 data: {cashReportIdList: idArr},  
+							 method: "POST",  
+							 dataType: "text", 
+							 beforeSend : function(xhr) {
+							    xhr.setRequestHeader(header, token);
+								}
+						 })
+						 .done(function(json) { 
+							alert('Successfully processed.');
+							$checkedItems.each(function(index, item) {
+								$(item).find('input').val('CT02').change(function(e) {
+									$(this).val('CT02').prop('checked', true);
+								});
+								
+								$(item).children().last().text('Completed').attr('class', 'finished');
+							}); 
+						 })
+						 .fail(function() {
+							 alert('Process failed.');
+						 });
+					}
 				}
 			});
 			

@@ -44,6 +44,9 @@ header a, header li {
 						<th>
 							<h2 class="text-center h5 sortable" id="noticeRegDate">Registration Date</h2>
 						</th>
+						<th>
+							<h2 class="text-center h5 sortable" id="noticeIsMain">Expost at Main Page</h2>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -51,9 +54,11 @@ header a, header li {
 						<td class="text-center" th:text="${notice.noticeNo}">NO</td>
 						<td class="text-center" th:text="${notice.noticeTitleEn}">Notice Title</td>
 						<td class="text-center" th:text="*{#dates.format(notice.noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}">Notice Reg Date</td>
+						<td class="text-center" th:if="${notice.noticeIsMain}" th:text="Y" style="color: green;">Notice Is Main</td>
+						<td class="text-center" th:if="${!notice.noticeIsMain}" th:text="N" style="color: red;">Notice Is Main</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
-						<td colspan="3" class="text-center">
+						<td colspan="4" class="text-center">
 							<h5>No Data Found</h5>
 						</td>
 					</tr>

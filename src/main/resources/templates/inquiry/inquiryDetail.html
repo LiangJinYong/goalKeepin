@@ -27,7 +27,7 @@ h2 + span, h2 + div {
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/inquiry/processInquiryReply}" th:object=${inquiry}>
+	<form method="post" th:action="@{/inquiry/processInquiryReply}" th:object=${inquiry} id="createInquiryReply">
 		<input type="hidden" name="inquiryNo" th:field="*{inquiryNo}" />
 		<input type="hidden" name="userNo" th:field="*{inquiryUser.userNo}" />
 		
@@ -69,6 +69,10 @@ h2 + span, h2 + div {
 	<script type="text/javascript">
 		$(function() {
 			$('#inquiryReplyCotent').focus();
+			
+			$('#createInquiryReply').submit(function() {
+				return confirm('Are you sure to register this inquiry reply?');
+			}); 
 		});
 	</script>
 </body>
