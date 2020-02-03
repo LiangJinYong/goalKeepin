@@ -64,6 +64,10 @@ header li {
 	margin-bottom: 20px;
 }
 
+#detailPart > div {
+	margin-right: 2%;
+}
+
 </style>
 <body style="background-color: rgb(245, 247, 250);">
 	<div class="row header">
@@ -240,7 +244,11 @@ header li {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" /> ~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" /> <input type="checkbox" id="allHours" /> <label for="allHours">24 Hours</label>
+							<span id="timePeriod">
+								<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" />
+								~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" />
+							</span> 
+							<input type="checkbox" id="allHours" /><label for="allHours">24 Hours</label>
 						</div>
 						<div class="view">
 							<span th:text="*{baseAuthFromTime}"></span> ~ <span th:text="*{baseAuthToTime}"></span>
@@ -316,7 +324,9 @@ header li {
 							</span> <input type="checkbox" id="noLimit" /><label for="noLimit">No limit</label>
 						</div>
 						<div class="view">
-							<span th:if="*{baseAuthInterval != 0}" th:text="*{baseAuthInterval} + ' Hours'"></span> <span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
+							<span th:if="*{baseAuthInterval == 1}" th:text="*{baseAuthInterval} + ' Hour'"></span>
+							<span th:if="*{baseAuthInterval > 1}" th:text="*{baseAuthInterval} + ' Hours'"></span>
+							<span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
 						</div>
 					</div>
 				</div>
@@ -359,24 +369,18 @@ header li {
 			</section>
 		</section>
 		
-		 <section>
+		 <section id="detailPart">
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (English)</h2>
-			 		<textarea class="summernote" th:field="*{baseDetailEn}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (English)</h2>
+		 		<textarea class="summernote" th:field="*{baseDetailEn}" required="required"></textarea>
 		 	</div>
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (Traditional)</h2>
-			 		<textarea class="summernote" th:field="*{baseDetailTc}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (Traditional)</h2>
+		 		<textarea class="summernote" th:field="*{baseDetailTc}" required="required"></textarea>
 		 	</div>
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (Simplified)</h2>
-			 		<textarea class="summernote" th:field="*{baseDetailSc}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (Simplified)</h2>
+		 		<textarea class="summernote" th:field="*{baseDetailSc}" required="required"></textarea>
 		 	</div>
 		 </section>
 		
@@ -405,6 +409,9 @@ header li {
     	var minEndDate = /*[[*{minEndDate}]]*/ null;
     	
     	var baseAuthMethodCd = /*[[*{baseChallenge.baseAuthMethodCd}]]*/ null;
+		var commonUrl = /*[[*{commonUrl}]]*/ null;
+		
+		var baseAuthInterval = /*[[*{baseChallenge.baseAuthInterval}]]*/ null;
 	</script>
 
 	<script type="text/javascript">
@@ -460,7 +467,7 @@ header li {
 						   },
 			               success: function(url) 
 			               {
-			                  var image = $('<img>').attr({src : 'http://ec2-13-124-238-163.ap-northeast-2.compute.amazonaws.com:8080' + url, style : "width:auto; height:auto;"});
+			                  var image = $('<img>').attr({src : commonUrl + url, style : "width:auto; height:auto;"});
 			                  $(el).summernote("insertNode", image[0]);
 			               }
 			            }
@@ -553,6 +560,11 @@ header li {
 				 $('.view').css('display', 'none');
 				 $('.forModifying').show('slow');
 				 $('#baseThumbnailUrl').removeAttr('required');
+				 
+				 if(baseAuthInterval == 0) {
+					 $('#intervalItem').hide();
+					 $('#noLimit').prop('checked', true);
+				 }
 				 
 				 $('<li><a href="#" class="btn btn-primary">Cancel Editing</a></li>')
 				 .appendTo('#headerBtn')
@@ -648,9 +660,11 @@ header li {
 			 // 24시간 체크박스 처리 
 			 $('#allHours').change(function() {
 				if($(this).prop('checked')) {
-					$('#baseAuthFromTime').val('00:00').attr('readonly', true);
-					$('#baseAuthToTime').val('23:59').attr('readonly', true);
+					$('#timePeriod').hide();
+					$('#baseAuthFromTime').val('00:00:00').attr('readonly', true);
+					$('#baseAuthToTime').val('23:59:59').attr('readonly', true);
 				} else {
+					$('#timePeriod').show();
 					$('#baseAuthFromTime').val('').attr('readonly', false);
 					$('#baseAuthToTime').val('').attr('readonly', false);
 				}
@@ -714,13 +728,13 @@ header li {
 				 var maxFee = parseInt($('#maxFee').val());
 				 
 				 if(minFee < 0) {
-					 alert("Minimum Participation fee can't be negative value.");
+					 alert("Minimum participation fee can't be negative value.");
 					 $('#minFee').focus();
 					 return false;
 				 }
 				 
 				 if(maxFee < 0) {
-					 alert("Maximum Participation fee can't be negative value.");
+					 alert("Maximum participation fee can't be negative value.");
 					 $('#maxFee').focus();
 					 return false;
 				 }

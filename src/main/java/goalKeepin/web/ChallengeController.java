@@ -128,9 +128,13 @@ public class ChallengeController {
 	}
 
 	@GetMapping("/showBaseChallengeDetailForm")
-	public String showChallengeGenerationForm(Model model) {
+	public String showChallengeGenerationForm(Model model, HttpServletRequest request) {
 		model.addAttribute("baseChallenge", new BaseChallenge());
 		model.addAttribute("categoryList", new ArrayList<Map<Integer, String>>());
+		
+		String commonUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+		model.addAttribute("commonUrl", commonUrl);
+		
 		return "challenge/baseChallengeDetailForm";
 		
 	}
@@ -157,7 +161,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/showBaseChallengeDetail")
-	public String showBaseChallengeDetail(@RequestParam("baseNo") Long baseNo, Model model) {
+	public String showBaseChallengeDetail(@RequestParam("baseNo") Long baseNo, Model model, HttpServletRequest request) {
 		
 		BaseChallenge baseChallenge = challengerMapper.selectBaseChallengeByNo(baseNo);
 		model.addAttribute("baseChallenge", baseChallenge);
@@ -187,6 +191,9 @@ public class ChallengeController {
 
 		model.addAttribute("minStartDate", minStartDate);
 		model.addAttribute("minEndDate", minEndDate);
+		
+		String commonUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+		model.addAttribute("commonUrl", commonUrl);
 		
 		return "challenge/baseChallengeDetailForm";
 	}
@@ -379,13 +386,11 @@ public class ChallengeController {
 	public ResponseEntity<?> uploadDetailImages(@RequestParam("file") MultipartFile file) {
 		try {
 			String filePath = FileUploadUtils.processFileUpload(file, DETAIL_UPLOAD_PATH, null);
-			System.out.println("====>" + filePath);
 			return ResponseEntity.ok().body("/app/goalkeepinImage/challengeDetailImage/" + filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
 		}
-		
 	}
 }
 

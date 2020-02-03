@@ -48,6 +48,10 @@ header li {
 .view {
 	margin-left: 10px;
 }
+
+#detailPart > div {
+	margin-right: 2%;
+}
 </style>
 
 <body style="background-color: rgb(245, 247, 250); padding-bottom: 40px;">
@@ -257,24 +261,18 @@ header li {
 			</section>
 		</section>
 			
-		<section>
+		<section id="detailPart">
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (English)</h2>
-			 		<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (English)</h2>
+		 		<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
 		 	</div>
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (Traditional)</h2>
-			 		<textarea id="baseDetailTc" class="summernote" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (Traditional)</h2>
+		 		<textarea id="baseDetailTc" class="summernote" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
 		 	</div>
 		 	<div class="row">
-		 		<div class="col-md-12">
-			 		<h2 class="h5">Project details (Simplified)</h2>
-			 		<textarea id="baseDetailSc" class="summernote" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
-		 		</div>
+		 		<h2 class="h5">Project details (Simplified)</h2>
+		 		<textarea id="baseDetailSc" class="summernote" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
 		 	</div>
 		 </section>
 		

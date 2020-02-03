@@ -121,8 +121,8 @@ h2 + div {
 			</div>
 			
 			<div class="col-md-10">
-				<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-primary pull-right" type="submit" value="Start voting" />
-				<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-primary pull-right" type="submit" value="Compelete voting" />
+				<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-primary pull-right" type="submit" value="Start voting" id="startVoting" />
+				<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-primary pull-right" type="submit" value="Complete voting" id="completeVoting" />
 			</div>
 		</div>
 	</form>
@@ -130,7 +130,17 @@ h2 + div {
 	<script type="text/javascript">
 	$(function() {
 		$('#createOffer').submit(function(e) {
-			return confirm('Are you sure to create this project suggestion?');
+			var buttonId = $(this).find('input[type=submit]').attr('id')
+			
+			if('startVoting' == buttonId) {
+				if(!confirm('Are you sure to create and start voting this project suggestion?')) {
+					e.preventDefault();
+				}
+			} else if('completeVoting' == buttonId) {
+				if(!confirm('Are you sure to complete voting for this project suggestion?')) {
+					e.preventDefault();
+				}
+			}
 		});
 	});
 	</script>
