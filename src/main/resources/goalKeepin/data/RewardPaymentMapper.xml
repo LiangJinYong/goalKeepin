@@ -10,7 +10,11 @@
 		SELECT user_no userNo, user_id userId, user_nickname nickName, user_login_tp_cd loginTypeCd, date_format(user_reg_dt, '%Y-%m-%d %h:%i:%s') userRegDate
 		FROM USER_TB
 		WHERE user_id LIKE CONCAT('%', #{userId}, '%')
-		ORDER BY user_no DESC
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if> 
+		user_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	

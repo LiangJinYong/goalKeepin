@@ -72,7 +72,7 @@ table {
 			<div class="row">
 				<div class="col-md-11">
 					<table id="popupContentTable" class="table table-striped table-hover">
-						<thead>
+						<thead id="tableHead">
 							<tr class="info">
 								<th>
 								</th>
@@ -80,10 +80,10 @@ table {
 									<h2 class="h5 text-center">NO</h2>
 								</th>
 								<th>
-									<h2 class="h5 text-center">Title</h2>
+									<h2 class="h5 text-center sortable" id="contentTitleEn">Title</h2>
 								</th>
 								<th>
-									<h2 class="h5 text-center">Registration Date</h2>
+									<h2 class="h5 text-center sortable" id="contentRegDate">Registration Date</h2>
 								</th>
 							</tr>
 						</thead>
@@ -113,6 +113,9 @@ table {
 	<script type="text/javascript">
 		$(function() {
 			
+			var noticeUrl = '/goalkeepinmanager/popup/getNoticeList/';
+			var challengeUrl = '/goalkeepinmanager/popup/getChallengeList/';
+			
 			//팝업 이미지 사이즈 제한
 			 $('#popupImgUrl').change(function() {
 				 if(this.files[0].size > 1048576){
@@ -139,35 +142,72 @@ table {
 				var selectedType = $(this).val();
 				
 				if('PO01' == selectedType) {
-					$('#contentData').empty();
-					$('#pagingArea').empty();
-					$('#contentArea').show();
-					
-					var getUrl = '/goalkeepinmanager/popup/getNoticeList/';
-					$.getJSON(getUrl + 1,
-						function(data) {
-							processTableData(data);
-							processPagination(data, getUrl);
-							processTableNo();
-					});
-					
+					loadContentData(noticeUrl, null);
 				} else if ('PO02' == selectedType) {
-					$('#contentData').empty();
-					$('#pagingArea').empty();
-					$('#contentArea').show();
-					
-					var getUrl = '/goalkeepinmanager/popup/getChallengeList/';
-					$.getJSON(getUrl + 1,
-						function(data) {
-							processTableData(data);
-							processPagination(data, getUrl);
-							processTableNo();
-					});
-					
+					loadContentData(challengeUrl, null);
 				} else {
 					$('#contentArea').hide();
 				}
 			});
+			
+			function loadContentData(getUrl, sort) {
+				$('#contentData').empty();
+				$('#pagingArea').empty();
+				$('#contentArea').show();
+				
+				$.getJSON(getUrl + 1,
+					{
+						sort: sort
+					},
+					function(data) {
+						addSortLink(data);
+						processTableData(data);
+						processPagination(data, getUrl);
+						processTableNo();
+				});
+			}
+			
+			function addSortLink(data) {
+				var sortField = data.sortField;
+				var sortOrder = data.sortOrder;
+				
+				if(data.page.totalRecordNum > 1) {
+					$('.table .sortable').each(function() {
+						$(this).css({'cursor': 'pointer', 'color': '#3A7FBA'});
+						
+						var sortSymbol;
+						if(sortField == null || sortField != $(this).attr('id')) {
+							sortSymbol = $('<span class="originalSort">&#11109;</span>').css({'marginLeft': '10px'});
+						} else {
+							if(sortOrder == 'asc') {
+								sortSymbol = $('<span class="asc" style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+							} else {
+								sortSymbol = $('<span class="desc" style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
+							}
+						}
+						$(this).find('span').remove();
+						$(this).append(sortSymbol);
+					});
+					
+					$('.table .sortable').off('click').click(function(e) {
+						var popupTypeCd = $('#popupTypeCd').val();
+						
+						var getUrl = noticeUrl;
+						if(popupTypeCd == 'PO02') {
+							getUrl = challengeUrl;
+						}
+						
+						if($(this).has('span.asc').length > 0) {
+							loadContentData(getUrl, $(this).attr('id') + ',desc')
+						} else {
+							loadContentData(getUrl, $(this).attr('id') + ',asc')
+						}
+					});
+				} else {
+					$('.table span').remove();
+					$('.table .sortable').css({'cursor': 'default', 'color': '#000'}).off('click');
+				}
+			}
 			
 			function processTableData(data) {
 				$('#contentData').empty();
@@ -294,11 +334,25 @@ table {
 					
 					$('.pagination a[id]').click(function() {
 						
+						var sort = null;
+						var ascHead = $('#tableHead .asc');
+						var descHead = $('#tableHead .desc');
+						
+						if(ascHead.length > 0) {
+							sort = $('#tableHead .asc').parent().attr('id') + ',asc';
+						} else if(descHead.length > 0) {
+							sort = $('#tableHead .desc').parent().attr('id') + ',desc';
+						}
+						
 						var id = $(this).attr('id');
 						// id: page-xxx
 						var pageNum = id.substring(5);
 						$.getJSON(getUrl + pageNum,
+							{
+								sort: sort
+							},
 							function(data) {
+								
 								processTableData(data);
 								processPagination(data, getUrl);
 								processTableNo();

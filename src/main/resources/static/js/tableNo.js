@@ -29,12 +29,9 @@ function addSortLink(dataUrl) {
 			} else {
 				if(sortOrder == 'asc') {
 					sortSymbol = $('<span style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+					sortLink.attr('href', dataUrl + paramLink + 'sort=' + $(this).attr('id') + ',desc')
 				} else {
 					sortSymbol = $('<span style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
-				}
-				
-				if(sortOrder == 'asc') {
-					sortLink.attr('href', dataUrl + paramLink + 'sort=' + $(this).attr('id') + ',desc')
 				}
 			}
 			$(this).append(sortSymbol);

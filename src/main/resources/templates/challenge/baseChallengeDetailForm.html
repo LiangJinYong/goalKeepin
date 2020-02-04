@@ -101,7 +101,7 @@ header li {
 				</div>
 				<div class="col-md-3" th:if="*{baseNo != null}">
 					<h3 class="h5">Registration Date</h3>
-					<span th:text="*{#dates.format(baseRegDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+					<span th:text="*{#dates.format(baseRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 				</div>
 			</div>
 	
@@ -316,7 +316,7 @@ header li {
 	
 				<div class="row">
 					<div class="col-md-3">
-						<span>Verification Frequency</span>
+						<span>Verification Interval</span>
 					</div>
 					<div class="col-md-9">
 						<div class="add">
@@ -372,15 +372,15 @@ header li {
 		 <section id="detailPart">
 		 	<div class="row">
 		 		<h2 class="h5">Project details (English)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailEn}" required="required"></textarea>
+		 		<textarea class="summernote" th:field="*{baseDetailEn}"></textarea>
 		 	</div>
 		 	<div class="row">
 		 		<h2 class="h5">Project details (Traditional)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailTc}" required="required"></textarea>
+		 		<textarea class="summernote" th:field="*{baseDetailTc}"></textarea>
 		 	</div>
 		 	<div class="row">
 		 		<h2 class="h5">Project details (Simplified)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailSc}" required="required"></textarea>
+		 		<textarea class="summernote" th:field="*{baseDetailSc}"></textarea>
 		 	</div>
 		 </section>
 		
@@ -529,6 +529,18 @@ header li {
 			 
 			 //썸네일 이미지 사이즈 제한
 			 $('#baseThumbnailUrl').change(function() {
+				 var ext = this.value.match(/\.(.+)$/)[1];
+			     switch (ext) {
+			        case 'jpg':
+			        case 'jpeg':
+			        case 'png':
+			            break;
+			        default:
+			            alert('This is not an allowed file type.');
+			            this.value = '';
+			            $('#imgPreview').hide();
+			     }
+			    
 				 if(this.files[0].size > 1048576){
 				        alert("Thumbnail image can't be larger than 1MB.");
 				        this.value = "";

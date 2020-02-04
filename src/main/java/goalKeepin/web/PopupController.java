@@ -40,7 +40,7 @@ public class PopupController {
 	@GetMapping("/showPopupList/{pageNum}")
 	public String showPopupList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
-		int pageSize = 3;
+		int pageSize = 5;
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
@@ -72,7 +72,7 @@ public class PopupController {
 
 	@GetMapping("/getNoticeList/{pageNum}")
 	@ResponseBody
-	public String getNoticeList(@PathVariable("pageNum") Integer pageNum) {
+	public String getNoticeList(@PathVariable("pageNum") Integer pageNum, @RequestParam(value="sort", required=false) String sort) {
 		Gson gson = new Gson();
 		Map<String, Object> result = new HashMap<>();
 		
@@ -80,6 +80,16 @@ public class PopupController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null && !"".equals(sort)) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			result.put("sortField", sortField);
+			result.put("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Map<String, String>> pageData = popupMapper.selectNoticeList(paramMap);
 		int totalRecordNum = popupMapper.getTotalNoticeCount();
@@ -92,7 +102,7 @@ public class PopupController {
 	
 	@GetMapping("/getChallengeList/{pageNum}")
 	@ResponseBody
-	public String getChallengeList(@PathVariable("pageNum") Integer pageNum) {
+	public String getChallengeList(@PathVariable("pageNum") Integer pageNum, @RequestParam(value="sort", required=false) String sort) {
 		Gson gson = new Gson();
 		Map<String, Object> result = new HashMap<>();
 		
@@ -100,6 +110,16 @@ public class PopupController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		
+		if (sort != null && !"".equals(sort)) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			result.put("sortField", sortField);
+			result.put("sortOrder", sortOrder);
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Map<String, String>> pageData = popupMapper.selectChallengeList(paramMap);
 		int totalRecordNum = popupMapper.getTotalChallengeCount();

@@ -57,7 +57,7 @@ header a, header li {
 						<td th:text="${participantEntry.entryNo}">NO</td>
 						<td th:text="${participantEntry.participant.userId}">User Id</td>
 						<td th:text="${participantEntry.entryFee}">Entry Fee</td>
-						<td th:text="${#dates.format(participantEntry.entryRegDate, 'yyyy.MM.dd HH:mm:ss')}">Entry Reg Date</td>
+						<td th:text="${#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</td>
 						<td th:text="${participantEntry.entryResult}">Entry Result</td>
 					</tr>
 					<tr th:if="*{page.totalRecordNum == 0}">

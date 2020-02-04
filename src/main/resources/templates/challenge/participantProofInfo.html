@@ -96,7 +96,7 @@ span.h4 {
 				<img th:src="*{proof.proofUrl}" class="proofImage">
 			</div>
 			<div style="margin-bottom: 20px;">
-				<span class="text-center" th:text="*{#dates.format(proof.proofDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+				<span class="text-center" th:text="*{#dates.format(proof.proofDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 			</div>	
 		</div>
 		<div class="text-center col-md-4" th:if="*{baseAuthMethodCd == 'AU02'}" th:each="proof: ${proofList}" style="margin-bottom: 30px;">

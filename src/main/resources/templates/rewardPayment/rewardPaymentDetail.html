@@ -34,7 +34,7 @@ table {
 }
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250); min-width: 500px;">
+<body style="background-color: rgb(245, 247, 250);">
 	<div class="row">
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Reward payment</h1>
@@ -56,7 +56,7 @@ table {
 	<div class="row">
 		<div class="col-md-12">
 			<table class="table table-striped table-hover" style="border-bottom: 1px solid grey;">
-				<thead>
+				<thead id="tableHead">
 					<tr class="info">
 						<th>
 							<h2 class="h5 text-center">
@@ -67,16 +67,16 @@ table {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">User ID</h2>
+							<h2 class="h5 text-center sortable" id="userId">User ID</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Nickname</h2>
+							<h2 class="h5 text-center sortable" id="nickName">Nickname</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Login Type</h2>
+							<h2 class="h5 text-center sortable" id="loginTypeCd">Login Type</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center">Sign up Date</h2>
+							<h2 class="h5 text-center sortable" id="userRegDate">Sign up Date</h2>
 						</th>
 					</tr>
 				</thead>
@@ -93,7 +93,7 @@ table {
 		</nav>
 	</div>
 	
-	<div class="row" style="margin-bottom: 30px;">
+	<div class="row">
 		<div class="col-md-12">
 			<span style="margin-right: 20px;">Paid amount</span>
 			<input type="number" name="rewardAmount" id="rewardAmount" placeholder="Enter amount to pay" style="margin-right: 20px;" min="1" >
@@ -101,7 +101,7 @@ table {
 		</div>
 	</div>
 	
-	<div class="row">
+	<div class="row" style="margin-bottom: 30px;">
 		<div class="col-md-12">
 			<span class="h5">Reward to:</span>
 		</div>
@@ -113,17 +113,29 @@ table {
 	<script type="text/javascript">
 		$(function() {
 			$('#userId').focus();
-			loadUserData('%');
+			loadUserData('%', null);
 			
 			$('#userId').keyup(function() {
-				loadUserData($(this).val());
+				var sort = null;
+				
+				var ascHead = $('#tableHead .asc');
+				var descHead = $('#tableHead .desc');
+				
+				if(ascHead.length > 0) {
+					sort = $('#tableHead .asc').parent().attr('id') + ',asc';
+				} else if(descHead.length > 0) {
+					sort = $('#tableHead .desc').parent().attr('id') + ',desc';
+				}
+				
+				loadUserData($(this).val(), sort);
 			});
 			
-			function loadUserData(userId) {
+			function loadUserData(userId, sort) {
 				$.get({
 					url: '/goalkeepinmanager/rewardPayment/searchUserList/1',
 					data: {
-						userId: userId
+						userId: userId,
+						sort: sort
 					},
 					dataType: 'json',
 					success: function(data) {
@@ -132,11 +144,13 @@ table {
 						var pageNum = data.page.pageNum;
 						var pageSize = data.page.pageSize;
 						
+						addSortLink(data);
+						
 						if(pageData.length > 0) {
 							var getUrl = '/goalkeepinmanager/rewardPayment/searchUserList/';
 							
 							processTableData(pageData, pageNum, pageSize);
-							processPagination(data, getUrl);
+							processPagination(data, getUrl, sort);
 							tableEffect();
 						} else {
 							$('#userData').empty();
@@ -144,11 +158,45 @@ table {
 							$('#userData').append(row);
 							$('#pagingArea').empty();
 						}
-						
 					}, error: function() {
 						alert('Error searching users');
 					}
 				});
+			}
+			
+			function addSortLink(data) {
+				var sortField = data.sortField;
+				var sortOrder = data.sortOrder;
+				
+				if(data.page.totalRecordNum > 1) {
+					$('.table .sortable').each(function() {
+						$(this).css({'cursor': 'pointer', 'color': '#3A7FBA'});
+						
+						var sortSymbol;
+						if(sortField == null || sortField != $(this).attr('id')) {
+							sortSymbol = $('<span class="originalSort">&#11109;</span>').css({'marginLeft': '10px'});
+						} else {
+							if(sortOrder == 'asc') {
+								sortSymbol = $('<span class="asc" style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+							} else {
+								sortSymbol = $('<span class="desc" style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
+							}
+						}
+						$(this).find('span').remove();
+						$(this).append(sortSymbol);
+					});
+					
+					$('.table .sortable').off('click').click(function(e) {
+						if($(this).has('span.asc').length > 0) {
+							loadUserData($('#userId').val(), $(this).attr('id') + ',desc');
+						} else {
+							loadUserData($('#userId').val(), $(this).attr('id') + ',asc');
+						}
+					});
+				} else {
+					$('.table span').remove();
+					$('.table .sortable').css({'cursor': 'default', 'color': '#000'}).off('click');
+				}
 			}
 			
 			function processTableData(pageData, pageNum, pageSize) {
@@ -189,7 +237,7 @@ table {
 				$('#selectAll').prop('checked', checkboxCount == checkedCheckboxCount);						
 			}
 			
-			function processPagination(data, getUrl) {
+			function processPagination(data, getUrl, sort) {
 				$('#pagingArea').empty();
 				var currentPageNum = data.page.pageNum;
 				var totalPageNum = data.page.totalPageNum;
@@ -265,11 +313,13 @@ table {
 						var pageNum = id.substring(5);
 						$.getJSON(getUrl + pageNum,
 							{
-								userId: $('#userId').val() == '' ? '%' : $('#userId').val()	
+								userId: $('#userId').val() == '' ? '%' : $('#userId').val(),
+								sort: sort
 							},
 							function(data) {
+								addSortLink(data);
 								processTableData(data.page.pageData, data.page.pageNum, data.page.pageSize);
-								processPagination(data, getUrl);
+								processPagination(data, getUrl, sort);
 								tableEffect();
 							}
 						);

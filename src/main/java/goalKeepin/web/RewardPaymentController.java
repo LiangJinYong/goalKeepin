@@ -43,8 +43,9 @@ public class RewardPaymentController {
 	
 	@GetMapping("/searchUserList/{pageNum}")
 	@ResponseBody
-	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userId") String userId) {
+	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userId") String userId, @RequestParam(value="sort", required=false) String sort) {
 		Gson gson = new Gson();
+		System.out.println("===>" + sort);
 		Map<String, Object> result = new HashMap<>();
 		
 		int pageSize = props.getPageSize();
@@ -52,6 +53,17 @@ public class RewardPaymentController {
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("userId", userId);
+		
+		if (sort != null && !"".equals(sort)) {
+			String[] sortElements = sort.split(",");
+			String sortField = sortElements[0];
+			String sortOrder = sortElements[1];
+			result.put("sortField", sortField);
+			result.put("sortOrder", sortOrder);
+			
+			paramMap.put("sortField", sortField);
+			paramMap.put("sortOrder", sortOrder);
+		}
 		
 		List<Map<String, String>> pageData = rewardPaymentMapper.selectUserListById(paramMap);
 		int totalRecordNum = rewardPaymentMapper.getTotalUserCount(paramMap);
@@ -63,6 +75,8 @@ public class RewardPaymentController {
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
 		
 		result.put("page", page);
+		
+		
 		return gson.toJson(result);
 	}
 	
