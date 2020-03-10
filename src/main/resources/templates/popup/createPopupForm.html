@@ -20,9 +20,12 @@ table {
 }
 
 #imgPreview {
-	width: 150px;
-	height: 150px;
-	border: 2px solid black;
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
 }
 
 </style>
@@ -41,7 +44,7 @@ table {
 					<label class="col-md-1">Image</label>
 				</div>
 				<div class="col-md-11">
-					<input type="file" th:field="*{popupImgUrl}" required="required" accept="image/jpeg,image/jpg,image/png">
+					<input type="file" th:field="*{popupImgUrl}" required="required"  accept="image/jpeg,image/jpg,image/png">
 					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
 				</div>
 			</div>
@@ -117,7 +120,15 @@ table {
 			var challengeUrl = '/goalkeepinmanager/popup/getChallengeList/';
 			
 			//팝업 이미지 사이즈 제한
-			 $('#popupImgUrl').change(function() {
+			 $('#popupImgUrl').change(function(e) {
+				 if(!(/\.(jpg|jpeg|png)$/i).test(this.value)) {
+					 alert('This is not an allowed file type.');
+					 e.preventDefault();
+					 this.value = '';
+		             $('#imgPreview').hide();
+		             return;
+				 }
+				 
 				 if(this.files[0].size > 1048576){
 				        alert("Popup image can't be larger than 1MB.");
 				        this.value = "";
@@ -203,9 +214,6 @@ table {
 							loadContentData(getUrl, $(this).attr('id') + ',asc')
 						}
 					});
-				} else {
-					$('.table span').remove();
-					$('.table .sortable').css({'cursor': 'default', 'color': '#000'}).off('click');
 				}
 			}
 			
@@ -352,7 +360,6 @@ table {
 								sort: sort
 							},
 							function(data) {
-								
 								processTableData(data);
 								processPagination(data, getUrl);
 								processTableNo();

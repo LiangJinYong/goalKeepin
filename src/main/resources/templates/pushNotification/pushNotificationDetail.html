@@ -161,7 +161,7 @@ table {
 						var getUrl = '/goalkeepinmanager/rewardPayment/searchUserList/';
 						
 						processTableData(pageData, pageNum, pageSize);
-						processPagination(data, getUrl);
+						processPagination(data, getUrl, sort);
 						tableEffect();
 					} else {
 						$('#userData').empty();
@@ -204,9 +204,6 @@ table {
 						loadUserData($('#userId').val(), $(this).attr('id') + ',asc');
 					}
 				});
-			} else {
-				$('.table span').remove();
-				$('.table .sortable').css({'cursor': 'default', 'color': '#000'}).off('click');
 			}
 		}
 		
@@ -247,7 +244,7 @@ table {
 			$('#selectAll').prop('checked', checkboxCount == checkedCheckboxCount);						
 		}
 		
-		function processPagination(data, getUrl) {
+		function processPagination(data, getUrl, sort) {
 			$('#pagingArea').empty();
 			var currentPageNum = data.page.pageNum;
 			var totalPageNum = data.page.totalPageNum;
@@ -323,12 +320,13 @@ table {
 					var pageNum = id.substring(5);
 					$.getJSON(getUrl + pageNum,
 						{
-							userId: $('#userId').val() == '' ? '%' : $('#userId').val()	
+							userId: $('#userId').val() == '' ? '%' : $('#userId').val(),
+							sort: sort
 						},
 						function(data) {
 							addSortLink(data);
 							processTableData(data.page.pageData, data.page.pageNum, data.page.pageSize);
-							processPagination(data, getUrl);
+							processPagination(data, getUrl, sort);
 							tableEffect();
 						}
 					);

@@ -75,9 +75,9 @@ h2 + span {
 			<div class="col-md-10 col-md-offset-1">
 				<img th:src="*{proof.proofUrl}" class="proofImage">
 			</div>
-			<div style="margin-bottom: 20px;">
-				<span class="text-center" th:text="*{#dates.format(proof.proofDate, 'yyyy-MM-dd HH:mm:ss')}"></span><br />
-				<span class="text-center" th:text="*{proof.userId}"></span>
+			<div style="margin: 10px 0 20px 0;" class="col-md-12 text-center">
+				<span th:text="*{#dates.format(proof.proofDate, 'yyyy-MM-dd HH:mm:ss')}"></span><br />
+				<span th:text="*{proof.userId}"></span>
 			</div>	
 		</div>
 		<div class="text-center col-md-4" th:if="*{baseAuthMethodCd == 'AU02'}" th:each="proof: ${proofList}" style="margin-bottom: 30px;">

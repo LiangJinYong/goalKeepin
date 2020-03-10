@@ -291,6 +291,10 @@ img[name=imgPreview] {
 				
 				if(this.files[0].size > 1048576) {
 			        alert("Notice image can't be larger than 1MB.");
+			        
+			        $(this).val('').next('div').empty();
+			        $(this).next().next().val('0');
+			        $(this).prevAll('.upload-name').val('Select an image');
 			    } else {
 			    	readURL(this);
 			    }

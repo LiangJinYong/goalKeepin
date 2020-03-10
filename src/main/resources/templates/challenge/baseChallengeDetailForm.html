@@ -68,6 +68,20 @@ header li {
 	margin-right: 2%;
 }
 
+#timePeriodFrom, #timePeriodTo {
+	background-color: white;
+    display: inline-flex;
+    border: 1px solid #ccc;
+    color: #555;
+}
+
+#timePeriodFrom input,  #timePeriodTo input {
+	border: none;
+    color: #555;
+    text-align: center;
+    width: 60px;
+}
+
 </style>
 <body style="background-color: rgb(245, 247, 250);">
 	<div class="row header">
@@ -245,9 +259,19 @@ header li {
 					<div class="col-md-9">
 						<div class="add">
 							<span id="timePeriod">
-								<input type="time" name="baseAuthFromTime" id="baseAuthFromTime" th:field="*{baseAuthFromTime}" required="required" />
-								~ <input type="time" name="baseAuthToTime" id="baseAuthToTime" th:field="*{baseAuthToTime}" required="required" />
-							</span> 
+								<span id="timePeriodFrom">
+									<input type="number" min="0" max="23" placeholder="00" id="baseAuthFromTimeHour" required="required">:
+		  							<input type="number" min="0" max="59" placeholder="00" id="baseAuthFromTimeMinute" required="required">
+	  							</span>
+	  							~
+	  							<span id="timePeriodTo">
+		  							<input type="number" min="0" max="23" placeholder="23" id="baseAuthToTimeHour" required="required">:
+		  							<input type="number" min="0" max="59" placeholder="59" id="baseAuthToTimeMinute" required="required">
+	  							</span>
+	  							
+	  							<input type="hidden" th:field="*{baseAuthFromTime}" required="required" />
+								<input type="hidden" th:field="*{baseAuthToTime}" required="required" />
+							</span>
 							<input type="checkbox" id="allHours" /><label for="allHours">24 Hours</label>
 						</div>
 						<div class="view">
@@ -412,6 +436,9 @@ header li {
 		var commonUrl = /*[[*{commonUrl}]]*/ null;
 		
 		var baseAuthInterval = /*[[*{baseChallenge.baseAuthInterval}]]*/ null;
+		
+		var baseAuthFromTime = /*[[*{baseChallenge.baseAuthFromTime}]]*/ null;
+		var baseAuthToTime = /*[[*{baseChallenge.baseAuthToTime}]]*/ null;
 	</script>
 
 	<script type="text/javascript">
@@ -503,7 +530,16 @@ header li {
 				 var searchKeywordText = $('#searchKeywordText').text();
 				 var searchKeywordArr = searchKeywordText.split(',');
 				 $('#searchKeywordText').text(searchKeywordArr.join(', '));
-					 
+				 
+				 var fromTimeHour = baseAuthFromTime.substring(0, 2);
+				 var fromTimeMinute = baseAuthFromTime.substring(3, 5);
+				 var toTimeHour = baseAuthToTime.substring(0, 2);
+				 var toTimeMinute = baseAuthToTime.substring(3, 5);
+				 
+				 $('#baseAuthFromTimeHour').val(fromTimeHour);
+				 $('#baseAuthFromTimeMinute').val(fromTimeMinute);
+				 $('#baseAuthToTimeHour').val(toTimeHour);
+				 $('#baseAuthToTimeMinute').val(toTimeMinute);
 			 }
 			
 			 // 습관타입 처리
@@ -529,17 +565,12 @@ header li {
 			 
 			 //썸네일 이미지 사이즈 제한
 			 $('#baseThumbnailUrl').change(function() {
-				 var ext = this.value.match(/\.(.+)$/)[1];
-			     switch (ext) {
-			        case 'jpg':
-			        case 'jpeg':
-			        case 'png':
-			            break;
-			        default:
-			            alert('This is not an allowed file type.');
-			            this.value = '';
-			            $('#imgPreview').hide();
-			     }
+				 if(!(/\.(jpg|jpeg|png)$/i).test(this.value)) {
+					 alert('This is not an allowed file type.');
+					 this.value = '';
+		             $('#imgPreview').hide();
+		             return;
+				 }
 			    
 				 if(this.files[0].size > 1048576){
 				        alert("Thumbnail image can't be larger than 1MB.");
@@ -578,6 +609,10 @@ header li {
 					 $('#noLimit').prop('checked', true);
 				 }
 				 
+				 if('00:00:00' == baseAuthFromTime && '23:59:59' == baseAuthToTime) {
+					 $('#allHours').click();
+				 }
+					 
 				 $('<li><a href="#" class="btn btn-primary">Cancel Editing</a></li>')
 				 .appendTo('#headerBtn')
 				 .siblings('li')
@@ -673,12 +708,28 @@ header li {
 			 $('#allHours').change(function() {
 				if($(this).prop('checked')) {
 					$('#timePeriod').hide();
-					$('#baseAuthFromTime').val('00:00:00').attr('readonly', true);
-					$('#baseAuthToTime').val('23:59:59').attr('readonly', true);
+					
+					$('#baseAuthFromTimeHour').val('00');
+					$('#baseAuthFromTimeMinute').val('00');
+					$('#baseAuthToTimeHour').val('23');
+					$('#baseAuthToTimeMinute').val('59');
+					
+					$('#baseAuthFromTime').val('00:00:00');
+					$('#baseAuthToTime').val('23:59:59');
 				} else {
-					$('#timePeriod').show();
-					$('#baseAuthFromTime').val('').attr('readonly', false);
-					$('#baseAuthToTime').val('').attr('readonly', false);
+					 $('#timePeriod').show();
+					 
+					if(baseAuthFromTime != null) {
+						var fromTimeHour = baseAuthFromTime.substring(0, 2);
+						var fromTimeMinute = baseAuthFromTime.substring(3, 5);
+						var toTimeHour = baseAuthToTime.substring(0, 2);
+						var toTimeMinute = baseAuthToTime.substring(3, 5);
+						
+						$('#baseAuthFromTimeHour').val(fromTimeHour);
+						$('#baseAuthFromTimeMinute').val(fromTimeMinute);
+						$('#baseAuthToTimeHour').val(toTimeHour);
+						$('#baseAuthToTimeMinute').val(toTimeMinute);
+					}
 				}
 			 });
 			 
@@ -759,7 +810,20 @@ header li {
 				 
 				 var startDateVal = $('#startDate').val();
 				 var endDateVal = $('#endDate').val();
-					 
+				 
+				 
+				 if(startDateVal < minStartDate) {
+					 alert('Start date is invalid.');
+					 $('#startDate').focus();
+					 return false;
+				 }
+				 
+				 if(endDateVal < minEndDate) {
+					 alert('End date is invalid.');
+					 $('#endDate').focus();
+					 return false;
+				 }
+				 
 				 if(startDateVal >= endDateVal) {
 					 alert('End date must be later than start date.');	
 					 $('#startDate').focus();
@@ -816,9 +880,35 @@ header li {
 				 processHabitType();
 			 });
 			 
-			 $('#challengeForm').submit(function() {
+			 $('#challengeForm').submit(function(e) {
+				 
+				 if(!$('#allHours').prop('checked')) {
+					 var fromTime = $('#baseAuthFromTimeHour').val() + ':' + $('#baseAuthFromTimeMinute').val() + ':00'; 
+					 var toTime = $('#baseAuthToTimeHour').val() + ':' + $('#baseAuthToTimeMinute').val() + ':00';
+					 
+					 $('#baseAuthFromTime').val(fromTime);
+					 $('#baseAuthToTime').val(toTime);
+					 
+					 if(fromTime > toTime) {
+						 alert("Start verification time can't be earlier than end verification time.")
+						 $('#baseAuthFromTimeHour').focus();
+						 e.preventDefault();
+						 return;
+					 }
+				 }
+				 
 				 return confirm('Are you sure to save the challenge infomation?');
 			 });
+			 
+			 document.querySelectorAll('#timePeriod input[type=number]')
+			  .forEach(e => e.oninput = () => {
+			    // Always 2 digits
+			    if (e.value.length >= 2) e.value = e.value.slice(0, 2);
+			    // 0 on the left (doesn't work on FF)
+			    if (e.value.length === 1) e.value = '0' + e.value;
+			    // Avoiding letters on FF
+			    if (!e.value) e.value = '00';
+			  });
 		});
 	</script>
 </body>
