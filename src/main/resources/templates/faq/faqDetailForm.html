@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>FAQ Deatail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<style type="text/css">
+
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+input[name^=faqQuestion] {
+	width: 100%;
+}
+
+textarea{
+	width: 100%;
+}
+
+textarea {
+	resize: none;
+}
+
+</style>
+</head>
+<body style="background-color: rgb(245, 247, 250);">
+	<form method="post" th:action="@{/faq/processFaqDetail}" th:object="${faq}" id="createFaq">
+		<input type="hidden" th:field="*{faqNo}">
+		<input type="hidden" th:field="*{faqQuestionTransNo}">
+		<input type="hidden" th:field="*{faqAnswerTransNo}">
+		<div class="row">
+			<header class="col-md-11">
+				<h1 th:if="*{faqNo == null}" class="brand pull-left h3">Create a FAQ</h1>
+				<h1 th:if="*{faqNo != null}" class="brand pull-left h3">FAQ Details</h1>
+				<ul th:if="*{faqNo != null}" class="list-inline list-unstyled pull-right">
+					<li><a href="#" class="btn btn-primary" id="deleteFaq">Delete</a></li>
+				</ul>
+			</header>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Question (English)</h2>
+				<textarea th:field="*{faqQuestionEn}" rows="2" cols="100" name="faqQuestionEn"
+					placeholder="Please enter a question." required="required"></textarea>
+			</div>
+			<div th:if="*{faqNo != null}" class="col-md-4">
+				<h2 class="h5">Registration Date</h2>
+				<span th:text="*{#dates.format(faqRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Question (Traditional)</h2>
+				<textarea th:field="*{faqQuestionTc}" rows="2" cols="100" name="faqQuestionTc"
+					placeholder="Please enter a question." required="required"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Question (Simplified)</h2>
+				<textarea th:field="*{faqQuestionSc}" rows="2" cols="100" name="faqQuestionSc"
+				placeholder="Please enter a question." required="required"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Answer (English)</h2>
+				<textarea th:field="*{faqAnswerEn}" rows="4" cols="100" name="faqAnswerEn"
+					placeholder="Please enter the answer." required="required"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Answer (Traditional)</h2>
+				<textarea th:field="*{faqAnswerTc}" rows="4" cols="100" name="faqAnswerTc"
+					placeholder="Please enter the answer." required="required"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="h5">Answer (Simplified)</h2>
+				<textarea th:field="*{faqAnswerSc}" rows="4" cols="100" name="faqAnswerSc"
+					placeholder="Please enter the answer." required="required"></textarea>
+			</div>
+		</div>
+		
+		<div class="row" style="margin-bottom: 30px;">
+			<div class="col-md-8 text-center">
+				<input type="submit" class="btn btn-primary" value="Save">
+			</div>
+		</div>
+	</form>
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var faqNo = /*[[*{faq.faqNo}]]*/;
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			$('#deleteFaq').click(function() {
+				if(confirm('Are you sure to delete this FAQ?')) {
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({ url: '/goalkeepinmanager/faq/deleteFaq',  
+						 data: {
+							 faqNo: $('#faqNo').val() 
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/faq/showFaqList/1'; 
+					 });
+				}
+			});
+			
+			$('#createFaq').submit(function() {
+				return confirm('Are you sure to save this FAQ?');
+			});
+		});
+	</script>
+</body>
+</html>

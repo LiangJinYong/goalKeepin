@@ -73,8 +73,6 @@ public class NoticeController {
 	
 	@PostMapping("/processNoticeDetail")
 	public String processNoticeDetail(Notice notice, @RequestParam("noticeImgs") MultipartFile[] noticeImgs, @RequestParam(value="editOption", required=false) String editOption) {
-		System.out.println("===>" + notice);
-		System.out.println("===>" + editOption);
 		
 		long imageSizeEn = noticeImgs[0].getSize();
 		long imageSizeTc = noticeImgs[1].getSize();

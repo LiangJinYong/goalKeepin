@@ -111,6 +111,10 @@ img[name=imgPreview] {
 	height: auto;
 }
 
+textarea {
+	resize: none;
+}
+
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -122,7 +126,8 @@ img[name=imgPreview] {
 
 		<div class="row">
 			<header class="col-md-11">
-				<h1 class="brand pull-left h3">Create a notice</h1>
+				<h1 th:if="*{noticeNo == null}" class="brand pull-left h3">Create a notice</h1>
+				<h1 th:if="*{noticeNo != null}" class="brand pull-left h3">Notice Details</h1>
 				<ul th:if="*{noticeNo != null}" class="list-inline list-unstyled pull-right">
 					<li><a href="#" class="btn btn-primary" id="deleteNotice">Delete</a></li>
 				</ul>

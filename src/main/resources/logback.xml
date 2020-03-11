@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">  
-    <encoder>
-      <pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%thread] %-3level %logger{5} - %msg %n</pattern>
-    </encoder>
-  </appender>
-  
-  <logger name="jdbc" level="OFF"/>
-  
-  <logger name="jdbc.sqlonly" level="INFO" additivity="false">
-    <appender-ref ref="STDOUT" />
-  </logger>
-  
-  <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
-    <appender-ref ref="STDOUT" />
-  </logger> 
-  
-  <logger name="jdbc.resultsettable" level="INFO" additivity="false">
-    <appender-ref ref="STDOUT" />
-  </logger>
-  
-  <root level="DEBUG">
-    <appender-ref ref="STDOUT" />
-  </root>
+<!DOCTYPE xml>
+<configuration debug="true">
+	<!-- Appenders -->
+	<appender name="console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%d %5p [%c] %m%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="console-infolog"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%d %5p %m%n</Pattern>
+		</encoder>
+	</appender>
+
+	<!-- 로거 -->
+	<logger name="com.blink" level="debug" appender-ref="console" />
+	<logger name="jdbc.sqlonly" level="INFO"
+		appender-ref="console-infolog" />
+	<logger name="jdbc.resultsettable" level="INFO"
+		appender-ref="console-infolog" />
+	<!-- 
+	<logger name="org.springframework" level="error" />
+	<logger name="org.springframework.jdbc" level="error" />
+ -->
+	<!-- 루트 로거 -->
+	<root level="error">
+		<appender-ref ref="console" />
+	</root>
 </configuration>

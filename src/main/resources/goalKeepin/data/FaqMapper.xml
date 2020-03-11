@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.FaqMapper">
+
+	<resultMap type="Faq" id="Faq">
+		<id property="faqNo" column="faqNo" />
+ 		<result property="faqQuestionEn" column="faqQuestionEn" />
+ 		<result property="faqQuestionTc" column="faqQuestionTc" />
+ 		<result property="faqQuestionSc" column="faqQuestionSc" />
+ 		
+ 		<result property="faqAnswerEn" column="faqAnswerEn" />
+ 		<result property="faqAnswerTc" column="faqAnswerTc" />
+ 		<result property="faqAnswerSc" column="faqAnswerSc" />
+ 		
+ 		<result property="faqActionCode" column="faqActionCode" />
+ 		
+ 		<result property="faqRegDate" column="faqRegDate" />
+	</resultMap>
+	
+	<sql id="faq">
+		FROM FAQ_TB ft
+		INNER JOIN TRANSLATION_TB tt ON ft.faq_ques_t_no = tt.trans_no
+	</sql>
+	
+	<select id="getTotalFaqCount" resultType="int">
+		/* getTotalFaqCount */
+		SELECT COUNT(*)
+		<include refid="faq" />
+	</select>
+	
+	<select id="selectFaqList" parameterType="map" resultMap="Faq">
+		/* selectFaqList */
+		SELECT ft.faq_no faqNo, tt.trans_en faqQuestionEn, ft.faq_reg_dt faqRegDate
+		<include refid="faq" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		faq_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="selectFaqDetail" parameterType="long" resultMap="Faq">
+		/* selectFaqDetail */
+		SELECT faq_no faqNo 
+		, faq_ques_t_no faqQuestionTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ques_t_no) faqQuestionEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ques_t_no) faqQuestionTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ques_t_no) faqQuestionSc
+		, faq_ans_t_no faqAnswerTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerSc
+		, faq_reg_dt faqRegDate
+		FROM FAQ_TB ft
+		WHERE faq_no = #{faqNo}
+	</select>
+	
+	<delete id="deleteFaq" parameterType="long">
+		/* deleteFaq */
+		DELETE FROM FAQ_TB WHERE faq_no = #{faqNo}
+	</delete>
+	
+	<insert id="insertOrUpdateFaqQuestion" parameterType="Faq" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="faqQuestionTransNo">
+		/* insertOrUpdateFaqQuestion */
+		INSERT INTO TRANSLATION_TB
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
+		VALUES
+		(#{faqQuestionTransNo}, #{faqQuestionEn}, #{faqQuestionSc}, #{faqQuestionTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{faqQuestionEn}, trans_s_cn = #{faqQuestionSc}, trans_t_cn = #{faqQuestionTc}
+	</insert>
+	
+	<insert id="insertOrUpdateFaqAnswer" parameterType="Faq" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="faqAnswerTransNo">
+		/* insertOrUpdateFaqAnswer */
+		INSERT INTO TRANSLATION_TB
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
+		VALUES
+		(#{faqAnswerTransNo}, #{faqAnswerEn}, #{faqAnswerSc}, #{faqAnswerTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{faqAnswerEn}, trans_s_cn = #{faqAnswerSc}, trans_t_cn = #{faqAnswerTc}
+	</insert>
+	
+	<insert id="insertOrUpdateFaq" parameterType="Faq">
+		/* insertOrUpdateFaq */
+		INSERT INTO FAQ_TB
+		(faq_no, faq_ques_t_no, faq_ans_t_no)
+		VALUES
+		(#{faqNo}, #{faqQuestionTransNo}, #{faqAnswerTransNo})
+		ON DUPLICATE KEY UPDATE faq_no = faq_no
+	</insert>
+</mapper>
