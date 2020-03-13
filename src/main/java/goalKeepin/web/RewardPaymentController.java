@@ -45,7 +45,6 @@ public class RewardPaymentController {
 	@ResponseBody
 	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userId") String userId, @RequestParam(value="sort", required=false) String sort) {
 		Gson gson = new Gson();
-		System.out.println("===>" + sort);
 		Map<String, Object> result = new HashMap<>();
 		
 		int pageSize = props.getPageSize();

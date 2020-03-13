@@ -4,7 +4,7 @@
     xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Push Notification</title>
+<title>Badge Gift</title>
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
@@ -22,7 +22,7 @@ table {
 }
 
 #sendTarget div {
-	background-color: #f5f5dc;
+	background-color: #cce6ff;
 	margin: 5px;
 	padding: 15px;
 	border-radius: 20px;
@@ -46,10 +46,6 @@ table {
 			<span id="searchArea">
 				<span style="margin-right: 20px;">User ID</span>
 				<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="Please enter user id to search">
-			</span>
-			<span style="margin-left: 20px;">
-				<input type="checkbox" id="sendToAll">
-				<label for="sendToAll">Send to everyone</label>
 			</span>
 		</div>
 	</div>
@@ -105,16 +101,13 @@ table {
 	
 	<div class="row">
 		<div class="col-md-12">
-			<span style="margin-right: 20px;">Message Contents</span>
-			<input type="text" name="notificationMessage" id="notificationMessage" placeholder="Please enter notification content" style="width: 400px; margin-right: 20px;">
 			<a href="#" class="btn btn-primary" id="doSend">Send</a>
-			<a href="#" class="btn btn-primary" id="doSendToAll" style="display: none;">Send To Everyone</a>
 		</div>
 	</div>
 	
 	<div class="row" id="sendMessageArea" style="margin-bottom: 30px;">
 		<div class="col-md-12">
-			<span class="h5">Send message to:</span>
+			<span class="h5">Send badge gift to:</span>
 		</div>
 		<div id="sendTarget">
 		</div>
@@ -129,19 +122,11 @@ table {
 			var checkedUserCount = $('#sendTarget div').length;
 			
 			if(checkedUserCount == 0) {
-				alert('Please select user to send push notification.');
+				alert('Please select user to send badge gift.');
 				return;
 			}
 			
-			var notificationMessage = $('#notificationMessage').val();
-			
-			if(notificationMessage == '') {
-				alert('Please enter notification content.');
-				$('#notificationMessage').focus();
-				return;
-			}
-			
-			if(confirm('Are you sure to send the notification message?')) {
+			if(confirm('Are you sure to send the badge gift?')) {
 				
 				var userNos = [];
 				$('#sendTarget div').each(function() {
@@ -152,10 +137,9 @@ table {
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
 				
-				$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotification',  
+				$.ajax({ url: '/goalkeepinmanager/badgeGift/sendingBadgeGift',  
 					 data: {
-						 userNos: userNos.join(','),
-						 notificationMessage: notificationMessage
+						 userNos: userNos.join(',')
 		 			 },  
 					 method: "POST",  
 					 dataType: "text", 
@@ -164,61 +148,11 @@ table {
 						}
 					 })
 				 .done(function(json) { 
-					 alert('Push notification processed successfully.')
-					 $('#notificationMessage').val('');
+					 alert('Badge gift sent successfully.')
 				 })
 				 .fail(function() {
-					 alert('Error sending push notification.');
+					 alert('Error sending badge gift.');
 				 });
-			}
-		});
-		
-		$('#sendToAll').change(function() {
-			var checked = $(this).prop('checked');
-			if(checked) {
-				$('#resultArea').hide();
-				$('#sendMessageArea').hide();
-				$('#doSend').hide();
-				$('#searchArea').hide();
-				
-				$('#doSendToAll').show().click(function() {
-					
-					var notificationMessage = $('#notificationMessage').val();
-					
-					if(notificationMessage == '') {
-						alert('Please enter notification content.');
-						return;
-					}
-					
-					if(confirm('Are you sure to send the notification message to all users?')) {
-						var token = $("meta[name='_csrf']").attr("content");
-						var header = $("meta[name='_csrf_header']").attr("content");
-						
-						$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotificationToAll',  
-							data: {
-								notificationMessage: notificationMessage
-							},
-							 method: "POST",  
-							 dataType: "text", 
-							 beforeSend : function(xhr) {
-							    xhr.setRequestHeader(header, token);
-								}
-							 })
-						 .done(function(json) { 
-							 alert('Push notification processed successfully.')
-							 $('#notificationMessage').val('');
-						 })
-						 .fail(function() {
-							 alert('Error sending push notification.');
-						 });
-					}
-				});
-			} else {
-				$('#searchArea').show();
-				$('#resultArea').show();
-				$('#sendMessageArea').show();
-				$('#doSend').show();
-				$('#doSendToAll').hide()
 			}
 		});
 	});

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.BadgeGiftMapper">
+	
+	<select id="selectBadgeValue" resultType="double">
+		/* selectBadgeValue */
+		SELECT CAST(IFNULL(VALUE, 0) AS DECIMAL) badgeValue
+		FROM COMMON_VALUE_TB 
+		WHERE cd = 'A001'
+	</select>
+	
+	<insert id="insertBadgeGiftRecords" parameterType="map">
+		/* insertBadgeGiftRecords */
+		INSERT INTO GIFT_TB
+		(GIFT_RECEIVE_USER_NO, GIFT_SEND_USER_NO, GIFT_PRICE, GIFT_IS_AVAILABLE)
+		VALUES
+		<foreach collection="userNoArr" item="userNo" separator=",">
+            (#{userNo}, 0, #{badgeValue}, 1)
+        </foreach>	
+	</insert>
+</mapper>
