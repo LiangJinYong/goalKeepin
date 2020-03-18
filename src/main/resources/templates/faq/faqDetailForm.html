@@ -33,6 +33,14 @@ textarea {
 	resize: none;
 }
 
+#keyword {
+	display: none;
+}
+
+#keyword input {
+	width: 80%;
+}
+
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -40,6 +48,8 @@ textarea {
 		<input type="hidden" th:field="*{faqNo}">
 		<input type="hidden" th:field="*{faqQuestionTransNo}">
 		<input type="hidden" th:field="*{faqAnswerTransNo}">
+		<input type="hidden" th:field="*{faqKeywordTransNo}">
+		
 		<div class="row">
 			<header class="col-md-11">
 				<h1 th:if="*{faqNo == null}" class="brand pull-left h3">Create a FAQ</h1>
@@ -97,18 +107,62 @@ textarea {
 			</div>
 		</div>
 		
+		<div class="row">
+			<div class="col-md-8">
+				<label>Action</label>
+				<select th:field="*{faqActionCode}" name="actionCode" id="actionCode">
+					<option value="">Please select an action</option>
+					<option th:each="faqAction:${T(goalKeepin.constants.FaqAction).values()}"
+							th:value="${faqAction}" th:text="${faqAction.action}"></option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="row" id="keyword">
+			<div class="col-md-4">
+				<h2 class="h5">Keyword (English)</h2>
+				<input th:field="*{faqKeywordEn}" type="text" name="faqKeywordEn" placeholder="Please enter keyword" />
+			</div>
+			<div class="col-md-4">
+				<h2 class="h5">Keyword (Traditional)</h2>
+				<input th:field="*{faqKeywordTc}" type="text" name="faqKeywordTc" placeholder="Please enter keyword" />
+			</div>
+			<div class="col-md-4">
+				<h2 class="h5">Keyword (Simplified)</h2>
+				<input th:field="*{faqKeywordSc}" type="text" name="faqKeywordSc" placeholder="Please enter keyword" />
+			</div>
+		</div>
+		
 		<div class="row" style="margin-bottom: 30px;">
 			<div class="col-md-8 text-center">
 				<input type="submit" class="btn btn-primary" value="Save">
 			</div>
 		</div>
 	</form>
+	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
 		var faqNo = /*[[*{faq.faqNo}]]*/;
 	</script>
 	<script type="text/javascript">
 		$(function() {
+			
+			// process action code list
+			if($('#actionCode').val() != '') {
+				$('#keyword').show();
+				$('input[name^=faqKeyword]:gt(0)').attr('required', true);
+			}
+			
+			$('#actionCode').change(function() {
+				if($(this).val() == '') {
+					$('#keyword').hide();
+					$('input[name^=faqKeyword]:gt(0)').attr('required', false);
+				} else {
+					$('#keyword').show();
+					$('input[name^=faqKeyword]:gt(0)').attr('required', true);
+				}
+			});
+			
 			$('#deleteFaq').click(function() {
 				if(confirm('Are you sure to delete this FAQ?')) {
 					var token = $("meta[name='_csrf']").attr("content");

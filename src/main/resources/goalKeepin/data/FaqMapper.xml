@@ -54,6 +54,11 @@
 		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerEn
 		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerTc
 		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_ans_t_no) faqAnswerSc
+		, faq_keyword_t_no faqKeywordTransNo
+		, (SELECT tt.trans_en FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_keyword_t_no) faqKeywordEn
+		, (SELECT tt.trans_t_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_keyword_t_no) faqKeywordTc
+		, (SELECT tt.trans_s_cn FROM TRANSLATION_TB tt WHERE tt.trans_no = ft.faq_keyword_t_no) faqKeywordSc
+		, faq_action_cd faqActionCode
 		, faq_reg_dt faqRegDate
 		FROM FAQ_TB ft
 		WHERE faq_no = #{faqNo}
@@ -82,12 +87,21 @@
 		ON DUPLICATE KEY UPDATE trans_en = #{faqAnswerEn}, trans_s_cn = #{faqAnswerSc}, trans_t_cn = #{faqAnswerTc}
 	</insert>
 	
+	<insert id="insertOrUpdateFaqKeyword" parameterType="Faq" useGeneratedKeys="true" keyColumn="trans_no" keyProperty="faqKeywordTransNo">
+		/* insertOrUpdateFaqKeyword */
+		INSERT INTO TRANSLATION_TB
+		(trans_no, trans_en, trans_s_cn, trans_t_cn)
+		VALUES
+		(#{faqKeywordTransNo}, #{faqKeywordEn}, #{faqKeywordSc}, #{faqKeywordTc})
+		ON DUPLICATE KEY UPDATE trans_en = #{faqKeywordEn}, trans_s_cn = #{faqKeywordSc}, trans_t_cn = #{faqKeywordTc}
+	</insert>
+	
 	<insert id="insertOrUpdateFaq" parameterType="Faq">
 		/* insertOrUpdateFaq */
 		INSERT INTO FAQ_TB
-		(faq_no, faq_ques_t_no, faq_ans_t_no)
+		(faq_no, faq_ques_t_no, faq_ans_t_no, faq_action_cd, faq_keyword_t_no)
 		VALUES
-		(#{faqNo}, #{faqQuestionTransNo}, #{faqAnswerTransNo})
-		ON DUPLICATE KEY UPDATE faq_no = faq_no
+		(#{faqNo}, #{faqQuestionTransNo}, #{faqAnswerTransNo}, #{faqActionCode}, #{faqKeywordTransNo})
+		ON DUPLICATE KEY UPDATE faq_action_cd = #{faqActionCode}, faq_keyword_t_no = #{faqKeywordTransNo}
 	</insert>
 </mapper>

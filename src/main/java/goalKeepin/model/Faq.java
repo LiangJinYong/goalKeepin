@@ -19,6 +19,11 @@ public class Faq {
 	private String faqAnswerTc;
 	private String faqAnswerSc;
 	
+	private Long faqKeywordTransNo;
+	private String faqKeywordEn;
+	private String faqKeywordTc;
+	private String faqKeywordSc;
+	
 	private String faqActionCode;
 	private Date faqRegDate;
 }

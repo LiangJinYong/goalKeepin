@@ -24,4 +24,6 @@ public interface FaqMapper {
 
 	void insertOrUpdateFaq(Faq faq);
 
+	void insertOrUpdateFaqKeyword(Faq faq);
+
 }

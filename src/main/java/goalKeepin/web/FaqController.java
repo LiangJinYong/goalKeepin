@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import goalKeepin.config.GoalKeepinProps;
+import goalKeepin.constants.FaqAction;
 import goalKeepin.data.FaqMapper;
 import goalKeepin.model.Faq;
 import goalKeepin.model.Page;
@@ -92,6 +93,16 @@ public class FaqController {
 	public String processFaqDetail(Faq faq) {
 		faqMapper.insertOrUpdateFaqQuestion(faq);
 		faqMapper.insertOrUpdateFaqAnswer(faq);
+		
+		String faqActionCode = faq.getFaqActionCode();
+		System.out.println("=====>" + faqActionCode);
+		if (!"".equals(faqActionCode)) {
+			faqMapper.insertOrUpdateFaqKeyword(faq);
+		} else {
+			faq.setFaqActionCode(null);
+			faq.setFaqKeywordTransNo(null);
+		}
+		
 		faqMapper.insertOrUpdateFaq(faq);
 		
 		return "redirect:/faq/showFaqList/1";
