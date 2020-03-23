@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.ReportMapper">
+	
+	<resultMap type="Report" id="Report">
+		<id property="faqNo" column="faqNo" />
+ 		<result property="reportNo" column="reportNo" />
+ 		<result property="authType" column="authType" />
+ 		<result property="reportRegDate" column="reportRegDate" />
+ 		<result property="processStatus" column="processStatus" />
+	</resultMap>
+	
+	<sql id="report">
+		FROM REPORT_TB rt
+		INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no
+		INNER JOIN USER_TB ut ON ut.user_no = rt.reported_user_no
+	</sql>
+	
+	<select id="getTotalReportCount" resultType="int">
+		/* getTotalFaqCount */
+		SELECT COUNT(*)
+		<include refid="report" />
+	</select>
+	
+	<select id="selectReportList" parameterType="map" resultMap="Report">
+		/* selectReportList */
+		SELECT rt.report_no reportNo, ut.user_id reporterUserId, cat.auth_tp_cd authType, rt.report_reg_dt reportRegDate, rt.process_status processStatus
+		<include refid="report" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		report_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	
+	<select id="selectReportDetail" parameterType="long" resultType="goalKeepin.web.dto.ReportDetailResponseDto">
+		/* selectReportDetail */
+		SELECT cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, ut.user_id reportedUserId, ut.user_email reportedUserEmail, rt.report_content reportContent, ut2.user_id reportingUserId, ut2.user_email reportingUserEmail, rt.report_reg_dt reportRegDate, tt.trans_en challengeName 
+		FROM REPORT_TB rt
+		INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no
+		INNER JOIN USER_TB ut ON rt.reported_user_no = ut.user_no
+		INNER JOIN USER_TB ut2 ON rt.reporting_user_no = ut2.user_no
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON oct.CHALLENGE_NO = cat.AUTH_C_NO
+        INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+        INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
+		WHERE rt.REPORT_NO = #{reportNo}
+	</select>
+	
+	<select id="selectOtherRepotingUserList" parameterType="long" resultType="goalKeepin.web.dto.ReportingUser">
+		/* selectReportDetail */
+		SELECT rt.report_content reportContent, rt.report_reg_dt reportRegDate, ut.user_id reportingUserId, ut.user_email reportingUserEmail
+		FROM REPORT_TB rt
+		INNER JOIN USER_TB ut ON rt.reporting_user_no = ut.user_no
+		WHERE rt.challenge_auth_no = (SELECT challenge_auth_no FROM REPORT_TB WHERE report_no = #{reportNo})
+		AND report_no != #{reportNo}
+		ORDER BY report_reg_dt DESC
+	</select>
+	
+	<select id="selectReportCount" parameterType="long" resultType="int">
+		/* selectReportCount */
+		SELECT COUNT(*)
+		FROM REPORT_TB
+		WHERE challenge_auth_no = 
+			(
+				SELECT challenge_auth_no 
+				FROM REPORT_TB
+				WHERE report_no = #{reportNo}
+			)
+	</select>
+</mapper>

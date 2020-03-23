@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Report Deatail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<style type="text/css">
+
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
+.row {
+	margin: 15px 0 40px 0;
+}
+
+input[name^=faqQuestion] {
+	width: 100%;
+}
+
+textarea{
+	width: 100%;
+}
+
+textarea {
+	resize: none;
+}
+div[class^=col-md] {
+	/* border: 1px solid black; */
+}
+
+#reportCount {
+	color: purple;
+}
+
+#verificationImg {
+	max-width:200px;
+	max-height:200px;
+}
+
+</style>
+</head>
+<body style="background-color: rgb(245, 247, 250);">
+		
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="brand pull-left h3">Report details</h1>
+		</div>
+	</div>
+	
+	<div class="row" style="border-bottom: 1px solid grey; padding-bottom: 30px;">
+		<div class="col-md-6">
+			<div>
+				<span class="h5">Verification Content</span>
+				<span class="h5 pull-right" style="margin-top: 0;">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
+			</div>
+			<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU01'}">
+			    <img id="verificationImg" th:src="${reportDetail.challengeAuthUrl}">
+			</div>
+			<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU02'}">
+				<audio controls>
+				    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
+				</audio>
+			</div>
+			<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+		</div>
+		
+		<div class="col-md-6">
+			<span class="h5" style="margin-top: 0;">Challenge name:</span>
+			<span th:text="${reportDetail.challengeName}"></span>
+			<h2 class="h5" style="margin-top: 20px; 	padding-top: 15px;">Reported User Information</h2>
+			<p>
+				<span>User Id:</span>
+				<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
+			</p>
+			<p>
+				<span>User email:</span>
+				<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
+			</p>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-6">
+			<div>
+				<span class="h5">Report Content</span>
+				<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportDetail.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+			</div>
+			<textarea rows="6" cols="6" readonly="readonly" th:text="${reportDetail.reportContent}" style="margin-top: 20px;"></textarea>
+		</div>
+		<div class="col-md-6">
+			<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
+			<p>
+				<span>User Id:</span>
+				<span th:text="${reportDetail.reportingUserId}" class="font-weight-bold"></span>
+			</p>
+			<p>
+				<span>User email:</span>
+				<span th:text="${reportDetail.reportingUserEmail}" class="font-weight-bold"></span>
+			</p>
+		</div>
+	</div>
+	
+	<div th:if="${#lists.size(reportDetail.reportingUserList) > 0}" class="row">
+		<p style="font-weight: bold; font-size: 1.4em; color: navy;">Other reports for this verification</p>
+	</div>
+	<div class="row" th:each="reportingUser: ${reportDetail.reportingUserList}">
+		<div class="col-md-6">
+			<div>
+				<span class="h5">Report Content</span>
+				<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportingUser.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+			</div>
+			<textarea rows="6" cols="6" readonly="readonly" th:text="${reportingUser.reportContent}" style="margin-top: 20px;"></textarea>
+		</div>
+		<div class="col-md-6">
+			<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
+			<p>
+				<span>User Id:</span>
+				<span th:text="${reportingUser.reportingUserId}" class="font-weight-bold"></span>
+			</p>
+			<p>
+				<span>User email:</span>
+				<span th:text="${reportingUser.reportingUserEmail}" class="font-weight-bold"></span>
+			</p>
+		</div>
+	</div>		
+	
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			
+		});
+	</script>
+</body>
+</html>

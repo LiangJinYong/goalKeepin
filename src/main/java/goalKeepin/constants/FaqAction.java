@@ -2,7 +2,7 @@ package goalKeepin.constants;
 
 public enum FaqAction {
 
-	WD("Withdraw"), LG("Login");
+	WD("Withdraw");
 	
 	final private String action;
 	

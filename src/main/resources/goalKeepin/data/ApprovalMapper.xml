@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.ApprovalMapper">
+
+	<resultMap type="Approval" id="Approval">
+		<id property="authNo" column="authNo" />
+ 		<result property="authTypeCd" column="authTypeCd" />
+ 		<result property="baseNmEn" column="baseNmEn" />
+ 		<result property="authRegDate" column="authRegDate" />
+	</resultMap>
+	
+	<sql id="approval">
+		FROM CHALLENGE_AUTH_TB cat INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
+		INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no = tt.trans_no
+		WHERE 1 = 1
+		<if test="verificationType != null and verificationType != ''">
+			AND cat.auth_tp_cd = #{verificationType}
+		</if>
+	</sql>
+	
+	<select id="getTotalApprovalCount" parameterType="map" resultType="int">
+		/* getTotalApprovalCount */
+		SELECT COUNT(*)
+		<include refid="approval" />
+	</select>
+	
+	<select id="selectApprovalList" parameterType="map" resultMap="Approval">
+		/* selectApprovalList */
+		SELECT cat.auth_no authNo, cat.auth_tp_cd authTypeCd, tt.trans_en baseNmEn, cat.auth_reg_dt authRegDate
+		<include refid="approval" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		auth_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+</mapper>
+

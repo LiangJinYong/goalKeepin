@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Report List</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<style type="text/css">
+header a, header li {
+	padding: 2.4rem 0;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+.waiting {
+	color: red;
+}
+
+.completed {
+	color: green;
+}
+</style>
+</head>
+<body style="background-color: rgb(245, 247, 250);">
+	<div class="row">
+		<header class="col-md-12">
+			<h1 class="brand pull-left h3">Report</h1>
+		</header>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<table id="reportTable" class="table table-striped table-hover">
+				<thead>
+					<tr class="info">
+						<th>
+							<h2 class="text-center h5">NO</h2>
+						</th>
+						<th>
+							<h2 class="text-center h5 sortable" id="reporterUserId">Reporter User Id</h2>
+						</th>
+						<th>
+							<h2 class="text-center h5 sortable" id="authType">Auth Type</h2>
+						</th>
+						<th>
+							<h2 class="text-center h5 sortable" id="reportRegDate">Report Reg Date</h2>
+						</th>
+						<th>
+							<h2 class="text-center h5 sortable" id="processStatus">Process Status</h2>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${page.totalRecordNum > 0}" th:each="report: ${page.pageData}" style="cursor: pointer;" th:id="${report.reportNo}">
+						<td class="text-center" th:text="${report.reportNo}">NO</td>
+						<td class="text-center" th:text="${report.reporterUserId}">Reporter User Id</td>
+						<td class="text-center" th:text="${report.authType == 'AU01'} ? 'Photo' : 'Voice'">Auth Type</td>
+						<td class="text-center" th:text="*{#dates.format(report.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}">Report Reg Date</td>
+						<td class="text-center" th:text="${report.processStatus} ? 'Completed' : 'Waiting'" th:classappend="${report.processStatus} ? 'completed' : 'waiting'">Process Status</td>
+					</tr>
+					<tr th:if="${page.totalRecordNum == 0}">
+						<td colspan="5" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div class="row text-center" th:if="${page.totalPageNum > 0}">
+		<nav aria-label="Page navigation">
+			<ul class="pagination" id="pagination">
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == 1}">
+					<a class="page-link">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/report/showReportList/1'}">&lt;&lt;</a>
+				</li>
+				<li th:if="${page.pageNum == 1}">
+					<a class="page-link">&lt;</a>
+				</li>
+				<li th:if="${page.pageNum > 1}">
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum - 1}}">&lt;</a>
+				</li>
+				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${i}}" th:text="${i}"></a>
+				</li>
+				<li th:if="${page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;</a>
+				</li>
+				<li th:if="${page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum + 1}}">&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
+					<a class="page-link">&gt;&gt;</a>
+				</li>
+				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${page.totalPageNum}}">&gt;&gt;</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
+		var pageSize = /*[[*{page.pageSize}]]*/;
+		
+		var sortField = /*[[*{sortField}]]*/ null;
+		var sortOrder = /*[[*{sortOrder}]]*/ null;
+	</script>
+	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('#reportTable tbody tr[id]').click(function() {
+				window.location = '/goalkeepinmanager/report/showReportDetail?reportNo=' + $(this).attr('id');
+			});
+			
+			addSortLink('/goalkeepinmanager/report/showReportList/1');
+		});
+	</script>
+</body>
+</html>

@@ -68,4 +68,8 @@ public interface ChallengeMapper {
 
 	List<Map<String, String>> selectChallengeProofList(Long operatedNo);
 
+	int selectUnprocessedInquiryCount();
+
+	int selectUnprocessedReportCount();
+
 }

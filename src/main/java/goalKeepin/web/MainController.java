@@ -26,6 +26,12 @@ public class MainController {
 	public String home(Model model) {
 		Map<String, Object> homepageHeaderInfo =  challengerMapper.selectHomepageHeaderInfo();
 		model.addAttribute("homepageHeaderInfo", homepageHeaderInfo);
+		
+		int unprocessedInquiryCount = challengerMapper.selectUnprocessedInquiryCount();
+		model.addAttribute("unprocessedInquiryCount", unprocessedInquiryCount);
+		
+		int unprocessedReportCount = challengerMapper.selectUnprocessedReportCount();
+		model.addAttribute("unprocessedReportCount", unprocessedReportCount);
 		return "home";
 	}
 	

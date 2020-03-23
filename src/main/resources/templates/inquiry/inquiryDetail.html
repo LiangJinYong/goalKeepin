@@ -75,7 +75,19 @@ textarea {
 			$('#inquiryReplyCotent').focus();
 			
 			$('#createInquiryReply').submit(function() {
-				return confirm('Are you sure to register this inquiry reply?');
+				if(confirm('Are you sure to register this inquiry reply?')) {
+					
+					var parentWindow = window.parent; 
+					var unprocessedInquiryCount = parentWindow.document.getElementById('unprocessedInquiryCount');
+					var count = parseInt(unprocessedInquiryCount.innerText);
+					
+					if(count > 0) {
+						unprocessedInquiryCount.innerText = (count - 1);
+					}
+					return true;
+				} else {
+					return false;
+				}
 			}); 
 		});
 	</script>
