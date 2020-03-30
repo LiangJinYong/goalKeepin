@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Approval Deatail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+	color: #777
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+#verificationImg {
+	max-width:200px;
+	max-height:200px;
+}
+</style>
+</head>
+<body style="background-color: rgb(245, 247, 250);">
+		<input type="hidden" id="authNo" th:value="${approvalDetail.authNo}">
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="brand pull-left h3">Verification details</h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div>
+					<span class="h5">Verification Content</span>
+				</div>
+				<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU01'}">
+					<img id="verificationImg" th:src="${approvalDetail.challengeAuthUrl}">
+				</div>
+				<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU02'}">
+					<audio controls>
+						<source th:src="${approvalDetail.challengeAuthUrl}" type="audio/mpeg">
+					</audio>
+				</div>
+				<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+			</div>
+
+			<div class="col-md-6">
+				<div>
+					<span class="h5" style="margin-top: 0;">Approval status:</span>
+					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="btn btn-info" style="margin-left: 20px; cursor: none;">Waiting</a>
+					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS02'}" class="btn btn-success" style="margin-left: 20px; cursor: none;">Approved</a>
+					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS03'}" class="btn btn-danger" style="margin-left: 20px; cursor: none;">Denied</a>
+				</div>
+				<div style="margin-top: 20px;">
+					<span class="h5" style="margin-top: 0;">Challenge name:</span> <span th:text="${approvalDetail.challengeName}"></span>
+				</div>
+				<div style="margin-top: 20px;">
+					<span class="h5" style="margin-top: 0;">Start date:</span> <span th:text="${approvalDetail.startDate}"></span>
+				</div>
+				<div>
+					<span class="h5" style="margin-top: 0;">End date:</span> <span th:text="${approvalDetail.endDate}"></span>
+				</div>
+				<div style="margin-top: 20px;">
+					<span class="h5" style="margin-top: 0;">User id:</span> <span th:text="${approvalDetail.authUserId}"></span>
+				</div>
+				<div>
+					<span class="h5" style="margin-top: 0;">User email:</span> <span th:text="${approvalDetail.authUserEmail}"></span>
+				</div>
+			</div>
+		</div>
+		<div th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="text-center" style="margin-top: 50px;">
+			<div>
+				<button class="btn btn-primary" style="margin-right: 20px;" id="denyBut">Deny</button>
+				<button class="btn btn-primary" style="margin-right: 100px;" id="approveBut">Approve</button>
+			</div>
+		</div>
+
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			
+			function processApproval(url) {
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				$.ajax({ url: url,  
+					 data: {
+						 authNo: $('#authNo').val()
+		 			 },  
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+				 .done(function(data) {
+					 if(data != '') {
+						 window.location = '/goalkeepinmanager/approval/showApprovalDetail?authNo=' + data;
+					 } else {
+						 window.location = '/goalkeepinmanager/approval/showApprovalList/1';
+					 }
+				 })
+				 .fail(function() {
+					 alert('Error processing the request.');
+				 });
+			}
+			
+			$('#denyBut').click(function() {
+				if(confirm('Are you sure to deny this verification?')) {
+					var url = '/goalkeepinmanager/approval/denyVerification';
+					processApproval(url);
+				}
+			});
+			
+			$('#approveBut').click(function() {
+				if(confirm('Are you sure to approve this verification?')) {
+					var url = '/goalkeepinmanager/approval/approveVerification';
+					processApproval(url);
+				}
+			});
+			
+			
+		});
+	</script>
+</body>
+</html>

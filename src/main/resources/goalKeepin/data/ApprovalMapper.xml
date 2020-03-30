@@ -10,6 +10,7 @@
  		<result property="authTypeCd" column="authTypeCd" />
  		<result property="baseNmEn" column="baseNmEn" />
  		<result property="authRegDate" column="authRegDate" />
+ 		<result property="approvalStatusCd" column="approvalStatusCd" />
 	</resultMap>
 	
 	<sql id="approval">
@@ -19,6 +20,9 @@
 		WHERE 1 = 1
 		<if test="verificationType != null and verificationType != ''">
 			AND cat.auth_tp_cd = #{verificationType}
+		</if>
+		<if test="approvalStatusCd != null and approvalStatusCd != ''">
+			AND cat.auth_st_cd = #{approvalStatusCd}
 		</if>
 	</sql>
 	
@@ -30,7 +34,7 @@
 	
 	<select id="selectApprovalList" parameterType="map" resultMap="Approval">
 		/* selectApprovalList */
-		SELECT cat.auth_no authNo, cat.auth_tp_cd authTypeCd, tt.trans_en baseNmEn, cat.auth_reg_dt authRegDate
+		SELECT cat.auth_no authNo, cat.auth_tp_cd authTypeCd, tt.trans_en baseNmEn, cat.auth_reg_dt authRegDate, cat.auth_st_cd approvalStatusCd
 		<include refid="approval" />
 		ORDER BY
 		<if test="sortField != null">
@@ -40,5 +44,55 @@
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
+	<select id="selectApprovalDetail" parameterType="long" resultType="goalKeepin.web.dto.ApprovalDetailResponseDto">
+		/* selectApprovalDetail */
+		SELECT cat.auth_no authNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, tt.trans_en challengeName, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, ut.user_id authUserId, ut.user_email authUserEmail, cat.auth_st_cd approvalStatusCd 
+		FROM CHALLENGE_AUTH_TB cat
+		LEFT JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
+		INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no = tt.trans_no
+		WHERE cat.auth_no = #{authNo}
+	</select>
+	
+	<select id="getNextWatingAuthNo" parameterType="long" resultType="long">
+		/* getNextWatingAuthNo */
+		SELECT auth_no nextWatingAuthNo
+		FROM CHALLENGE_AUTH_TB cat
+		WHERE cat.AUTH_REG_DT &lt; (SELECT auth_reg_dt FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+		ORDER BY auth_reg_dt DESC
+		LIMIT 1
+	</select>
+	
+	<update id="updateAuthAprovalStatus" parameterType="map">
+		/* updateAuthAprovalStatus */
+		UPDATE CHALLENGE_AUTH_TB
+		SET auth_st_cd = #{approvalStatus}
+		WHERE auth_no = #{authNo}
+	</update>
+	
+	<select id="getChallengeAuthNum" parameterType="long" resultType="int">
+		/* getChallengeAuthNum */
+		SELECT COUNT(*) 
+		FROM CHALLENGE_AUTH_TB
+		WHERE auth_c_no = (SELECT auth_c_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+		AND auth_user_no = (SELECT auth_user_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+	</select>
+	
+	<select id="getChallengeMaxResult" parameterType="long" resultType="int">
+		/* getChallengeMaxResult */
+		SELECT oct.challenge_max_result
+		FROM CHALLENGE_AUTH_TB cat
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
+		WHERE cat.auth_no = #{authNo}
+	</select>
+	
+	<update id="updateChallengeResult" parameterType="map">
+		/* getChallengeMaxResult */
+		UPDATE CHALLENGE_ENTRY_TB
+		SET entry_result = #{result}, result_grade = #{resultGrade}
+		WHERE entry_user_no = (SELECT auth_user_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+ 		AND entry_challenge_no = (SELECT auth_c_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+	</update>
 </mapper>
 

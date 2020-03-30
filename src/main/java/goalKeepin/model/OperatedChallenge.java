@@ -37,7 +37,7 @@ public class OperatedChallenge {
 	
 	private BaseChallenge baseChallenge;
 	
-	private String baseAuthMethodCd;
+	private String baseAuthDateCd;
 	private Integer baseAuthFrequency;
 	private Integer baseAuthNumDaily;
 }

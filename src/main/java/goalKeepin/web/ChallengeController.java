@@ -204,13 +204,12 @@ public class ChallengeController {
 		
 		String startDate = challengeDetail.getStartDate();
 		String endDate = challengeDetail.getEndDate();
-		String baseAuthMethodCd = challengeDetail.getBaseAuthMethodCd();
+		String baseAuthDateCd = challengeDetail.getBaseAuthDateCd();
 		Integer baseAuthFrequency = challengeDetail.getBaseAuthFrequency();
 		Integer baseAuthNumDaily = challengeDetail.getBaseAuthNumDaily();
 		
-		int maxResult = DateUtils.getMaxResult(startDate, endDate, baseAuthMethodCd, baseAuthFrequency, baseAuthNumDaily);
+		int maxResult = DateUtils.getMaxResult(startDate, endDate, baseAuthDateCd, baseAuthFrequency, baseAuthNumDaily);
 		challengeDetail.setMaxResult(maxResult);
-		
 		challengerMapper.insertOperatedChallengeInfo(challengeDetail);
 		return "success";
 	}

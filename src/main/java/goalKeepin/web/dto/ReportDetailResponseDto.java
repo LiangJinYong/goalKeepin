@@ -14,11 +14,13 @@ public class ReportDetailResponseDto {
 	private String challengeAuthType;
 	private String challengeAuthUrl;
 	private Date authRegDate;
+	private Long reportNo;
 	private String reportedUserId;
 	private String reportedUserEmail;
 	private String reportContent;
 	private String reportingUserId;
 	private String reportingUserEmail;
+	private boolean processStatus;
 	private Date reportRegDate;
 	
 	List<ReportingUser> reportingUserList = new ArrayList<>();

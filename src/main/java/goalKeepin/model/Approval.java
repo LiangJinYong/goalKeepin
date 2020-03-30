@@ -11,4 +11,5 @@ public class Approval {
 	private String authTypeCd;
 	private String baseNmEn;
 	private Date authRegDate;
+	private String approvalStatusCd;
 }

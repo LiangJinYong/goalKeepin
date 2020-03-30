@@ -40,7 +40,7 @@
 	
 	<select id="selectReportDetail" parameterType="long" resultType="goalKeepin.web.dto.ReportDetailResponseDto">
 		/* selectReportDetail */
-		SELECT cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, ut.user_id reportedUserId, ut.user_email reportedUserEmail, rt.report_content reportContent, ut2.user_id reportingUserId, ut2.user_email reportingUserEmail, rt.report_reg_dt reportRegDate, tt.trans_en challengeName 
+		SELECT rt.report_no reportNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, ut.user_id reportedUserId, ut.user_email reportedUserEmail, rt.process_status processStatus, rt.report_content reportContent, ut2.user_id reportingUserId, ut2.user_email reportingUserEmail, rt.report_reg_dt reportRegDate, tt.trans_en challengeName 
 		FROM REPORT_TB rt
 		INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no
 		INNER JOIN USER_TB ut ON rt.reported_user_no = ut.user_no
@@ -72,4 +72,12 @@
 				WHERE report_no = #{reportNo}
 			)
 	</select>
+	
+	<update id="processReport" parameterType="long">
+		/* processReport */
+		UPDATE REPORT_TB
+		SET process_status = 1
+		WHERE report_no = #{reportNo}
+	</update>
+	
 </mapper>

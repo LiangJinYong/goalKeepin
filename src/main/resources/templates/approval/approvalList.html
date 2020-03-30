@@ -17,6 +17,19 @@ header a, header li {
 .row {
 	margin: 15px 0 0 0;
 }
+
+.waiting {
+	color: blue;
+}
+
+.approved {
+	color: green;
+}
+
+.denied {
+	color: red;
+
+}
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250);">
@@ -34,9 +47,12 @@ header a, header li {
 						</select>
 						</li>
 						<li>
-						<label>Processing status</label>
+						<label>Approval status</label>
 						<select name="approvalStatusCd" id="approvalStatusCd">
-								<option value="CT00">View all</option>
+								<option value="">View all</option>
+								<option value="AS01">Waiting</option>
+								<option value="AS02">Approved</option>
+								<option value="AS03">Denied</option>
 						</select>
 						</li>
 					</ul>
@@ -60,6 +76,9 @@ header a, header li {
 							<th>
 								<h2 class="text-center h5 sortable" id="authRegDate">Registration Date</h2>
 							</th>
+							<th>
+								<h2 class="text-center h5 sortable" id="approvalStatusCd">Approval Status</h2>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -68,9 +87,12 @@ header a, header li {
 							<td class="text-center" th:text="${approval.authTypeCd == 'AU01'} ? 'Photo' : 'Voice'">Verification Type</td>
 							<td class="text-center" th:text="${approval.baseNmEn}">Name of Project</td>
 							<td class="text-center" th:text="*{#dates.format(approval.authRegDate, 'yyyy-MM-dd HH:mm:ss')}">aq Reg Date</td>
+							<td class="text-center waiting" th:if="${approval.approvalStatusCd == 'AS01'}" th:text="Waiting">Verification Type</td>
+							<td class="text-center approved" th:if="${approval.approvalStatusCd == 'AS02'}" th:text="Approved">Verification Type</td>
+							<td class="text-center denied" th:if="${approval.approvalStatusCd == 'AS03'}" th:text="Denied">Verification Type</td>
 						</tr>
 						<tr th:if="${page.totalRecordNum == 0}">
-							<td colspan="4" class="text-center">
+							<td colspan="5" class="text-center">
 								<h5>No Data Found</h5>
 							</td>
 						</tr>
@@ -123,6 +145,7 @@ header a, header li {
 		var sortOrder = /*[[*{sortOrder}]]*/ null;
 		
 		var verificationType = /*[[*{verificationType}]]*/ null;
+		var approvalStatusCd = /*[[*{approvalStatusCd}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
@@ -131,19 +154,24 @@ header a, header li {
 				$('#verificationType').val(verificationType);
 			}
 			
+			if(approvalStatusCd != null) {
+				$('#approvalStatusCd').val(approvalStatusCd);
+			}
+			
 			$('.page-link[href]').each(function(index, item) {
 				var href = $(item).attr('href');
 				href += '?verificationType=' + $('#verificationType').val();
+				href += '&approvalStatusCd=' + $('#approvalStatusCd').val();
 				
 				$(item).attr('href', href);
 			});
 			
 			
 			$('#approvalTable tbody tr[id]').click(function() {
-				window.location = '/goalkeepinmanager/approval/showApprovalDetail?approvalNo=' + $(this).attr('id');
+				window.location = '/goalkeepinmanager/approval/showApprovalDetail?authNo=' + $(this).attr('id');
 			});
 			
-			$('#verificationType').change(function() {
+			$('#verificationType, #approvalStatusCd').change(function() {
 				$('#approvalForm').submit();
 			});
 			

@@ -49,10 +49,14 @@ div[class^=col-md] {
 </head>
 <body style="background-color: rgb(245, 247, 250);">
 		
+	<input type="hidden" th:field="*{reportDetail.reportNo}">
 	<div class="row">
-		<div class="col-md-12">
+		<header class="col-md-11">
 			<h1 class="brand pull-left h3">Report details</h1>
-		</div>
+			<ul th:if="*{!reportDetail.processStatus}" class="list-inline list-unstyled pull-right">
+				<li><a href="#" class="btn btn-primary" id="processReport">Process</a></li>
+			</ul>
+		</header>
 	</div>
 	
 	<div class="row" style="border-bottom: 1px solid grey; padding-bottom: 30px;">
@@ -74,8 +78,11 @@ div[class^=col-md] {
 		
 		<div class="col-md-6">
 			<span class="h5" style="margin-top: 0;">Challenge name:</span>
-			<span th:text="${reportDetail.challengeName}"></span>
-			<h2 class="h5" style="margin-top: 20px; 	padding-top: 15px;">Reported User Information</h2>
+			<span th:text="${reportDetail.challengeName}"></span><br /><br />
+			<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
+			<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: none;">Waiting</a>
+			<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: none;">Completed</a>
+			<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
 			<p>
 				<span>User Id:</span>
 				<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
@@ -137,6 +144,38 @@ div[class^=col-md] {
 	</script>
 	<script type="text/javascript">
 		$(function() {
+			
+			$('#processReport').click(function() {
+				if(confirm('Are you sure to process this report?')) {
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({ url: '/goalkeepinmanager/report/processReport',  
+						 data: {
+							 reportNo: $('#reportNo').val() 
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function(json) {
+						 var parentWindow = window.parent;
+					 	 var unprocessedReportCount = parentWindow.document.getElementById('unprocessedReportCount');
+					     var count = parseInt(unprocessedReportCount.innerText);
+						
+						 if(count > 0) {
+							 unprocessedReportCount.innerText = (count - 1);
+						 }
+						 
+						 window.location = '/goalkeepinmanager/report/showReportList/1'; 
+					 })
+					 .fail(function() {
+						 alert('Processing the report failed.');
+					 });;
+				}
+			});
 			
 		});
 	</script>
