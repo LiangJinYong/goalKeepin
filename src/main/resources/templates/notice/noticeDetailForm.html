@@ -8,6 +8,7 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 .filebox input[type="file"] {
 	position: absolute;
@@ -83,7 +84,7 @@
 
 .filebox.bs3-primary label {
 	color: #fff;
-	background-color: #337ab7;
+	background-color: #191970;
 	border-color: #2e6da4;
 }
 
@@ -100,6 +101,8 @@ header a, header li {
 
 input[name^=noticeTitle] {
 	width: 100%;
+	height: 2.5em;
+	padding: 15px;
 }
 
 img[name=imgPreview] {
@@ -113,11 +116,12 @@ img[name=imgPreview] {
 
 textarea {
 	resize: none;
+	padding: 15px;
 }
 
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
+<body>
 	<form method="post" th:action="@{/notice/processNoticeDetail}" th:object="${notice}" enctype="multipart/form-data" id="createNotice">
 		<input type="hidden" th:field="*{noticeNo}">
 		<input type="hidden" th:field="*{noticeTitleTransNo}">
@@ -134,112 +138,116 @@ textarea {
 			</header>
 		</div>
 		
-		<div class="row">
-			<div class="col-md-6">
-				<h2 class="h5">Title (English)</h2>
-				<input th:field="*{noticeTitleEn}" type="text" name="noticeTitleEn" placeholder="Please enter a title"
-					required="required">
-			</div>
-			<div th:if="*{noticeNo != null}" class="col-md-6">
-				<h2 class="h5">Registration Date</h2>
-				<span th:text="*{#dates.format(noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<h2 class="h5">Title (Traditional)</h2>
-				<input th:field="*{noticeTitleTc}" type="text" name="noticeTitleTc" placeholder="Please enter a title"
-					required="required">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<h2 class="h5">Title (Simplified)</h2>
-				<input th:field="*{noticeTitleSc}" type="text" name="noticeTitleSc" placeholder="Please enter a title"
-					required="required">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h2 class="h5">Contents (English)</h2>
-				<textarea th:field="*{noticeContentEn}" rows="4" cols="100" name="noticeContentEn"
-					placeholder="Please enter contents." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h2 class="h5">Contents (Traditional)</h2>
-				<textarea th:field="*{noticeContentTc}" rows="4" cols="100" name="noticeContentTc"
-					placeholder="Please enter contents." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h2 class="h5">Contents (Simplified)</h2>
-				<textarea th:field="*{noticeContentSc}" rows="4" cols="100" name="noticeContentSc"
-					placeholder="Please enter contents." required="required"></textarea>
-			</div>
-		</div>
-		
-		<section id="imgUploadArea">
+		<section id="titlePart">
 			<div class="row">
-				<div class="col-md-12">
-					<div class="filebox bs3-primary preview-image">
-						<img src="" style="display: none;"><br />
-						<input class="upload-name" value="Select an image" disabled="disabled"
-							style="width: 200px;"> <label for="noticeImgEn">Image (English)</label>
-						<input type="file" id="noticeImgEn" class="upload-hidden"
-							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						<div>
-							<img name="imgPreview" id="imgPreviewEn" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
-						</div>
-						<input type="hidden" name="editOptionEn" id="editOptionEn" value="0">
-					</div>
+				<div class="col-md-6">
+					<h2 class="h5">Title (English)</h2>
+					<input th:field="*{noticeTitleEn}" type="text" name="noticeTitleEn" placeholder="Please enter a title"
+						required="required">
+				</div>
+				<div th:if="*{noticeNo != null}" class="col-md-6">
+					<h2 class="h5">Registration Date</h2>
+					<span th:text="*{#dates.format(noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 				</div>
 			</div>
-			
 			<div class="row">
-				<div class="col-md-12">
-					<div class="filebox bs3-primary preview-image">
-						<img src="" style="display: none;"><br />
-						<input class="upload-name" value="Select an image" disabled="disabled"
-							style="width: 200px;"> <label for="noticeImgTc">Image (Traditional)</label>
-						<input type="file" id="noticeImgTc" class="upload-hidden"
-							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						 <div>
-							<img name="imgPreview" id="imgPreviewTc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
-						 </div>
-						 <input type="hidden" name="editOptionTc" id="editOptionTc" value="0">
-					</div>
+				<div class="col-md-6">
+					<h2 class="h5">Title (Traditional)</h2>
+					<input th:field="*{noticeTitleTc}" type="text" name="noticeTitleTc" placeholder="Please enter a title"
+						required="required">
 				</div>
 			</div>
-			
 			<div class="row">
-				<div class="col-md-12">
-					<div class="filebox bs3-primary preview-image">
-						<img src="" style="display: none;"><br />
-						<input class="upload-name" value="Select an image" disabled="disabled"
-							style="width: 200px;"> <label for="noticeImgSc">Image (Simplified)</label>
-						<input type="file" id="noticeImgSc" class="upload-hidden"
-							 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
-						<div>
-							<img name="imgPreview" id="imgPreviewSc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
-						</div>
-						<input type="hidden" name="editOptionSc" id="editOptionSc" value="0">
-					</div>
+				<div class="col-md-6">
+					<h2 class="h5">Title (Simplified)</h2>
+					<input th:field="*{noticeTitleSc}" type="text" name="noticeTitleSc" placeholder="Please enter a title"
+						required="required">
 				</div>
 			</div>
 		</section>
 		
-		<div class="row">
-			<div class="form-group">
-				<div class="col-md-offset-1 col-md-11">
-					<label class="checkbox">
-						<input th:field="*{noticeIsMain}" type="checkbox" value="0">Do you want the notice to be exposed to the banner at top of main page? If so, the title will be exposed.
-					</label>
+		<section id="contentPart">
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Contents (English)</h2>
+					<textarea th:field="*{noticeContentEn}" rows="4" cols="100" name="noticeContentEn"
+						placeholder="Please enter contents." required="required"></textarea>
 				</div>
 			</div>
-		</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Contents (Traditional)</h2>
+					<textarea th:field="*{noticeContentTc}" rows="4" cols="100" name="noticeContentTc"
+						placeholder="Please enter contents." required="required"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Contents (Simplified)</h2>
+					<textarea th:field="*{noticeContentSc}" rows="4" cols="100" name="noticeContentSc"
+						placeholder="Please enter contents." required="required"></textarea>
+				</div>
+			</div>
+			
+			<section id="imgUploadArea">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="filebox bs3-primary preview-image">
+							<img src="" style="display: none;"><br />
+							<input class="upload-name" value="Select an image" disabled="disabled"
+								style="width: 200px;"> <label for="noticeImgEn">Image (English)</label>
+							<input type="file" id="noticeImgEn" class="upload-hidden"
+								 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+							<div>
+								<img name="imgPreview" id="imgPreviewEn" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+							</div>
+							<input type="hidden" name="editOptionEn" id="editOptionEn" value="0">
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="filebox bs3-primary preview-image">
+							<img src="" style="display: none;"><br />
+							<input class="upload-name" value="Select an image" disabled="disabled"
+								style="width: 200px;"> <label for="noticeImgTc">Image (Traditional)</label>
+							<input type="file" id="noticeImgTc" class="upload-hidden"
+								 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+							 <div>
+								<img name="imgPreview" id="imgPreviewTc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">	
+							 </div>
+							 <input type="hidden" name="editOptionTc" id="editOptionTc" value="0">
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="filebox bs3-primary preview-image">
+							<img src="" style="display: none;"><br />
+							<input class="upload-name" value="Select an image" disabled="disabled"
+								style="width: 200px;"> <label for="noticeImgSc">Image (Simplified)</label>
+							<input type="file" id="noticeImgSc" class="upload-hidden"
+								 name="noticeImgs" accept="image/jpeg,image/jpg,image/png">
+							<div>
+								<img name="imgPreview" id="imgPreviewSc" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+							</div>
+							<input type="hidden" name="editOptionSc" id="editOptionSc" value="0">
+						</div>
+					</div>
+				</div>
+			</section>
+			<div class="row">
+				<div class="form-group">
+					<div class="col-md-offset-1 col-md-11">
+						<label class="checkbox">
+							<input th:field="*{noticeIsMain}" type="checkbox" value="0">Do you want the notice to be exposed to the banner at top of main page? If so, the title will be exposed.
+						</label>
+					</div>
+				</div>
+			</div>
+		</section>
 		
 		<div class="row" style="margin-bottom: 30px;">
 			<div class="col-md-10 text-center">

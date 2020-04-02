@@ -8,6 +8,7 @@
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style>
 header a, header li {
 	margin-top: 10px;
@@ -36,25 +37,17 @@ header li {
 #authMethod .col-md-3 span {
 	font-weight: bold;
 }
-#middlePart, #bottomPart {
-	background-color: #fcfcfc;
-	width: 98%; 
-	border: 1px solid grey;
-	border-top-width: 3px;
-	padding: 20px;
-	margin-bottom: 20px;
-}
 
 .view {
 	margin-left: 10px;
 }
 
-#detailPart > div {
+#detailArea > div {
 	margin-right: 2%;
 }
 </style>
 
-<body style="background-color: rgb(245, 247, 250); padding-bottom: 40px;">
+<body style="padding-bottom: 40px;">
 	<div class="row">
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Project details</h1>
@@ -116,28 +109,24 @@ header li {
 			</div>
 			
 			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-4">
-						<h3 class="h5">Minimum participation fee (SGD)</h3>
-						<span th:text="*{minFee}"></span>
-					</div>
-					<div class="col-md-4">
-						<h3 class="h5">Maximum participation fee (SGD)</h3>
-						<span th:text="*{maxFee}"></span>
-					</div>
+				<div class="col-md-4">
+					<h3 class="h5">Minimum participation fee (SGD)</h3>
+					<span th:text="*{minFee}"></span>
+				</div>
+				<div class="col-md-4">
+					<h3 class="h5">Maximum participation fee (SGD)</h3>
+					<span th:text="*{maxFee}"></span>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-4">
-						<h3 class="h5">Start date</h3>
-						<span th:text="*{startDate}"></span>
-					</div>
-					<div class="col-md-4">
-						<h3 class="h5">End date</h3>
-						<span th:text="*{endDate}"></span>
-					</div>
+				<div class="col-md-4">
+					<h3 class="h5">Start date</h3>
+					<span th:text="*{startDate}"></span>
+				</div>
+				<div class="col-md-4">
+					<h3 class="h5">End date</h3>
+					<span th:text="*{endDate}"></span>
 				</div>
 			</div>
 		</section>
@@ -235,33 +224,33 @@ header li {
 			
 			<section id="challengeDetail">
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (English)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="view" th:text="*{baseChallenge.baseAuthDescEn}"></div>
+						<div class="col-md-10">
+							<div class="view" th:text="*{baseChallenge.baseAuthDescEn}"></div>
+						</div>
 					</div>
 				</div>
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (Traditional)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="view" th:text="*{baseChallenge.baseAuthDescTc}"></div>
+						<div class="col-md-10">
+							<div class="view" th:text="*{baseChallenge.baseAuthDescTc}"></div>
+						</div>
 					</div>
 				</div>
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (Simplified)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="view" th:text="*{baseChallenge.baseAuthDescSc}"></div>
+						<div class="col-md-10">
+							<div class="view" th:text="*{baseChallenge.baseAuthDescSc}"></div>
+						</div>
 					</div>
 				</div>
 			</section>
 		</section>
 			
-		<section id="detailPart">
+		<section id="detailArea">
 		 	<div class="row">
 		 		<h2 class="h5">Project details (English)</h2>
 		 		<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>

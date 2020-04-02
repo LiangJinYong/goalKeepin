@@ -16,7 +16,7 @@
 	<sql id="approval">
 		FROM CHALLENGE_AUTH_TB cat INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
 		INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
-		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no = tt.trans_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
 		WHERE 1 = 1
 		<if test="verificationType != null and verificationType != ''">
 			AND cat.auth_tp_cd = #{verificationType}
@@ -51,7 +51,7 @@
 		LEFT JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
 		INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
-		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no = tt.trans_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no
 		WHERE cat.auth_no = #{authNo}
 	</select>
 	
@@ -60,6 +60,7 @@
 		SELECT auth_no nextWatingAuthNo
 		FROM CHALLENGE_AUTH_TB cat
 		WHERE cat.AUTH_REG_DT &lt; (SELECT auth_reg_dt FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+		AND cat.auth_st_cd = 'AS01'
 		ORDER BY auth_reg_dt DESC
 		LIMIT 1
 	</select>
@@ -88,7 +89,7 @@
 	</select>
 	
 	<update id="updateChallengeResult" parameterType="map">
-		/* getChallengeMaxResult */
+		/* updateChallengeResult */
 		UPDATE CHALLENGE_ENTRY_TB
 		SET entry_result = #{result}, result_grade = #{resultGrade}
 		WHERE entry_user_no = (SELECT auth_user_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 .row {
 	margin-left: 0;
@@ -13,105 +12,108 @@
 }
 
 .header {
-	padding: 10px 16px;
-	background: #555;
+	padding: 5px;
+	background: #191970;
 	color: #f1f1f1;
 }
 
-
-li {
-	line-height: 2.0em;
+#sideMenu li {
+	line-height: 3.0em;
 }
 
 #sideMenu h2 {
-	color: gray;
+	color: #AFADAD;
 	margin-left: -40px;
 }
 
-#sideMenu a:link, #sideMenu a:visited, #sideMenu a:hover, #sideMenu a:active {
+#sideMenu a:link, #sideMenu a:visited, #sideMenu a:hover, #sideMenu a:active
+	{
 	color: #003333;
 	outline: none;
 	text-decoration: none;
 }
 
-#sideMenu .highlight:link, #sideMenu .highlight:visited, #sideMenu .highlight:hover, #sideMenu .highlight:active {
-	font-weight: bolder;
-	font-size: 1.1em;
+#sideMenu .highlight:link, #sideMenu .highlight:visited, #sideMenu .highlight:hover,
+	#sideMenu .highlight:active {
 	color: #63B8FF;
 }
+
+.badge {
+	background: #F08080;
+}
+
+#sideMenu h2 {
+	margin-left: -25px;
+	margin-top: 20px;
+}
 </style>
-<body style="background-color: rgb(245, 247, 250);">
-	<div>
-		<div class="row header" style="background-color: #838B8B;">
+<body>
+	<form th:action="@{/logout}" method="post" id="logoutForm">
+		<div class="row header">
 			<div class="col-md-12">
-				<header class="col-md-5 navbar-header">
-					<h1 class="h3" style="font-weight: bold;">GoalKeepin Admin Page</h1>
-				</header>
+				<div class="col-md-6" style="background: url(images/logo_header.png) no-repeat left center">
+					<h1 class="h4" style="margin-left: 25px; margin-top: 16px;">GoalKeepin Admin</h1>
+				</div>
 				<div class="col-md-6">
-					<div class="h4 pull-right" style="margin-top: 23px;">
-						<span>Participants:</span>
-						<span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span>
-						<span style="margin-left: 30px;">Participant amount:</span>
-						<span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span>
+					<div class="h5 pull-right">
+						<span>Participants:</span> <span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span> 
+						<span style="margin-left: 30px;">Participant amount:</span> <span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span> <a href="#" id="logout" style="margin-left: 30px;"><img src="images/logout.png" title="Logout"></a>
 					</div>
 				</div>
-				<form th:action="@{/logout}" method="post">
-					<input type="submit" value="Logout" class="btn btn-primary" style="margin-left: 30px; margin-top: 18px;">
-				</form>
 			</div>
 		</div>
-	</div>
-		
-	<div class="row" style="">
+	</form>
+
+	<div class="row">
 		<div class="col-md-1" style="border-right: 3px solid lightgrey; background-color: #fff; width: 15vw; height: 91.3vh; overflow: auto;" id="sideMenu">
 			<div class="col-md-offset-2">
 				<ul class="list-unstyled">
 					<h2 class="h5">Project management</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/all.png);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame" class="highlight">Basic projects</a></li>
-						<li style="list-style-image: url(images/recruiting.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">Recruiting projects</a></li>
-						<li style="list-style-image: url(images/ongoing.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">Ongoing projects</a></li>
-						<li style="list-style-image: url(images/expired.png);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">Completed projects</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame" class="highlight">Basic projects</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">Recruiting projects</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">Ongoing projects</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">Completed projects</a></li>
 					</ul>
 					<h2 class="h5">Verification approval</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/approval.png);"><a id="category" th:href="@{/approval/showApprovalList/1}" target="menuFrame">Approval</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="category" th:href="@{/approval/showApprovalList/1}" target="menuFrame">Approval <span class="badge" th:text="${unprocessedApprovalCount}" id="unprocessedApprovalCount">unprocessedApprovalCount</span></a></li>
 					</ul>
 					<h2 class="h5">Category management</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/category.png);"><a th:href="@{/category/showCategoryList/1}" target="menuFrame">Category list</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/category/showCategoryList/1}" target="menuFrame">Category list</a></li>
 					</ul>
 					<h2 class="h5">Project suggestion</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/userOffer.png);"><a th:href="@{/offer/showOfferList/1?offerStatusCd=VO00}" target="menuFrame">Project suggestion</a></li>
-						<li style="list-style-image: url(images/registerOffer.png);"><a th:href="@{/offer/createNewOfferForm}" target="menuFrame">Register suggestion</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/offer/showOfferList/1?offerStatusCd=VO00}" target="menuFrame">Project suggestion</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/offer/createNewOfferForm}" target="menuFrame">Register suggestion</a></li>
 					</ul>
 					<h2 class="h5">User list</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/singapore.png);"><a th:href="@{/user/showUserList/sg/1}" target="menuFrame">Singapore</a></li>
-						<li style="list-style-image: url(images/hongkong.png);"><a th:href="@{/user/showUserList/hk/1}" target="menuFrame">HongKong</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/user/showUserList/sg/1}" target="menuFrame">Singapore</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/user/showUserList/hk/1}" target="menuFrame">HongKong</a></li>
 					</ul>
 					<h2 class="h5">Withdrawal History</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/singapore.png);"><a th:href="@{/cashReport/showCashReportList/sg/1}" target="menuFrame">Singapore</a></li>
-						<li style="list-style-image: url(images/hongkong.png);"><a th:href="@{/cashReport/showCashReportList/hk/1}" target="menuFrame">HongKong</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/sg/1}" target="menuFrame">Singapore</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/hk/1}" target="menuFrame">HongKong</a></li>
 					</ul>
 					<h2 class="h5">Others</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/notice.png);"><a th:href="@{/notice/showNoticeList/1}" target="menuFrame">Notice</a></li>
-						<li style="list-style-image: url(images/faq.png);"><a th:href="@{/faq/showFaqList/1}" target="menuFrame">FAQ</a></li>
-						<li style="list-style-image: url(images/inquiry.png);"><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">Inquiry <span class="badge" th:text="${unprocessedInquiryCount}" id="unprocessedInquiryCount">unprocessedReportCount</span></a></li>
-						<li style="list-style-image: url(images/statistics.png);"><a th:href="@{/statistics/showStatisticsLink}" target="menuFrame">Statistics</a></li>
-						<li style="list-style-image: url(images/money.png);"><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">Reward payment</a></li>
-						<li style="list-style-image: url(images/badge.png);"><a th:href="@{/badgeGift/showBadgeGiftDetail}" target="menuFrame">Badge gift</a></li>
-						<li style="list-style-image: url(images/push.png);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">Push notification</a></li>
-						<li style="list-style-image: url(images/popup.png);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">Pop-up Message Setting</a></li>
-						<li style="list-style-image: url(images/report.png);"><a th:href="@{/report/showReportList/1}" target="menuFrame">Report <span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/notice/showNoticeList/1}" target="menuFrame">Notice</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/faq/showFaqList/1}" target="menuFrame">FAQ</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">Inquiry <span class="badge" th:text="${unprocessedInquiryCount}" id="unprocessedInquiryCount">unprocessedReportCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/statistics/showStatisticsLink}" target="menuFrame">Statistics</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">Reward payment</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/badgeGift/showBadgeGiftDetail}" target="menuFrame">Badge gift</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">Push notification</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">Pop-up Setting</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/report/showReportList/1}" target="menuFrame">Report <span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
 					</ul>
 				</ul>
 			</div>
 		</div>
-		<div class="col-md-10" style="background-color: rgb(245, 247, 250);">
+		<div class="col-md-10">
 			<!-- 
 			<iframe id="menuFrame" name="menuFrame" th:src="@{/report/showReportDetail?reportNo=1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.3vh;"></iframe>
 	 -->
@@ -125,7 +127,11 @@ li {
 				$('#sideMenu a').removeClass('highlight');
 				$(this).addClass('highlight');
 			});
-		});		
+
+			$('#logout').click(function() {
+				$('#logoutForm').submit();
+			});
+		});
 	</script>
 </body>
 </html>

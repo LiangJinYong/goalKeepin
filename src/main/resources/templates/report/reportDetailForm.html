@@ -8,6 +8,7 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 
 header a, header li {
@@ -27,17 +28,11 @@ input[name^=faqQuestion] {
 
 textarea{
 	width: 100%;
-}
-
-textarea {
 	resize: none;
-}
-div[class^=col-md] {
-	/* border: 1px solid black; */
 }
 
 #reportCount {
-	color: purple;
+	font-weight: bold;
 }
 
 #verificationImg {
@@ -47,8 +42,7 @@ div[class^=col-md] {
 
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
-		
+<body>
 	<input type="hidden" th:field="*{reportDetail.reportNo}">
 	<div class="row">
 		<header class="col-md-11">
@@ -59,85 +53,92 @@ div[class^=col-md] {
 		</header>
 	</div>
 	
-	<div class="row" style="border-bottom: 1px solid grey; padding-bottom: 30px;">
-		<div class="col-md-6">
-			<div>
-				<span class="h5">Verification Content</span>
-				<span class="h5 pull-right" style="margin-top: 0;">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
+	<section id="verificationPart">
+		<div class="row">
+			<div class="col-md-6">
+				<div>
+					<span class="h5">Verification Content</span>
+				</div>
+				<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU01'}">
+				    <img id="verificationImg" th:src="${reportDetail.challengeAuthUrl}">
+				</div>
+				<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU02'}">
+					<audio controls>
+					    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
+					</audio>
+				</div>
+				<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 			</div>
-			<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU01'}">
-			    <img id="verificationImg" th:src="${reportDetail.challengeAuthUrl}">
+			
+			<div class="col-md-6">
+				<span class="h5" style="margin-top: 0;">Challenge name:</span>
+				<span th:text="${reportDetail.challengeName}"></span><br /><br />
+				<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
+				<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
+				<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Completed</a><br /><br />
+				<span class="h5">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
+				<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
+				<p>
+					<span>User Id:</span>
+					<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
+				</p>
+				<p>
+					<span>User email:</span>
+					<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
+				</p>
 			</div>
-			<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU02'}">
-				<audio controls>
-				    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
-				</audio>
-			</div>
-			<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 		</div>
+	</section>
+	
+	<section id="contentPart">
+		<div class="row">
+			<div class="col-md-6">
+				<div>
+					<span class="h5">Report Content</span>
+					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportDetail.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+				</div>
+				<textarea rows="6" cols="6" readonly="readonly" th:text="${reportDetail.reportContent}" style="margin-top: 20px;"></textarea>
+			</div>
+			<div class="col-md-6">
+				<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
+				<p>
+					<span>User Id:</span>
+					<span th:text="${reportDetail.reportingUserId}" class="font-weight-bold"></span>
+				</p>
+				<p>
+					<span>User email:</span>
+					<span th:text="${reportDetail.reportingUserEmail}" class="font-weight-bold"></span>
+				</p>
+			</div>
+		</div>
+	</section>
 		
-		<div class="col-md-6">
-			<span class="h5" style="margin-top: 0;">Challenge name:</span>
-			<span th:text="${reportDetail.challengeName}"></span><br /><br />
-			<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
-			<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: none;">Waiting</a>
-			<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: none;">Completed</a>
-			<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
-			<p>
-				<span>User Id:</span>
-				<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
-			</p>
-			<p>
-				<span>User email:</span>
-				<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
-			</p>
+	<section id="otherPart" th:if="${#lists.size(reportDetail.reportingUserList) > 0}">
+		<div class="row">
+			<p style="font-weight: bold; font-size: 1.4em; color: navy;">Other reports for this verification</p>
 		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-md-6">
-			<div>
-				<span class="h5">Report Content</span>
-				<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportDetail.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+		<div class="row" th:each="reportingUser: ${reportDetail.reportingUserList}">
+			<div class="col-md-6">
+				<div>
+					<span class="h5">Report Content</span>
+					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportingUser.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+				</div>
+				<textarea rows="6" cols="6" readonly="readonly" th:text="${reportingUser.reportContent}" style="margin-top: 20px;"></textarea>
 			</div>
-			<textarea rows="6" cols="6" readonly="readonly" th:text="${reportDetail.reportContent}" style="margin-top: 20px;"></textarea>
-		</div>
-		<div class="col-md-6">
-			<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
-			<p>
-				<span>User Id:</span>
-				<span th:text="${reportDetail.reportingUserId}" class="font-weight-bold"></span>
-			</p>
-			<p>
-				<span>User email:</span>
-				<span th:text="${reportDetail.reportingUserEmail}" class="font-weight-bold"></span>
-			</p>
-		</div>
-	</div>
-	
-	<div th:if="${#lists.size(reportDetail.reportingUserList) > 0}" class="row">
-		<p style="font-weight: bold; font-size: 1.4em; color: navy;">Other reports for this verification</p>
-	</div>
-	<div class="row" th:each="reportingUser: ${reportDetail.reportingUserList}">
-		<div class="col-md-6">
-			<div>
-				<span class="h5">Report Content</span>
-				<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportingUser.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+			<div class="col-md-6">
+				<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
+				<p>
+					<span>User Id:</span>
+					<span th:text="${reportingUser.reportingUserId}" class="font-weight-bold"></span>
+				</p>
+				<p>
+					<span>User email:</span>
+					<span th:text="${reportingUser.reportingUserEmail}" class="font-weight-bold"></span>
+				</p>
 			</div>
-			<textarea rows="6" cols="6" readonly="readonly" th:text="${reportingUser.reportContent}" style="margin-top: 20px;"></textarea>
 		</div>
-		<div class="col-md-6">
-			<h2 class="h5" style="margin-top: 0;">Reporting User Information</h2>
-			<p>
-				<span>User Id:</span>
-				<span th:text="${reportingUser.reportingUserId}" class="font-weight-bold"></span>
-			</p>
-			<p>
-				<span>User email:</span>
-				<span th:text="${reportingUser.reportingUserEmail}" class="font-weight-bold"></span>
-			</p>
-		</div>
-	</div>		
+	</section>
+	
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">

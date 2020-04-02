@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Offer Detail</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 .waiting {
 	color: red;
@@ -23,11 +22,11 @@
 	margin: 15px 0 0 0;
 }
 
-h2 + span, h2 + div {
+h2+span, h2+div {
 	margin-left: 30px;
 }
 
-h2 + div {
+h2+div {
 	border: 2px solid grey;
 	min-height: 80px;
 	padding: 5px;
@@ -40,6 +39,16 @@ h2 + div {
 textarea {
 	resize: none;
 }
+
+input[type=text] {
+	height: 2.5em;
+	padding: 15px;
+}
+
+textarea {
+	padding: 15px;
+}
+
 </style>
 </head>
 <body style="background-color: rgb(245, 247, 250); padding-bottom: 40px;">
@@ -48,83 +57,84 @@ textarea {
 			<h1 class="h3">Create project suggestion</h1>
 		</header>
 	</div>
-	
+
 	<form method="post" th:action="@{/offer/processOfferCreation}" th:object=${offer} id="createOffer">
-		<input type="hidden" name="offerNo" th:field="*{offerNo}" />
-		<input type="hidden" name="offerStatusCd" th:field="*{offerStatusCd}" />
+		<input type="hidden" name="offerNo" th:field="*{offerNo}" /> <input type="hidden" name="offerStatusCd" th:field="*{offerStatusCd}" />
 		
-		<div class="row" th:if="*{offerStatusCd != null}">
-			<div class="col-md-3">
-				<h2 class="h5">유저 아이디</h2>
-				<span th:text="*{user.userId}"></span>
+		<section id="userInfoPart" th:if="*{offerStatusCd != null}">
+			<div class="row">
+				<div class="col-md-3">
+					<h2 class="h5">User ID</h2>
+					<span th:text="*{user.userId}"></span>
+				</div>
+				<div class="col-md-3">
+					<h2 class="h5">Nickname</h2>
+					<span th:text="*{user.nickName}"></span>
+				</div>
 			</div>
-			<div class="col-md-3">
-				<h2 class="h5">닉네임</h2>
-				<span th:text="*{user.nickName}"></span>
+		</section>
+
+		<section id="titlePart">
+			<div class="row" id="offerTitle">
+				<div class="col-md-4">
+					<h2 class="h5">Subject (English)</h2>
+					<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" /> <input type="text" name="offerTitleEn" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" /> <span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleEn}"></span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Subject (Traditional)</h2>
+					<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" /> <input type="text" name="offerTitleTc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" /> <span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleTc}"></span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Subject (Simplified)</h2>
+					<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" /> <input type="text" name="offerTitleSc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" /> <span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleSc}"></span>
+				</div>
 			</div>
-		</div>
-		
-		<div class="row" id="offerTitle">
-			<div class="col-md-4">
-				<h2 class="h5">Subject (English)</h2>
-				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
-				<input type="text" name="offerTitleEn" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
-				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleEn}"></span>
+		</section>
+
+		<section id="contentPart">
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Suggest verification method (English)</h2>
+					<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoEn}" rows="6" style="width: 100%;" readonly="readonly"></textarea>
+				</div>
 			</div>
-			<div class="col-md-4">
-				<h2 class="h5">Subject (Traditional)</h2>
-				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
-				<input type="text" name="offerTitleTc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
-				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleTc}"></span>
+
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Suggest verification method (Traditional)</h2>
+					<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoTc}" rows="6" style="width: 100%;" readonly="readonly"></textarea>
+				</div>
 			</div>
-			<div class="col-md-4">
-				<h2 class="h5">Subject (Simplified)</h2>
-				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == null}" placeholder="Please enter subject" required="required" />
-				<input type="text" name="offerTitleSc" th:if="*{offerStatusCd == 'VO01'}" th:value="*{offerTitle}" placeholder="Please enter subject" required="required" />
-				<span th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerTitleSc}"></span>
+
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Suggest verification method (Simplified)</h2>
+					<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
+					<textarea th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoSc}" rows="6" style="width: 100%;" readonly="readonly"></textarea>
+				</div>
 			</div>
-		</div>
+		</section>
+
+		<section id="statusPart" th:if="*{offerStatusCd != null}">
+			<div class="row">
+				<div class="col-md-3">
+					<h2 class="h5">Status</h2>
+					<span th:if="*{offerStatusCd == 'VO01'}" th:text="'Waiting'" class="waiting"></span> <span th:if="*{offerStatusCd == 'VO02'}" th:text="'Voting'" class="voting"></span> <span th:if="*{offerStatusCd == 'VO03'}" th:text="'Voting complete'" class="voted"></span>
+				</div>
+				<div class="col-md-3" th:if="*{offerStatusCd != null}">
+					<h2 class="h5">Like</h2>
+					<span th:text="*{offerLikeNum}"></span>
+				</div>
+			</div>
+		</section>
 		
 		<div class="row">
-			<div class="col-md-10">
-				<h2 class="h5">Suggest verification method (English)</h2>
-				<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-				<textarea name="offerAuthInfoEn" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-				<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoEn}"></div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-10">
-				<h2 class="h5">Suggest verification method (Traditional)</h2>
-				<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-				<textarea name="offerAuthInfoTc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-				<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoTc}"></div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-10">
-				<h2 class="h5">Suggest verification method (Simplified)</h2>
-				<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == null}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-			<textarea name="offerAuthInfoSc" th:if="*{offerStatusCd == 'VO01'}" th:text="*{offerAuthInfo}" rows="6" style="width: 100%;" placeholder="verification method" required="required"></textarea>
-			<div th:if="*{offerStatusCd == 'VO02' or offerStatusCd == 'VO03'}" th:text="*{offerAuthInfoSc}"></div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-3" th:if="*{offerStatusCd != null}">
-				<h2 class="h5">상태</h2>
-				<span th:if="*{offerStatusCd == 'VO01'}" th:text="'Waiting'" class="waiting"></span>
-				<span th:if="*{offerStatusCd == 'VO02'}" th:text="'Voting'" class="voting"></span>
-				<span th:if="*{offerStatusCd == 'VO03'}" th:text="'Voting complete'" class="voted"></span>
-			</div>
-			<div class="col-md-3" th:if="*{offerStatusCd != null}">
-				<h2 class="h5">Like</h2>
-				<span th:text="*{offerLikeNum}"></span>
-			</div>
-			
-			<div class="col-md-10">
+			<div class="col-md-12" style="width: 99%;">
 				<input th:if="*{offerStatusCd == null or offerStatusCd == 'VO01'}" class="btn btn-primary pull-right" type="submit" value="Start voting" id="startVoting" />
 				<input th:if="*{offerStatusCd == 'VO02'}" class="btn btn-primary pull-right" type="submit" value="Complete voting" id="completeVoting" />
 			</div>
@@ -132,21 +142,24 @@ textarea {
 	</form>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
-	$(function() {
-		$('#createOffer').submit(function(e) {
-			var buttonId = $(this).find('input[type=submit]').attr('id')
-			
-			if('startVoting' == buttonId) {
-				if(!confirm('Are you sure to create and start voting this project suggestion?')) {
-					e.preventDefault();
-				}
-			} else if('completeVoting' == buttonId) {
-				if(!confirm('Are you sure to complete voting for this project suggestion?')) {
-					e.preventDefault();
-				}
-			}
+		$(function() {
+			$('#createOffer')
+					.submit(
+							function(e) {
+								var buttonId = $(this).find(
+										'input[type=submit]').attr('id')
+
+								if ('startVoting' == buttonId) {
+									if (!confirm('Are you sure to create and start voting this project suggestion?')) {
+										e.preventDefault();
+									}
+								} else if ('completeVoting' == buttonId) {
+									if (!confirm('Are you sure to complete voting for this project suggestion?')) {
+										e.preventDefault();
+									}
+								}
+							});
 		});
-	});
 	</script>
 </body>
 </html>

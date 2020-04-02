@@ -1,0 +1,31 @@
+body {
+	background-color: rgb(245, 247, 250);
+}
+
+section[id$=Part] {
+	background-color: #fcfcfc;
+	width: 98%;
+	border: 1px solid grey;
+	border-top-width: 3px;
+	padding: 0 20px 20px 20px;
+	margin-bottom: 20px;
+}
+
+table[id$=Table] thead tr {
+	border-top: 3px solid grey;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #191970;
+}
+
+input[type=text], input[type=date] {
+	height: 2.5em;
+	padding: 15px;
+}
+
+input[type=text][id=userId] {
+	width: 300px;
+	margin-left: 20px;
+	margin-right: 20px;
+}

@@ -8,6 +8,7 @@
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style>
 header a, header li {
 	margin-top: 10px;
@@ -55,16 +56,7 @@ header li {
 	width: 50px;
 }
 
-#middlePart, #bottomPart {
-	background-color: #fcfcfc;
-	width: 98%; 
-	border: 1px solid grey;
-	border-top-width: 3px;
-	padding: 20px;
-	margin-bottom: 20px;
-}
-
-#detailPart > div {
+#detailArea > div {
 	margin-right: 2%;
 }
 
@@ -84,10 +76,16 @@ header li {
 
 textarea {
 	resize: none;
+	padding: 15px;
+}
+
+input[type=text] {
+	height: 2.5em;
+	padding: 15px;
 }
 
 </style>
-<body style="background-color: rgb(245, 247, 250);">
+<body>
 	<div class="row header">
 		<header class="col-md-12 navbar-header">
 			<h1 th:if="*{baseChallenge.baseNo == null}" class="brand pull-left h3">Create a project</h1>
@@ -362,42 +360,42 @@ textarea {
 	
 			<section id="challengeDetail">
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (English)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="add">
-							<textarea rows="5" style="width: 100%;" name="baseAuthDescEn" th:field="*{baseAuthDescEn}" id="baseAuthDescEn" placeholder="Please fill in the content." required="required"></textarea>
+						<div class="col-md-10">
+							<div class="add">
+								<textarea rows="5" style="width: 100%;" name="baseAuthDescEn" th:field="*{baseAuthDescEn}" id="baseAuthDescEn" placeholder="Please fill in the content." required="required"></textarea>
+							</div>
+							<div class="view" th:text="*{baseAuthDescEn}"></div>
 						</div>
-						<div class="view" th:text="*{baseAuthDescEn}"></div>
 					</div>
 				</div>
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (Traditional)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="add">
-							<textarea rows="5" style="width: 100%;" name="baseAuthDescTc" th:field="*{baseAuthDescTc}" id="baseAuthDescTc" placeholder="Please fill in the content." required="required"></textarea>
+						<div class="col-md-10">
+							<div class="add">
+								<textarea rows="5" style="width: 100%;" name="baseAuthDescTc" th:field="*{baseAuthDescTc}" id="baseAuthDescTc" placeholder="Please fill in the content." required="required"></textarea>
+							</div>
+							<div class="view" th:text="*{baseAuthDescTc}"></div>
 						</div>
-						<div class="view" th:text="*{baseAuthDescTc}"></div>
 					</div>
 				</div>
 				<div class="row">
-					<div>
+					<div class="col-md-12">
 						<h3 class="h5">Detailed Description (Simplified)</h3>
-					</div>
-					<div class="col-md-10">
-						<div class="add">
-							<textarea rows="5" style="width: 100%;" name="baseAuthDescSc" th:field="*{baseAuthDescSc}" id="baseAuthDescSc" placeholder="Please fill in the content." required="required"></textarea>
+						<div class="col-md-10">
+							<div class="add">
+								<textarea rows="5" style="width: 100%;" name="baseAuthDescSc" th:field="*{baseAuthDescSc}" id="baseAuthDescSc" placeholder="Please fill in the content." required="required"></textarea>
+							</div>
+							<div class="view" th:text="*{baseAuthDescSc}"></div>
 						</div>
-						<div class="view" th:text="*{baseAuthDescSc}"></div>
 					</div>
 				</div>
 			</section>
 		</section>
 		
-		 <section id="detailPart">
+		 <section id="detailArea">
 		 	<div class="row">
 		 		<h2 class="h5">Project details (English)</h2>
 		 		<textarea class="summernote" th:field="*{baseDetailEn}"></textarea>

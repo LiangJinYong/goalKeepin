@@ -8,6 +8,7 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 .row {
 	margin: 15px 0 0 0;
@@ -34,7 +35,7 @@ table {
 }
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
+<body>
 	<div class="row">
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Reward payment</h1>
@@ -43,8 +44,8 @@ table {
 	
 	<div class="row">
 		<div class="col-md-12">
-			<span style="margin-right: 20px;">User ID</span>
-			<input type="text" name="userId" id="userId" style="margin-right: 20px;" placeholder="Please enter user ID">
+			<span>User ID</span>
+			<input type="text" name="userId" id="userId" placeholder="Please enter user ID to search">
 		</div>
 	</div>
 	
@@ -55,9 +56,9 @@ table {
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<table class="table table-striped table-hover" style="border-bottom: 1px solid grey;">
-				<thead id="tableHead">
-					<tr class="info">
+			<table id="rewardPaymentTable" class="table table-striped table-hover">
+				<thead>
+					<tr>
 						<th>
 							<h2 class="h5 text-center">
 								<input type="checkbox" id="selectAll">

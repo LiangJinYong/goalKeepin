@@ -8,8 +8,8 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
-
 header a, header li {
 	margin-top: 10px;
 	color: #777;
@@ -21,16 +21,16 @@ header a, header li {
 	margin: 15px 0 0 0;
 }
 
-input[name^=faqQuestion] {
+input[name^=faqKeyword] {
 	width: 100%;
+	height: 2.5em;
+	padding: 15px;
 }
 
 textarea{
-	width: 100%;
-}
-
-textarea {
 	resize: none;
+	width: 100%;
+	padding: 15px;
 }
 
 #keyword {
@@ -43,7 +43,7 @@ textarea {
 
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
+<body>
 	<form method="post" th:action="@{/faq/processFaqDetail}" th:object="${faq}" id="createFaq">
 		<input type="hidden" th:field="*{faqNo}">
 		<input type="hidden" th:field="*{faqQuestionTransNo}">
@@ -51,7 +51,7 @@ textarea {
 		<input type="hidden" th:field="*{faqKeywordTransNo}">
 		
 		<div class="row">
-			<header class="col-md-11">
+			<header class="col-md-12">
 				<h1 th:if="*{faqNo == null}" class="brand pull-left h3">Create a FAQ</h1>
 				<h1 th:if="*{faqNo != null}" class="brand pull-left h3">FAQ Details</h1>
 				<ul th:if="*{faqNo != null}" class="list-inline list-unstyled pull-right">
@@ -60,81 +60,88 @@ textarea {
 			</header>
 		</div>
 		
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Question (English)</h2>
-				<textarea th:field="*{faqQuestionEn}" rows="2" cols="100" name="faqQuestionEn"
+		<section id="questionPart">
+			<div class="row">
+				<div class="col-md-9">
+					<h2 class="h5">Question (English)</h2>
+					<textarea th:field="*{faqQuestionEn}" rows="2" cols="100" name="faqQuestionEn"
+						placeholder="Please enter a question." required="required"></textarea>
+				</div>
+				<div th:if="*{faqNo != null}" class="col-md-3">
+					<h2 class="h5">Registration Date</h2>
+					<span th:text="*{#dates.format(faqRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-9">
+					<h2 class="h5">Question (Traditional)</h2>
+					<textarea th:field="*{faqQuestionTc}" rows="2" cols="100" name="faqQuestionTc"
+						placeholder="Please enter a question." required="required"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-9">
+					<h2 class="h5">Question (Simplified)</h2>
+					<textarea th:field="*{faqQuestionSc}" rows="2" cols="100" name="faqQuestionSc"
 					placeholder="Please enter a question." required="required"></textarea>
+				</div>
 			</div>
-			<div th:if="*{faqNo != null}" class="col-md-4">
-				<h2 class="h5">Registration Date</h2>
-				<span th:text="*{#dates.format(faqRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Question (Traditional)</h2>
-				<textarea th:field="*{faqQuestionTc}" rows="2" cols="100" name="faqQuestionTc"
-					placeholder="Please enter a question." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Question (Simplified)</h2>
-				<textarea th:field="*{faqQuestionSc}" rows="2" cols="100" name="faqQuestionSc"
-				placeholder="Please enter a question." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Answer (English)</h2>
-				<textarea th:field="*{faqAnswerEn}" rows="4" cols="100" name="faqAnswerEn"
-					placeholder="Please enter the answer." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Answer (Traditional)</h2>
-				<textarea th:field="*{faqAnswerTc}" rows="4" cols="100" name="faqAnswerTc"
-					placeholder="Please enter the answer." required="required"></textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8">
-				<h2 class="h5">Answer (Simplified)</h2>
-				<textarea th:field="*{faqAnswerSc}" rows="4" cols="100" name="faqAnswerSc"
-					placeholder="Please enter the answer." required="required"></textarea>
-			</div>
-		</div>
+		</section>
 		
-		<div class="row">
-			<div class="col-md-8">
-				<label>Action</label>
-				<select th:field="*{faqActionCode}" name="actionCode" id="actionCode">
-					<option value="">Please select an action</option>
-					<option th:each="faqAction:${T(goalKeepin.constants.FaqAction).values()}"
-							th:value="${faqAction}" th:text="${faqAction.action}"></option>
-				</select>
+		<section id="answerPart">
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Answer (English)</h2>
+					<textarea th:field="*{faqAnswerEn}" rows="4" cols="100" name="faqAnswerEn"
+						placeholder="Please enter the answer." required="required"></textarea>
+				</div>
 			</div>
-		</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Answer (Traditional)</h2>
+					<textarea th:field="*{faqAnswerTc}" rows="4" cols="100" name="faqAnswerTc"
+						placeholder="Please enter the answer." required="required"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="h5">Answer (Simplified)</h2>
+					<textarea th:field="*{faqAnswerSc}" rows="4" cols="100" name="faqAnswerSc"
+						placeholder="Please enter the answer." required="required"></textarea>
+				</div>
+			</div>
+		</section>
 		
-		<div class="row" id="keyword">
-			<div class="col-md-4">
-				<h2 class="h5">Keyword (English)</h2>
-				<input th:field="*{faqKeywordEn}" type="text" name="faqKeywordEn" placeholder="Please enter keyword" />
+		<section id="actionPart">
+			<div class="row">
+				<div class="col-md-8">
+					<label>Action</label>
+					<select th:field="*{faqActionCode}" name="actionCode" id="actionCode">
+						<option value="">Please select an action</option>
+						<option th:each="faqAction:${T(goalKeepin.constants.FaqAction).values()}"
+								th:value="${faqAction}" th:text="${faqAction.action}"></option>
+					</select>
+				</div>
 			</div>
-			<div class="col-md-4">
-				<h2 class="h5">Keyword (Traditional)</h2>
-				<input th:field="*{faqKeywordTc}" type="text" name="faqKeywordTc" placeholder="Please enter keyword" />
+			
+			<div class="row" id="keyword">
+				<div class="col-md-4">
+					<h2 class="h5">Keyword (English)</h2>
+					<input th:field="*{faqKeywordEn}" type="text" name="faqKeywordEn" placeholder="Please enter keyword" />
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Keyword (Traditional)</h2>
+					<input th:field="*{faqKeywordTc}" type="text" name="faqKeywordTc" placeholder="Please enter keyword" />
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Keyword (Simplified)</h2>
+					<input th:field="*{faqKeywordSc}" type="text" name="faqKeywordSc" placeholder="Please enter keyword" />
+				</div>
 			</div>
-			<div class="col-md-4">
-				<h2 class="h5">Keyword (Simplified)</h2>
-				<input th:field="*{faqKeywordSc}" type="text" name="faqKeywordSc" placeholder="Please enter keyword" />
-			</div>
-		</div>
+		</section>
 		
 		<div class="row" style="margin-bottom: 30px;">
-			<div class="col-md-8 text-center">
+			<div class="col-md-12 text-center">
 				<input type="submit" class="btn btn-primary" value="Save">
 			</div>
 		</div>

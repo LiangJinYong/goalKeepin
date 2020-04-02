@@ -32,6 +32,10 @@ public class MainController {
 		
 		int unprocessedReportCount = challengerMapper.selectUnprocessedReportCount();
 		model.addAttribute("unprocessedReportCount", unprocessedReportCount);
+		
+		int unprocessedApprovalCount = challengerMapper.selectUnprocessedApprovalCount();
+		model.addAttribute("unprocessedApprovalCount", unprocessedApprovalCount);
+		
 		return "home";
 	}
 	

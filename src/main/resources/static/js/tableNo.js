@@ -25,16 +25,16 @@ function addSortLink(dataUrl) {
 			sortLink.attr('href', dataUrl + paramLink + 'sort=' + $(this).attr('id') + ',asc')
 			var sortSymbol;
 			if(sortField == null || sortField != $(this).attr('id')) {
-				sortSymbol = $('<span>&#11109;</span>').css({'marginLeft': '10px'});
+			//	sortSymbol = $('<span>&#11109;</span>').css({'marginLeft': '10px'});
 			} else {
 				if(sortOrder == 'asc') {
-					sortSymbol = $('<span style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+				//	sortSymbol = $('<span style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
 					sortLink.attr('href', dataUrl + paramLink + 'sort=' + $(this).attr('id') + ',desc')
 				} else {
-					sortSymbol = $('<span style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
+				//	sortSymbol = $('<span style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
 				}
 			}
-			$(this).append(sortSymbol);
+			//$(this).append(sortSymbol);
 			$(this).contents().detach().appendTo(sortLink);
 			sortLink.appendTo($(this));
 		});

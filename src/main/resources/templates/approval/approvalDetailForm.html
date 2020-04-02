@@ -6,6 +6,7 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 header a, header li {
 	margin-top: 10px;
@@ -24,7 +25,7 @@ header a, header li {
 }
 </style>
 </head>
-<body style="background-color: rgb(245, 247, 250);">
+<body>
 		<input type="hidden" id="authNo" th:value="${approvalDetail.authNo}">
 		<div class="row">
 			<div class="col-md-12">
@@ -32,46 +33,48 @@ header a, header li {
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-6">
-				<div>
-					<span class="h5">Verification Content</span>
+		<section id="approvalPart">
+			<div class="row">
+				<div class="col-md-6">
+					<div>
+						<span class="h5">Verification Content</span>
+					</div>
+					<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU01'}">
+						<img id="verificationImg" th:src="${approvalDetail.challengeAuthUrl}">
+					</div>
+					<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU02'}">
+						<audio controls>
+							<source th:src="${approvalDetail.challengeAuthUrl}" type="audio/mpeg">
+						</audio>
+					</div>
+					<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
-				<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU01'}">
-					<img id="verificationImg" th:src="${approvalDetail.challengeAuthUrl}">
+	
+				<div class="col-md-6">
+					<div>
+						<span class="h5" style="margin-top: 0;">Approval status:</span>
+						<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
+						<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS02'}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Approved</a>
+						<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS03'}" class="btn btn-danger" style="margin-left: 20px; cursor: default;">Denied</a>
+					</div>
+					<div style="margin-top: 20px;">
+						<span class="h5" style="margin-top: 0;">Challenge name:</span> <span th:text="${approvalDetail.challengeName}"></span>
+					</div>
+					<div style="margin-top: 20px;">
+						<span class="h5" style="margin-top: 0;">Start date:</span> <span th:text="${approvalDetail.startDate}"></span>
+					</div>
+					<div>
+						<span class="h5" style="margin-top: 0;">End date:</span> <span th:text="${approvalDetail.endDate}"></span>
+					</div>
+					<div style="margin-top: 20px;">
+						<span class="h5" style="margin-top: 0;">User id:</span> <span th:text="${approvalDetail.authUserId}"></span>
+					</div>
+					<div>
+						<span class="h5" style="margin-top: 0;">User email:</span> <span th:text="${approvalDetail.authUserEmail}"></span>
+					</div>
 				</div>
-				<div class="text-center" style="margin-top: 40px;" th:if="${approvalDetail.challengeAuthType == 'AU02'}">
-					<audio controls>
-						<source th:src="${approvalDetail.challengeAuthUrl}" type="audio/mpeg">
-					</audio>
-				</div>
-				<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 			</div>
-
-			<div class="col-md-6">
-				<div>
-					<span class="h5" style="margin-top: 0;">Approval status:</span>
-					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="btn btn-info" style="margin-left: 20px; cursor: none;">Waiting</a>
-					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS02'}" class="btn btn-success" style="margin-left: 20px; cursor: none;">Approved</a>
-					<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS03'}" class="btn btn-danger" style="margin-left: 20px; cursor: none;">Denied</a>
-				</div>
-				<div style="margin-top: 20px;">
-					<span class="h5" style="margin-top: 0;">Challenge name:</span> <span th:text="${approvalDetail.challengeName}"></span>
-				</div>
-				<div style="margin-top: 20px;">
-					<span class="h5" style="margin-top: 0;">Start date:</span> <span th:text="${approvalDetail.startDate}"></span>
-				</div>
-				<div>
-					<span class="h5" style="margin-top: 0;">End date:</span> <span th:text="${approvalDetail.endDate}"></span>
-				</div>
-				<div style="margin-top: 20px;">
-					<span class="h5" style="margin-top: 0;">User id:</span> <span th:text="${approvalDetail.authUserId}"></span>
-				</div>
-				<div>
-					<span class="h5" style="margin-top: 0;">User email:</span> <span th:text="${approvalDetail.authUserEmail}"></span>
-				</div>
-			</div>
-		</div>
+		</section>
 		<div th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="text-center" style="margin-top: 50px;">
 			<div>
 				<button class="btn btn-primary" style="margin-right: 20px;" id="denyBut">Deny</button>
@@ -102,6 +105,13 @@ header a, header li {
 						}
 					 })
 				 .done(function(data) {
+					 var parentWindow = window.parent;
+				 	 var unprocessedApprovalCount = parentWindow.document.getElementById('unprocessedApprovalCount');
+				     var count = parseInt(unprocessedApprovalCount.innerText);
+					
+					 if(count > 0) {
+						 unprocessedApprovalCount.innerText = (count - 1);
+					 }
 					 if(data != '') {
 						 window.location = '/goalkeepinmanager/approval/showApprovalDetail?authNo=' + data;
 					 } else {

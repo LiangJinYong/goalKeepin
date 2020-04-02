@@ -60,12 +60,15 @@ function addSortLink(data) {
 			
 			var sortSymbol;
 			if(sortField == null || sortField != $(this).attr('id')) {
-				sortSymbol = $('<span class="originalSort">&#11109;</span>').css({'marginLeft': '10px'});
+				//sortSymbol = $('<span class="originalSort">&#11109;</span>').css({'marginLeft': '10px'});
+				sortSymbol = $('<span class="originalSort"></span>');
 			} else {
 				if(sortOrder == 'asc') {
-					sortSymbol = $('<span class="asc" style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+					//sortSymbol = $('<span class="asc" style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
+					sortSymbol = $('<span class="asc" style="color: green;"></span>');
 				} else {
-					sortSymbol = $('<span class="desc" style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
+					//sortSymbol = $('<span class="desc" style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
+					sortSymbol = $('<span class="desc" style="color: red;"></span>');
 				}
 			}
 			$(this).find('span').remove();
