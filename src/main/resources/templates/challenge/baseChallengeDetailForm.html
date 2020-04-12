@@ -14,15 +14,10 @@ header a, header li {
 	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
 	margin: 15px 0 0 0;
-}
-
-header li {
-	margin-left: 5px;
 }
 
 #challengeName input {
@@ -192,27 +187,23 @@ input[type=text] {
 
 			<section class="forRecruiting">
 				<div class="row">
-					<div class="col-md-12">
-						<div class="col-md-4">
-							<h3 class="h5">Minimum participation fee</h3>
-							<input type="number" name="minFee" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma"  />
-						</div>
-						<div class="col-md-4">
-							<h3 class="h5">Maximum participation fee</h3>
-							<input type="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
-						</div>
+					<div class="col-md-4">
+						<h3 class="h5">Minimum participation fee</h3>
+						<input type="number" name="minFee" value="10" readonly="readonly" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma"  />
+					</div>
+					<div class="col-md-4">
+						<h3 class="h5">Maximum participation fee</h3>
+						<input type="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-12">
-						<div class="col-md-4">
-							<h3 class="h5">Start date</h3>
-							<input type="date" name="startDate" id="startDate" style="width: 200px;" />
-						</div>
-						<div class="col-md-4">
-							<h3 class="h5">End date</h3>
-							<input type="date" name="endDate" id="endDate" style="width: 200px;" />
-						</div>
+					<div class="col-md-4">
+						<h3 class="h5">Start date</h3>
+						<input type="date" name="startDate" id="startDate" style="width: 200px;" />
+					</div>
+					<div class="col-md-4">
+						<h3 class="h5">End date</h3>
+						<input type="date" name="endDate" id="endDate" style="width: 200px;" />
 					</div>
 				</div>
 			</section>

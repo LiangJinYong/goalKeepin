@@ -17,10 +17,13 @@
 		FROM REPORT_TB rt
 		INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no
 		INNER JOIN USER_TB ut ON ut.user_no = rt.reported_user_no
+		<if test="reportStatus != ''">
+			WHERE rt.process_status = #{reportStatus}
+		</if>
 	</sql>
 	
-	<select id="getTotalReportCount" resultType="int">
-		/* getTotalFaqCount */
+	<select id="getTotalReportCount" parameterType="map" resultType="int">
+		/* getTotalReportCount */
 		SELECT COUNT(*)
 		<include refid="report" />
 	</select>

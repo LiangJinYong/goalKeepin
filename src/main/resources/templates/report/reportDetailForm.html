@@ -15,7 +15,6 @@ header a, header li {
 	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -45,7 +44,7 @@ textarea{
 <body>
 	<input type="hidden" th:field="*{reportDetail.reportNo}">
 	<div class="row">
-		<header class="col-md-11">
+		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Report details</h1>
 			<ul th:if="*{!reportDetail.processStatus}" class="list-inline list-unstyled pull-right">
 				<li><a href="#" class="btn btn-primary" id="processReport">Process</a></li>
@@ -55,37 +54,39 @@ textarea{
 	
 	<section id="verificationPart">
 		<div class="row">
-			<div class="col-md-6">
-				<div>
-					<span class="h5">Verification Content</span>
+			<div class="col-md-12">
+				<div class="col-md-6">
+					<div>
+						<span class="h5">Verification Content</span>
+					</div>
+					<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU01'}">
+					    <img id="verificationImg" th:src="${reportDetail.challengeAuthUrl}">
+					</div>
+					<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU02'}">
+						<audio controls>
+						    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
+						</audio>
+					</div>
+					<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
-				<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU01'}">
-				    <img id="verificationImg" th:src="${reportDetail.challengeAuthUrl}">
+				
+				<div class="col-md-6">
+					<span class="h5" style="margin-top: 0;">Challenge name:</span>
+					<span th:text="${reportDetail.challengeName}"></span><br /><br />
+					<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
+					<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
+					<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Completed</a><br /><br />
+					<span class="h5">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
+					<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
+					<p>
+						<span>User Id:</span>
+						<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
+					</p>
+					<p>
+						<span>User email:</span>
+						<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
+					</p>
 				</div>
-				<div class="text-center" style="margin-top: 40px;" th:if="${reportDetail.challengeAuthType == 'AU02'}">
-					<audio controls>
-					    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
-					</audio>
-				</div>
-				<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
-			</div>
-			
-			<div class="col-md-6">
-				<span class="h5" style="margin-top: 0;">Challenge name:</span>
-				<span th:text="${reportDetail.challengeName}"></span><br /><br />
-				<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
-				<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
-				<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Completed</a><br /><br />
-				<span class="h5">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
-				<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
-				<p>
-					<span>User Id:</span>
-					<span th:text="${reportDetail.reportedUserId}" class="font-weight-bold"></span>
-				</p>
-				<p>
-					<span>User email:</span>
-					<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
-				</p>
 			</div>
 		</div>
 	</section>

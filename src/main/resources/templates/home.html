@@ -12,9 +12,9 @@
 }
 
 .header {
-	padding: 5px;
-	background: #191970;
+	padding: 5px; background : #191970;
 	color: #f1f1f1;
+	background: #191970;
 }
 
 #sideMenu li {
@@ -56,8 +56,7 @@
 				</div>
 				<div class="col-md-6">
 					<div class="h5 pull-right">
-						<span>Participants:</span> <span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span> 
-						<span style="margin-left: 30px;">Participant amount:</span> <span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span> <a href="#" id="logout" style="margin-left: 30px;"><img src="images/logout.png" title="Logout"></a>
+						<span>Participants:</span> <span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span> <span style="margin-left: 30px;">Participant amount:</span> <span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span> <a href="#" id="logout" style="margin-left: 30px;"><img src="images/logout.png" title="Logout"></a>
 					</div>
 				</div>
 			</div>
@@ -65,7 +64,7 @@
 	</form>
 
 	<div class="row">
-		<div class="col-md-1" style="border-right: 3px solid lightgrey; background-color: #fff; width: 15vw; height: 91.3vh; overflow: auto;" id="sideMenu">
+		<div class="col-md-1" style="border-right: 3px solid lightgrey; background-color: #fff; width: 15vw; height: 91.4vh; overflow: auto;" id="sideMenu">
 			<div class="col-md-offset-2">
 				<ul class="list-unstyled">
 					<h2 class="h5">Project management</h2>
@@ -77,11 +76,11 @@
 					</ul>
 					<h2 class="h5">Verification approval</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a id="category" th:href="@{/approval/showApprovalList/1}" target="menuFrame">Approval <span class="badge" th:text="${unprocessedApprovalCount}" id="unprocessedApprovalCount">unprocessedApprovalCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/approval/showApprovalList/1?verificationType=&approvalStatusCd=}" target="menuFrame">Approval <span class="badge" th:text="${unprocessedApprovalCount}" id="unprocessedApprovalCount">unprocessedApprovalCount</span></a></li>
 					</ul>
 					<h2 class="h5">Category management</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/category/showCategoryList/1}" target="menuFrame">Category list</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="category" th:href="@{/category/showCategoryList/1}" target="menuFrame">Category list</a></li>
 					</ul>
 					<h2 class="h5">Project suggestion</h2>
 					<ul class="list-unstyled">
@@ -95,8 +94,8 @@
 					</ul>
 					<h2 class="h5">Withdrawal History</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/sg/1}" target="menuFrame">Singapore</a></li>
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/hk/1}" target="menuFrame">HongKong</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/sg/1?bank=&reportStatusCd=CT00&reportRegDate=&userId=}" target="menuFrame">Singapore</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/cashReport/showCashReportList/hk/1?bank=&reportStatusCd=CT00&reportRegDate=&userId=}" target="menuFrame">HongKong</a></li>
 					</ul>
 					<h2 class="h5">Others</h2>
 					<ul class="list-unstyled">
@@ -108,7 +107,7 @@
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/badgeGift/showBadgeGiftDetail}" target="menuFrame">Badge gift</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">Push notification</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">Pop-up Setting</a></li>
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/report/showReportList/1}" target="menuFrame">Report <span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/report/showReportList/1?reportStatus=}" target="menuFrame">Report <span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
 					</ul>
 				</ul>
 			</div>
@@ -117,7 +116,7 @@
 			<!-- 
 			<iframe id="menuFrame" name="menuFrame" th:src="@{/report/showReportDetail?reportNo=1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.3vh;"></iframe>
 	 -->
-			<iframe id="menuFrame" name="menuFrame" th:src="@{/challenge/baseManagement/1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.3vh;"></iframe>
+			<iframe id="menuFrame" name="menuFrame" th:src="@{/challenge/baseManagement/1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.4vh;"></iframe>
 		</div>
 	</div>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
@@ -131,6 +130,19 @@
 			$('#logout').click(function() {
 				$('#logoutForm').submit();
 			});
+
+			var getUnprocessedCounts = {
+				url : '/goalkeepinmanager/getUnprocessedCounts',
+				dataType : 'json',
+				success : function(res) {
+					$('#unprocessedApprovalCount').text(res.unprocessedApprovalCount);
+					$('#unprocessedInquiryCount').text(res.unprocessedInquiryCount);
+					$('#unprocessedReportCount').text(res.unprocessedReportCount);
+				}
+			};
+			setInterval(function() {
+				$.ajax(getUnprocessedCounts)
+			}, 10000);
 		});
 	</script>
 </body>

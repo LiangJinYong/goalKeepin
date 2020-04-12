@@ -12,7 +12,6 @@ header a, header li {
 	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -33,9 +32,9 @@ header a, header li {
 			</div>
 		</div>
 
-		<section id="approvalPart">
+		<section id="contentPart">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<div>
 						<span class="h5">Verification Content</span>
 					</div>
@@ -49,8 +48,12 @@ header a, header li {
 					</div>
 					<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
-	
-				<div class="col-md-6">
+			</div>
+		</section>
+		
+		<section id="infoPart">
+			<div class="row">
+				<div class="col-md-12">
 					<div>
 						<span class="h5" style="margin-top: 0;">Approval status:</span>
 						<a href="#" th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
@@ -75,6 +78,7 @@ header a, header li {
 				</div>
 			</div>
 		</section>
+		
 		<div th:if="${approvalDetail.approvalStatusCd == 'AS01'}" class="text-center" style="margin-top: 50px;">
 			<div>
 				<button class="btn btn-primary" style="margin-right: 20px;" id="denyBut">Deny</button>

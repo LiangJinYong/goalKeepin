@@ -14,7 +14,7 @@ public interface ReportMapper {
 
 	List<Report> selectReportList(Map<String, Object> paramMap);
 
-	int getTotalReportCount();
+	int getTotalReportCount(Map<String, Object> paramMap);
 
 	ReportDetailResponseDto selectReportDetail(Long reportNo);
 

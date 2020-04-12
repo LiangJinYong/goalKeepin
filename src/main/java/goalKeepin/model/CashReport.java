@@ -10,7 +10,8 @@ public class CashReport {
 	private String reportStatusCd;
 	private String reportCashAmount;
 	private String reportBank;
-	private String reportAccountHolder;
+	private String reportAccountHolderFirstName;
+	private String reportAccountHolderLastName;
 	private String reportAccount;
 	private Date reportRegDate;
 	private User user;

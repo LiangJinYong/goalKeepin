@@ -9,10 +9,9 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 header a, header li {
-	padding: 2.4rem 0;
+	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -40,21 +39,21 @@ header a, header li {
 				<h1 class="brand pull-left h3">Approval</h1>
 				<ul class="list-inline list-unstyled pull-right">
 						<li>
-						<label>Verification Type</label> 
-						<select name="verificationType" id="verificationType">
-							<option value="">View All</option>
-							<option value="AU01">Photo</option>
-							<option value="AU02">Voice</option>
-						</select>
+							<label>Verification Type</label> 
+							<select name="verificationType" id="verificationType">
+								<option value="">View All</option>
+								<option value="AU01">Photo</option>
+								<option value="AU02">Voice</option>
+							</select>
 						</li>
 						<li>
-						<label>Approval status</label>
-						<select name="approvalStatusCd" id="approvalStatusCd">
-								<option value="">View all</option>
-								<option value="AS01">Waiting</option>
-								<option value="AS02">Approved</option>
-								<option value="AS03">Denied</option>
-						</select>
+							<label>Approval status</label>
+							<select name="approvalStatusCd" id="approvalStatusCd">
+									<option value="">View all</option>
+									<option value="AS01">Waiting</option>
+									<option value="AS02">Approved</option>
+									<option value="AS03">Denied</option>
+							</select>
 						</li>
 					</ul>
 			</header>
@@ -176,7 +175,7 @@ header a, header li {
 				$('#approvalForm').submit();
 			});
 			
-			addSortLink('/goalkeepinmanager/approval/showApprovalList/1');
+			addSortLink('/goalkeepinmanager/approval/showApprovalList/1?verificationType=' + verificationType + '&approvalStatusCd=' + approvalStatusCd);
 		});
 	</script>
 </body>

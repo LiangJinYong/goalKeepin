@@ -20,7 +20,6 @@ header li {
 	margin-top: 30px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -81,7 +80,10 @@ header li {
 								<h2 class="h5 text-center sortable" id="reportAccount">Bank account</h2>
 							</th>
 							<th>
-								<h2 class="h5 text-center sortable" id="reportAccountHolder">Account name</h2>
+								<h2 class="h5 text-center sortable" id="reportAccountHolderFirstName">First Name</h2>
+							</th>
+							<th>
+								<h2 class="h5 text-center sortable" id="reportAccountHolderLastName">Last Name</h2>
 							</th>
 							<th>
 								<h2 class="h5 text-center sortable" id="reportRegDate">Date</h2>
@@ -96,20 +98,21 @@ header li {
 						<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="cashReport: ${page.pageData}" th:id="${cashReport.cashReportNo}">
 							<td>
 								<input th:if="${cashReport.reportStatusCd == 'CT01'}" type="checkbox" th:value="${cashReport.reportStatusCd}" /> 
-								<input th:if="${cashReport.reportStatusCd == 'CT02'}" type="checkbox" th:value="${cashReport.reportStatusCd}" checked="checked" onclick="return false;" />
+								<input th:if="${cashReport.reportStatusCd == 'CT02'}" type="checkbox" th:value="${cashReport.reportStatusCd}" checked="checked" disabled="disabled" />
 							</td>
 							<td th:text="${cashReport.cashReportNo}">NO</td>
 							<td th:text="${cashReport.user.userId}">User Id</td>
 							<td th:text="${cashReport.reportCashAmount}">Report Cash Amount</td>
 							<td th:text="${cashReport.reportBank}">Report Bank</td>
 							<td th:text="${cashReport.reportAccount}">Report Account</td>
-							<td th:text="${cashReport.reportAccountHolder}">Report Account Holder</td>
+							<td th:text="${cashReport.reportAccountHolderFirstName}">Report Account Holder First Name</td>
+							<td th:text="${cashReport.reportAccountHolderLastName}">Report Account Holder Last Name</td>
 							<td th:text="*{#dates.format(cashReport.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}">Report Cash Date</td>
 							<td th:if="${cashReport.reportStatusCd == 'CT01'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT01.statusName}" class="waiting">Report Status Name</td>
 							<td th:if="${cashReport.reportStatusCd == 'CT02'}" th:text="${T(goalKeepin.constants.CashReportStatus).CT02.statusName}" class="finished">Report Status Name</td>
 						</tr>
 						<tr th:if="${page.totalRecordNum == 0}">
-							<td colspan="9" class="text-center no-data">
+							<td colspan="10" class="text-center no-data">
 								<h2 class="h5">No Data Found</h2>
 							</td>
 						</tr>
@@ -169,10 +172,10 @@ header li {
 	var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 	var pageSize = /*[[*{page.pageSize}]]*/;
 	
-	var bank = /*[[*{bank}]]*/ null;
-	var reportStatusCd = /*[[*{reportStatusCd}]]*/ null;
-	var reportRegDate = /*[[*{reportRegDate}]]*/ null;
-	var userId = /*[[*{userId}]]*/ null;
+	var bank = /*[[*{bank}]]*/ '';
+	var reportStatusCd = /*[[*{reportStatusCd}]]*/ 'CT00';
+	var reportRegDate = /*[[*{reportRegDate}]]*/ '';
+	var userId = /*[[*{userId}]]*/ '';
 	
 	var sortField = /*[[*{sortField}]]*/ null;
 	var sortOrder = /*[[*{sortOrder}]]*/ null;
@@ -200,8 +203,8 @@ header li {
 				var href = $(item).attr('href');
 				href += '?bank=' + $('#bank').val();
 				href += '&reportStatusCd=' + $('#reportStatusCd').val();
-				href += '&reportRegDate=' + $('#reportRegDate').val();
-				href += '&userId=' + $('#userId').val();
+				href += '&reportRegDate=' + $('#reportRegDateField').val();
+				href += '&userId=' + $('#userIdField').val();
 				
 				$(item).attr('href', href);
 			});
@@ -273,7 +276,7 @@ header li {
 				}
 			});
 			
-			addSortLink('/goalkeepinmanager/cashReport/showCashReportList/' + country + '/1');
+			addSortLink('/goalkeepinmanager/cashReport/showCashReportList/' + country + '/1?bank=' + bank + '&reportStatusCd=' + reportStatusCd + '&reportRegDate=' + reportRegDate + '&userId=' + userId);
 		});
 	</script>
 </body>

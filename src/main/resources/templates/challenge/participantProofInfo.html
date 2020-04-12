@@ -37,16 +37,18 @@ span.h4 {
 		</header>
 	</div>
 	
-	<div class="row">
-		<div class="col-md-5">
-			<span class="h5">Name of Project</span>
-			<span th:text="*{participantEntry.operatedChallenge.baseChallenge.baseNmEn}" style="margin-left: 20px;">Challenge Name</span>
+	<section id="infoPart">
+		<div class="row">
+			<div class="col-md-5">
+				<span class="h5">Name of Project</span>
+				<span th:text="*{participantEntry.operatedChallenge.baseChallenge.baseNmEn}" style="margin-left: 20px;">Challenge Name</span>
+			</div>
+			<div class="col-md-5">
+				<span class="h5">Participation date</span>
+				<span th:text="*{#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}" style="margin-left: 20px;">Entry Reg Date</span>
+			</div>
 		</div>
-		<div class="col-md-5">
-			<span class="h5">Participation date</span>
-			<span th:text="*{#dates.format(participantEntry.entryRegDate, 'yyyy-MM-dd HH:mm:ss')}" style="margin-left: 20px;">Entry Reg Date</span>
-		</div>
-	</div>
+	</section>
 	
 	<div class="row">
 		<div class="col-md-12">

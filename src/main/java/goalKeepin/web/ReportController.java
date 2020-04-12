@@ -28,20 +28,29 @@ public class ReportController {
 
 	@Autowired
 	private PageService pageService;
-	
+
 	@Autowired
 	private GoalKeepinProps props;
-	
+
 	@Autowired
 	private ReportMapper reportMapper;
-	
+
 	@GetMapping("/showReportList/{pageNum}")
-	public String showReportList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
+	public String showReportList(@RequestParam(name = "reportStatus", required = false) String reportStatus,
+			@PathVariable("pageNum") Integer pageNum, Model model,
+			@RequestParam(value = "sort", required = false) String sort) {
 		int pageSize = props.getPageSize();
 		Map<String, Object> paramMap = new HashMap<>();
+
+		if (reportStatus == null) {
+			reportStatus = "";
+		}
+		System.out.println("@@@" + reportStatus);
+
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
-		
+		paramMap.put("reportStatus", reportStatus);
+
 		if (sort != null) {
 			String[] sortElements = sort.split(",");
 			String sortField = sortElements[0];
@@ -51,33 +60,34 @@ public class ReportController {
 			paramMap.put("sortField", sortField);
 			paramMap.put("sortOrder", sortOrder);
 		}
-		
+
 		List<Report> pageData = reportMapper.selectReportList(paramMap);
-		int totalRecordNum = reportMapper.getTotalReportCount();
-		
+		int totalRecordNum = reportMapper.getTotalReportCount(paramMap);
+
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
-		
+
 		model.addAttribute("page", page);
-		
+		model.addAttribute("reportStatus", reportStatus);
+
 		return "report/reportList";
 	}
-	
+
 	@GetMapping("/showReportDetail")
 	public String showReportDetail(@RequestParam("reportNo") Long reportNo, Model model) {
-		
+
 		ReportDetailResponseDto reportDetail = reportMapper.selectReportDetail(reportNo);
-		
+
 		List<ReportingUser> reportingUserList = reportMapper.selectOtherRepotingUserList(reportNo);
 		reportDetail.setReportingUserList(reportingUserList);
-		
+
 		int reportCount = reportMapper.selectReportCount(reportNo);
 		reportDetail.setReportCount(reportCount);
-		
+
 		model.addAttribute("reportDetail", reportDetail);
-		
+
 		return "report/reportDetailForm";
 	}
-	
+
 	@PostMapping("/processReport")
 	@ResponseBody
 	public String processReport(@RequestParam("reportNo") Long reportNo) {

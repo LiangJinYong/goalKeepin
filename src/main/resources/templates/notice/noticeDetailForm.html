@@ -92,7 +92,6 @@ header a, header li {
 	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -129,7 +128,7 @@ textarea {
 		<input type="hidden" th:field="*{noticeImgUrlTransNo}">
 
 		<div class="row">
-			<header class="col-md-11">
+			<header class="col-md-12">
 				<h1 th:if="*{noticeNo == null}" class="brand pull-left h3">Create a notice</h1>
 				<h1 th:if="*{noticeNo != null}" class="brand pull-left h3">Notice Details</h1>
 				<ul th:if="*{noticeNo != null}" class="list-inline list-unstyled pull-right">

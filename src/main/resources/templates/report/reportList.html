@@ -12,7 +12,6 @@ header a, header li {
 	padding: 2.4rem 0;
 	color: #777;
 	font-weight: bold;
-	color: #777
 }
 
 .row {
@@ -32,6 +31,15 @@ header a, header li {
 	<div class="row">
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Report</h1>
+			<ul class="list-inline list-unstyled pull-right">
+				<li>
+					<select id="reportStatus">
+						<option value="">View all</option>
+						<option value="0">Waiting</option>
+						<option value="1">Completed</option>
+					</select>
+				</li>
+			</ul>
 		</header>
 	</div>
 
@@ -82,28 +90,28 @@ header a, header li {
 					<a class="page-link">&lt;&lt;</a>
 				</li>
 				<li th:if="${page.totalPageNum > 10 and page.pageNum > 1}">
-					<a class="page-link" th:href="@{'/report/showReportList/1'}">&lt;&lt;</a>
+					<a class="page-link" th:href="@{'/report/showReportList/1?reportStatus=' + ${reportStatus}}">&lt;&lt;</a>
 				</li>
 				<li th:if="${page.pageNum == 1}">
 					<a class="page-link">&lt;</a>
 				</li>
 				<li th:if="${page.pageNum > 1}">
-					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum - 1}}">&lt;</a>
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum - 1} + '?reportStatus=' + ${reportStatus}}">&lt;</a>
 				</li>
 				<li th:each="i: ${#numbers.sequence(page.firstPageNum, page.lastPageNum)}" class="page-item page-no" th:classappend="${page.pageNum == i} ? 'active' : ''">
-					<a class="page-link" th:href="@{'/report/showReportList/' + ${i}}" th:text="${i}"></a>
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${i} + '?reportStatus=' + ${reportStatus}}" th:text="${i}"></a>
 				</li>
 				<li th:if="${page.pageNum == page.totalPageNum}">
 					<a class="page-link">&gt;</a>
 				</li>
 				<li th:if="${page.pageNum < page.totalPageNum}">
-					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum + 1}}">&gt;</a>
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${pageNum + 1} + '?reportStatus=' + ${reportStatus}}">&gt;</a>
 				</li>
 				<li th:if="${page.totalPageNum > 10 and page.pageNum == page.totalPageNum}">
 					<a class="page-link">&gt;&gt;</a>
 				</li>
 				<li th:if="${page.totalPageNum > 10 and page.pageNum < page.totalPageNum}">
-					<a class="page-link" th:href="@{'/report/showReportList/' + ${page.totalPageNum}}">&gt;&gt;</a>
+					<a class="page-link" th:href="@{'/report/showReportList/' + ${page.totalPageNum}} + '?reportStatus=' + ${reportStatus}">&gt;&gt;</a>
 				</li>
 			</ul>
 		</nav>
@@ -111,6 +119,8 @@ header a, header li {
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script th:inline="javascript">
+		var selectedReportStatus = /*[[*{reportStatus}]]*/ null;
+		
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
 		
@@ -119,7 +129,12 @@ header a, header li {
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
+		$('#reportStatus').val(selectedReportStatus);
 		$(function() {
+			$('#reportStatus').change(function() {
+				window.location = '/goalkeepinmanager/report/showReportList/1?reportStatus=' + $(this).val();
+			});
+			
 			$('#reportTable tbody tr[id]').click(function() {
 				window.location = '/goalkeepinmanager/report/showReportDetail?reportNo=' + $(this).attr('id');
 			});

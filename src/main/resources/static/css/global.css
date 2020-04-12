@@ -4,10 +4,11 @@ body {
 
 section[id$=Part] {
 	background-color: #fcfcfc;
-	width: 98%;
+	width: 99%;
 	border: 1px solid grey;
 	border-top-width: 3px;
 	padding: 0 20px 20px 20px;
+	margin-top: 20px;
 	margin-bottom: 20px;
 }
 

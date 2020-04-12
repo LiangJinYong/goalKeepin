@@ -37,27 +37,29 @@ h2 + span {
 		</header>
 	</div>
 	
-	<div class="row">
-		<div class="col-md-5">
-			<h2 class="h5">Name of Project</h2>
-			<span th:text="*{operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</span>
+	<section id="infoPart">
+		<div class="row">
+			<div class="col-md-5">
+				<h2 class="h5">Name of Project</h2>
+				<span th:text="*{operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</span>
+			</div>
+			<div class="col-md-5">
+				<h2 class="h5">Registration Date</h2>
+				<span th:text="*{#dates.format(operatedChallenge.regDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
+			</div>
 		</div>
-		<div class="col-md-5">
-			<h2 class="h5">Registration Date</h2>
-			<span th:text="*{#dates.format(operatedChallenge.regDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
+		
+		<div class="row">
+			<div class="col-md-5">
+				<h2 class="h5">Sum amount</h2>
+				<span th:text="*{operatedChallenge.totalFee}"></span>
+			</div>
+			<div class="col-md-5">
+				<h2 class="h5">Number of participants</h2>
+				<span th:text="*{operatedChallenge.entryNum}"></span>
+			</div>
 		</div>
-	</div>
-	
-	<div class="row">
-		<div class="col-md-5">
-			<h2 class="h5">Sum amount</h2>
-			<span th:text="*{operatedChallenge.totalFee}"></span>
-		</div>
-		<div class="col-md-5">
-			<h2 class="h5">Number of participants</h2>
-			<span th:text="*{operatedChallenge.entryNum}"></span>
-		</div>
-	</div>
+	</section>
 	
 	<div th:if="${#lists.size(proofList) > 0}" class="row">
 		<div class="col-md-12">

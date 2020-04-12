@@ -1,5 +1,6 @@
 package goalKeepin.web;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import goalKeepin.data.ChallengeMapper;
 
@@ -37,6 +39,22 @@ public class MainController {
 		model.addAttribute("unprocessedApprovalCount", unprocessedApprovalCount);
 		
 		return "home";
+	}
+	
+	@GetMapping("/getUnprocessedCounts")
+	@ResponseBody
+	public Map<String, Object> getUnprocessedCounts() {
+		Map<String, Object> result = new HashMap<>();
+		
+		int unprocessedInquiryCount = challengerMapper.selectUnprocessedInquiryCount();
+		int unprocessedReportCount = challengerMapper.selectUnprocessedReportCount();
+		int unprocessedApprovalCount = challengerMapper.selectUnprocessedApprovalCount();
+		
+		result.put("unprocessedInquiryCount", unprocessedInquiryCount);
+		result.put("unprocessedReportCount", unprocessedReportCount);
+		result.put("unprocessedApprovalCount", unprocessedApprovalCount);
+		
+		return result;
 	}
 	
 	@GetMapping("/login")

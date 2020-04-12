@@ -135,7 +135,7 @@ public class CashReportController {
 	    makeHead(wb, sheet);
 	    makeBody(wb, sheet, cashReportList);
 	    
-	    for(int i=0; i<6; i++) {
+	    for(int i=0; i<9; i++) {
 	    	sheet.autoSizeColumn(i);
 	    }
 	    
@@ -164,6 +164,7 @@ public class CashReportController {
 	    headStyle.setFillPattern(ExtendedFormatRecord.SOLID_FILL);
 	    
 	    headStyle.setAlignment(ExtendedFormatRecord.CENTER);
+
 	    Row row = sheet.createRow(0);
 	    
 	    Cell cell = row.createCell(0);
@@ -188,13 +189,17 @@ public class CashReportController {
 	    
 	    cell = row.createCell(5);
 	    cell.setCellStyle(headStyle);
-	    cell.setCellValue("Account Holder");
+	    cell.setCellValue("Account First Name");
 	    
 	    cell = row.createCell(6);
 	    cell.setCellStyle(headStyle);
-	    cell.setCellValue("Date");
+	    cell.setCellValue("Account Last Name");
 	    
 	    cell = row.createCell(7);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("Date");
+	    
+	    cell = row.createCell(8);
 	    cell.setCellStyle(headStyle);
 	    cell.setCellValue("Status");
 	}
@@ -233,13 +238,17 @@ public class CashReportController {
 	        
 	        cell = row.createCell(5);
 	        cell.setCellStyle(bodyStyle);
-	        cell.setCellValue(cashReport.get("reportAccountHolder"));
+	        cell.setCellValue(cashReport.get("reportAccountHolderFirstName"));
 	        
 	        cell = row.createCell(6);
 	        cell.setCellStyle(bodyStyle);
-	        cell.setCellValue(cashReport.get("reportRegDate"));
+	        cell.setCellValue(cashReport.get("reportAccountHolderLastName"));
 	        
 	        cell = row.createCell(7);
+	        cell.setCellStyle(bodyStyle);
+	        cell.setCellValue(cashReport.get("reportRegDate"));
+	        
+	        cell = row.createCell(8);
 	        cell.setCellStyle(bodyStyle);
 	        
 	        CellStyle cellStyle = wb.createCellStyle();

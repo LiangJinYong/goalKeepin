@@ -23,10 +23,10 @@ import goalKeepin.util.FCMUtils;
 @Controller
 @RequestMapping("/inquiry")
 public class InquiryController {
-	
+
 	@Autowired
 	private PageService pageService;
-	
+
 	@Autowired
 	private GoalKeepinProps props;
 
@@ -34,19 +34,20 @@ public class InquiryController {
 	private InquiryMapper inquiryMapper;
 
 	@GetMapping("/showInquiryList/{pageNum}")
-	public String showInquiryList(@RequestParam("inquiryStatusCd") String inquiryStatusCd,
-			@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
+	public String showInquiryList(@RequestParam(name = "inquiryStatusCd", required = false) String inquiryStatusCd,
+			@PathVariable("pageNum") Integer pageNum, Model model,
+			@RequestParam(value = "sort", required = false) String sort) {
 		int pageSize = props.getPageSize();
-		
+
 		Map<String, Object> paramMap = new HashMap<>();
-		
+
 		if (inquiryStatusCd == null) {
 			inquiryStatusCd = "IN00";
 		}
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
 		paramMap.put("inquiryStatusCd", inquiryStatusCd);
-		
+
 		if (sort != null) {
 			String[] sortElements = sort.split(",");
 			String sortField = sortElements[0];
@@ -56,42 +57,42 @@ public class InquiryController {
 			paramMap.put("sortField", sortField);
 			paramMap.put("sortOrder", sortOrder);
 		}
-		
+
 		List<Inquiry> pageData = inquiryMapper.selectInquiryList(paramMap);
 		int totalRecordNum = inquiryMapper.getTotalInquiryCount(paramMap);
-		
+
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
-		
+
 		model.addAttribute("page", page);
 		model.addAttribute("inquiryStatusCd", inquiryStatusCd);
-		
+
 		return "inquiry/inquiryList";
 	}
-	
+
 	@GetMapping("/showInquiryDetail")
 	public String showInquiryDetail(@RequestParam("inquiryNo") Long inquiryNo, Model model) {
 		Inquiry inquiry = inquiryMapper.selectInquiryDetail(inquiryNo);
 		model.addAttribute("inquiry", inquiry);
 		return "inquiry/inquiryDetail";
 	}
-	
+
 	@PostMapping("/processInquiryReply")
 	public String processInquiryReply(Inquiry inquiry) {
 		try {
-			
+
 			inquiryMapper.updateInquiryStatus(inquiry);
-			
+
 			long userNo = inquiry.getInquiryUser().getUserNo();
-			
+
 			String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
 			String title = "Inquiry Answer";
 			String body = inquiry.getInquiryReplyCotent();
-			String type = "PS01";
-			
-			if(pushToken != null) {
+			String type = "PS06";
+
+			if (pushToken != null) {
 				FCMUtils.sendFCM(userNo, pushToken, title, body, type);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
