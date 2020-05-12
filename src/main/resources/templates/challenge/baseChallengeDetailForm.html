@@ -31,8 +31,8 @@ header a, header li {
 #thumbnailImg img {
 	border: 1px solid gray;
 	display: block;
-	max-width:200px;
-	max-height:200px;
+	max-width: 200px;
+	max-height: 200px;
 	width: auto;
 	height: auto;
 }
@@ -51,22 +51,22 @@ header a, header li {
 	width: 50px;
 }
 
-#detailArea > div {
+#detailArea>div {
 	margin-right: 2%;
 }
 
 #timePeriodFrom, #timePeriodTo {
 	background-color: white;
-    display: inline-flex;
-    border: 1px solid #ccc;
-    color: #555;
+	display: inline-flex;
+	border: 1px solid #ccc;
+	color: #555;
 }
 
-#timePeriodFrom input,  #timePeriodTo input {
+#timePeriodFrom input, #timePeriodTo input {
 	border: none;
-    color: #555;
-    text-align: center;
-    width: 60px;
+	color: #555;
+	text-align: center;
+	width: 60px;
 }
 
 textarea {
@@ -78,7 +78,6 @@ input[type=text] {
 	height: 2.5em;
 	padding: 15px;
 }
-
 </style>
 <body>
 	<div class="row header">
@@ -95,7 +94,7 @@ input[type=text] {
 
 	<form th:if="*{baseChallenge != null}" method="post" th:action="@{/challenge/processChallengeGeneration}" th:object="${baseChallenge}" enctype="multipart/form-data" id="challengeForm">
 		<input th:if="*{baseNo != null}" type="hidden" id="baseNo" name="baseNo" th:value="*{baseNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseNmTransNo" name="baseNmTransNo" th:value="*{baseNmTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseAuthDescTransNo" name="baseAuthDescTransNo" th:value="*{baseAuthDescTransNo}" /> <input th:if="*{baseNo != null}" type="hidden" id="baseDetailTransNo" name="baseDetailTransNo" th:value="*{baseDetailTransNo}" />
-	
+
 		<section id="middlePart">
 			<div class="row" id="challengeName">
 				<div class="col-md-3">
@@ -115,61 +114,50 @@ input[type=text] {
 					<span th:text="*{#dates.format(baseRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 				</div>
 			</div>
-	
+
 			<div class="row">
 				<div class="col-md-12">
 					<h3 class="h5">Habit type</h3>
-					<input type="hidden" name="baseHabitTypeCd" id="baseHabitTypeCd">
-					<input type="hidden" name="searchKeyword" id="searchKeyword"> 
+					<input type="hidden" name="baseHabitTypeCd" id="baseHabitTypeCd"> <input type="hidden" name="searchKeyword" id="searchKeyword">
 					<div class="add">
 						<div class="row">
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT01" id="Health">
-								<label for="Health" style="font-weight: normal;">Health</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT01" id="Health"> <label for="Health" style="font-weight: normal;">Health</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT02" id="Lifestyle">
-								<label for="Lifestyle" style="font-weight: normal;">Lifestyle</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT02" id="Lifestyle"> <label for="Lifestyle" style="font-weight: normal;">Lifestyle</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT03" id="Relationships">
-								<label for="Relationships" style="font-weight: normal;">Relationships</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT03" id="Relationships"> <label for="Relationships" style="font-weight: normal;">Relationships</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT04" id="Ability">
-								<label for="Ability" style="font-weight: normal;">Ability</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT04" id="Ability"> <label for="Ability" style="font-weight: normal;">Ability</label>
 							</div>
 						</div>
-					
+
 						<div class="row">
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT05" id="Hobby">
-								<label for="Hobby" style="font-weight: normal;">Hobby</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT05" id="Hobby"> <label for="Hobby" style="font-weight: normal;">Hobby</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT06" id="Asset">
-								<label for="Asset" style="font-weight: normal;">Asset</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT06" id="Asset"> <label for="Asset" style="font-weight: normal;">Asset</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT07" id="Event">
-								<label for="Event" style="font-weight: normal;">Event</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT07" id="Event"> <label for="Event" style="font-weight: normal;">Event</label>
 							</div>
 							<div class="col-md-2">
-								<input type="checkbox" name="baseHabitTypeItem" value="HT08" id="Premium">
-								<label for="Premium" style="font-weight: normal;">Premium</label>
+								<input type="checkbox" name="baseHabitTypeItem" value="HT08" id="Premium"> <label for="Premium" style="font-weight: normal;">Premium</label>
 							</div>
 						</div>
 					</div>
 					<span th:text="*{searchKeyword}" class="view" id="searchKeywordText">Base Habit Type Text</span>
 				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-md-4" id="thumbnailImg">
 					<h3 class="h5">Thumbnail image (jpg/jpeg/png)</h3>
-					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" />
-					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
-					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
+					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" /> <img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;"> <img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
 				</div>
 				<div class="col-md-4 forRecruiting">
 					<h3 class="h5">Category setting</h3>
@@ -189,11 +177,11 @@ input[type=text] {
 				<div class="row">
 					<div class="col-md-4">
 						<h3 class="h5">Minimum participation fee</h3>
-						<input type="number" name="minFee" value="10" readonly="readonly" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma"  />
+						<input type="text" name="minFee" value="10" readonly="readonly" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
 					</div>
 					<div class="col-md-4">
 						<h3 class="h5">Maximum participation fee</h3>
-						<input type="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
+						<input type="text" class="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
 					</div>
 				</div>
 				<div class="row">
@@ -222,14 +210,15 @@ input[type=text] {
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd1">Mon-Fri</label> <input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd2">Sat-Sun</label> <input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd3">Mon-Sun</label>
+							<input type="radio" name="baseAuthDateCd" value="AD01" id="baseAuthDateCd1" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd1">Mon-Fri</label> <input type="radio" name="baseAuthDateCd" value="AD02" id="baseAuthDateCd2" th:field="*{baseAuthDateCd}" required="required" /><label for="baseAuthDateCd2">Sat-Sun</label> <input type="radio" name="baseAuthDateCd" value="AD03" id="baseAuthDateCd3" th:field="*{baseAuthDateCd}" required="required" /><label
+								for="baseAuthDateCd3">Mon-Sun</label>
 						</div>
 						<div class="view">
 							<span th:if="*{baseAuthDateCd == 'AD01'}" th:text="'Mon/Tue/Wed/Thu/Fri'"></span> <span th:if="*{baseAuthDateCd == 'AD02'}" th:text="'Sat/Sun'"></span> <span th:if="*{baseAuthDateCd == 'AD03'}" th:text="'Mon/Tue/Wed/Thu/Fri/Sat/Sun'"></span>
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Frequency</span>
@@ -239,40 +228,28 @@ input[type=text] {
 							<input type="number" name="baseAuthFrequency" th:field="*{baseAuthFrequency}" id="baseAuthFrequency" required="required" readonly="readonly" min="1" /> Days per week
 						</div>
 						<div class="view">
-							<span th:text="*{baseAuthFrequency}"></span>
-							<span th:text="*{baseAuthFrequency == 1 ? 'Day' : 'Days'}"></span>
+							<span th:text="*{baseAuthFrequency}"></span> <span th:text="*{baseAuthFrequency == 1 ? 'Day' : 'Days'}"></span>
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Available time period for verification</span>
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<span id="timePeriod">
-								<span id="timePeriodFrom">
-									<input type="number" min="0" max="23" placeholder="00" id="baseAuthFromTimeHour" required="required">:
-		  							<input type="number" min="0" max="59" placeholder="00" id="baseAuthFromTimeMinute" required="required">
-	  							</span>
-	  							~
-	  							<span id="timePeriodTo">
-		  							<input type="number" min="0" max="23" placeholder="23" id="baseAuthToTimeHour" required="required">:
-		  							<input type="number" min="0" max="59" placeholder="59" id="baseAuthToTimeMinute" required="required">
-	  							</span>
-	  							
-	  							<input type="hidden" th:field="*{baseAuthFromTime}" required="required" />
-								<input type="hidden" th:field="*{baseAuthToTime}" required="required" />
-							</span>
-							<input type="checkbox" id="allHours" /><label for="allHours">24 Hours</label>
+							<span id="timePeriod"> <span id="timePeriodFrom"> <input type="number" min="0" max="23" placeholder="00" id="baseAuthFromTimeHour" required="required">: <input type="number" min="0" max="59" placeholder="00" id="baseAuthFromTimeMinute" required="required">
+							</span> ~ <span id="timePeriodTo"> <input type="number" min="0" max="23" placeholder="23" id="baseAuthToTimeHour" required="required">: <input type="number" min="0" max="59" placeholder="59" id="baseAuthToTimeMinute" required="required">
+							</span> <input type="hidden" th:field="*{baseAuthFromTime}" required="required" /> <input type="hidden" th:field="*{baseAuthToTime}" required="required" />
+							</span> <input type="checkbox" id="allHours" /><label for="allHours">24 Hours</label>
 						</div>
 						<div class="view">
 							<span th:text="*{baseAuthFromTime}"></span> ~ <span th:text="*{baseAuthToTime}"></span>
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Number of verification per day</span>
@@ -286,37 +263,35 @@ input[type=text] {
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Method</span>
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">Photo</label>
-							<input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">Voice</label>
+							<input type="radio" name="baseAuthMethodCd" value="AU01" id="photo" th:field="*{baseAuthMethodCd}" required="required" /><label for="photo">Photo</label> <input type="radio" name="baseAuthMethodCd" value="AU02" id="audio" th:field="*{baseAuthMethodCd}" required="required" /><label for="audio">Voice</label>
 						</div>
 						<div class="view">
 							<span th:if="*{baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span> <span th:if="*{baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row" style="display: none;" id="albumAvailability">
 					<div class="col-md-3">
 						<span>Photo album Availability</span>
 					</div>
 					<div class="col-md-9">
 						<div class="add">
-							<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumAvaliable">Possible</label>
-							<input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumNotavaliable">Impossible</label>
+							<input type="radio" name="baseAuthIsAlbum" value="1" id="albumAvaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumAvaliable">Possible</label> <input type="radio" name="baseAuthIsAlbum" value="0" id="albumNotavaliable" th:field="*{baseAuthIsAlbum}" /><label for="albumNotavaliable">Impossible</label>
 						</div>
 						<div class="view">
 							<span th:if="*{baseAuthIsAlbum == 1}" th:text="'Possible'"></span> <span th:if="*{baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Contents Privacy</span>
@@ -330,7 +305,7 @@ input[type=text] {
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Interval</span>
@@ -341,14 +316,12 @@ input[type=text] {
 							</span> <input type="checkbox" id="noLimit" /><label for="noLimit">No limit</label>
 						</div>
 						<div class="view">
-							<span th:if="*{baseAuthInterval == 1}" th:text="*{baseAuthInterval} + ' Hour'"></span>
-							<span th:if="*{baseAuthInterval > 1}" th:text="*{baseAuthInterval} + ' Hours'"></span>
-							<span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
+							<span th:if="*{baseAuthInterval == 1}" th:text="*{baseAuthInterval} + ' Hour'"></span> <span th:if="*{baseAuthInterval > 1}" th:text="*{baseAuthInterval} + ' Hours'"></span> <span th:if="*{baseAuthInterval == 0}" th:text="'No limit'"></span>
 						</div>
 					</div>
 				</div>
 			</section>
-	
+
 			<section id="challengeDetail">
 				<div class="row">
 					<div class="col-md-12">
@@ -385,22 +358,22 @@ input[type=text] {
 				</div>
 			</section>
 		</section>
-		
-		 <section id="detailArea">
-		 	<div class="row">
-		 		<h2 class="h5">Project details (English)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailEn}"></textarea>
-		 	</div>
-		 	<div class="row">
-		 		<h2 class="h5">Project details (Traditional)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailTc}"></textarea>
-		 	</div>
-		 	<div class="row">
-		 		<h2 class="h5">Project details (Simplified)</h2>
-		 		<textarea class="summernote" th:field="*{baseDetailSc}"></textarea>
-		 	</div>
-		 </section>
-		
+
+		<section id="detailArea">
+			<div class="row">
+				<h2 class="h5">Project details (English)</h2>
+				<textarea class="summernote" th:field="*{baseDetailEn}"></textarea>
+			</div>
+			<div class="row">
+				<h2 class="h5">Project details (Traditional)</h2>
+				<textarea class="summernote" th:field="*{baseDetailTc}"></textarea>
+			</div>
+			<div class="row">
+				<h2 class="h5">Project details (Simplified)</h2>
+				<textarea class="summernote" th:field="*{baseDetailSc}"></textarea>
+			</div>
+		</section>
+
 		<section>
 			<div class="row text-center col-md-11" style="margin-bottom: 20px; margin-top: 20px;">
 				<input th:if="*{baseNo == null}" type="submit" value="Create a project" class="btn btn-primary" id="createChallenge" />
@@ -413,7 +386,7 @@ input[type=text] {
 			</div>
 		</section>
 	</form>
-	
+
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
 	<script th:inline="javascript" th:if="*{baseChallenge != null}">
@@ -781,7 +754,7 @@ input[type=text] {
 				 }
 				 
 				 var minFee = parseInt($('#minFee').val());
-				 var maxFee = parseInt($('#maxFee').val());
+				 var maxFee = parseInt($('#maxFee').val().replace(/,/g, ''));
 				 
 				 if(minFee < 0) {
 					 alert("Minimum participation fee can't be negative value.");
@@ -830,7 +803,7 @@ input[type=text] {
 							 categoryNo: $('#categoryNo').val(),
 							 gradeCd: $('#gradeCd').val(),
 							 minFee: $('#minFee').val(),
-							 maxFee: $('#maxFee').val(),
+							 maxFee: $('#maxFee').val().replace(/,/g, ''),
 							 startDate: $('#startDate').val(),
 							 endDate: $('#endDate').val(),
 							 baseAuthDateCd: $('input[name=baseAuthDateCd]:checked').val(),
@@ -893,15 +866,17 @@ input[type=text] {
 				 return confirm('Are you sure to save the challenge infomation?');
 			 });
 			 
-			 document.querySelectorAll('#timePeriod input[type=number]')
-			  .forEach(e => e.oninput = () => {
-			    // Always 2 digits
-			    if (e.value.length >= 2) e.value = e.value.slice(0, 2);
-			    // 0 on the left (doesn't work on FF)
-			    if (e.value.length === 1) e.value = '0' + e.value;
-			    // Avoiding letters on FF
-			    if (!e.value) e.value = '00';
-			  });
+			 $('input.number').keyup(function(event) {
+				  // skip for arrow keys
+				  if(event.which >= 37 && event.which <= 40) return;
+	
+				  // format number
+				  $(this).val(function(index, value) {
+				    return value
+				    .replace(/\D/g, "")
+				    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				  });
+			});
 		});
 	</script>
 </body>

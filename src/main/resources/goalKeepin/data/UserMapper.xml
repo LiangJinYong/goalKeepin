@@ -5,38 +5,24 @@
 
 <mapper namespace="goalKeepin.data.UserMapper">
 	
-	<select id="getTotalUserCount" parameterType="string" resultType="int">
+	<select id="getTotalUserCount" parameterType="map" resultType="int">
 		/* getTotalUserCount */
 		SELECT COUNT(*) totalUserCount
 		FROM USER_TB 
 		WHERE user_nationality_cd = #{nationalityCd}
 	</select>
 	
-	<select id="selectUserList" parameterType="map" resultMap="goalKeepin.data.ChallengeMapper.User">
-		/* selectUserList */
-		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, user_reg_dt userRegDate
+	<select id="selectUserListByIdAndNickname" parameterType="map" resultType="hashmap">
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, DATE_FORMAT(user_reg_dt, '%Y-%m-%d %h:%i:%s') userRegDate
 		FROM USER_TB
-		WHERE user_nationality_cd = #{nationalityCd}
+		WHERE ( user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%') )
+		AND user_nationality_cd = #{nationalityCd}
 		ORDER BY
 		<if test="sortField != null">
 			${sortField} ${sortOrder},
 		</if>
 		user_no DESC
 		LIMIT ${startIndex}, ${pageSize}
-	</select>
-	
-	
-	<select id="selectUserPageList" parameterType="map" resultMap="goalKeepin.data.ChallengeMapper.User">
-		/* selectUserPageList */
-		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, user_reg_dt userRegDate
-		FROM USER_TB
-		ORDER BY user_no DESC
-		LIMIT ${startIndex}, ${pageSize}
-	</select>
-	
-	<select id="selectUserTotalCount" resultType="int">
-		/* selectUserTotalCount */
-		SELECT COUNT(*) totalUserCount
-		FROM USER_TB
 	</select>
 </mapper>

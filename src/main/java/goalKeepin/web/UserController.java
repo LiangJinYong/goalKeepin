@@ -11,28 +11,42 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.Gson;
 
 import goalKeepin.config.GoalKeepinProps;
+import goalKeepin.constants.LoginType;
 import goalKeepin.data.UserMapper;
 import goalKeepin.model.Page;
-import goalKeepin.model.User;
 import goalKeepin.service.PageService;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
-	
+
 	@Autowired
 	private PageService pageService;
-	
+
 	@Autowired
 	private GoalKeepinProps props;
-	
+
 	@Autowired
 	private UserMapper userMapper;
-	
+
 	@GetMapping("/showUserList/{country}/{pageNum}")
 	public String showUserList(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
+		
+		model.addAttribute("country", country);
+		
+		return "user/userList";
+	}
+
+	@GetMapping("/searchUserListByIdAndNickname/{country}/{pageNum}")
+	@ResponseBody
+	public String searchUserListByIdAndNickname(@PathVariable("country") String country, @PathVariable("pageNum") Integer pageNum, @RequestParam("userSearchText") String userSearchText, @RequestParam(value="sort", required=false) String sort) {
+		Gson gson = new Gson();
+		Map<String, Object> result = new HashMap<>();
 		
 		String nationalityCd = "NA02";
 		
@@ -44,26 +58,32 @@ public class UserController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
+		paramMap.put("userSearchText", userSearchText);
 		paramMap.put("nationalityCd", nationalityCd);
 		
-		if (sort != null) {
+		if (sort != null && !"".equals(sort)) {
 			String[] sortElements = sort.split(",");
 			String sortField = sortElements[0];
 			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
+			result.put("sortField", sortField);
+			result.put("sortOrder", sortOrder);
+			
 			paramMap.put("sortField", sortField);
 			paramMap.put("sortOrder", sortOrder);
 		}
 		
-		List<User> pageData = userMapper.selectUserList(paramMap);
-		int totalRecordNum = userMapper.getTotalUserCount(nationalityCd);
-		
+		List<Map<String, String>> pageData = userMapper.selectUserListByIdAndNickname(paramMap);
+		int totalRecordNum = userMapper.getTotalUserCount(paramMap);
+		for(Map<String, String> user : pageData) {
+			String loginTypeCd = user.get("loginTypeCd");
+			String loginTypeName = LoginType.valueOf(loginTypeCd).getLoginTypeName();
+			user.put("loginTypeCd", loginTypeName);
+		}
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
 		
-		model.addAttribute("page", page);
-		model.addAttribute("country", country);
+		result.put("page", page);
 		
-		return "user/userList";
+		return gson.toJson(result);
 	}
+	
 }

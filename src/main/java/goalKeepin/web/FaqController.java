@@ -95,7 +95,7 @@ public class FaqController {
 		faqMapper.insertOrUpdateFaqAnswer(faq);
 		
 		String faqActionCode = faq.getFaqActionCode();
-		System.out.println("=====>" + faqActionCode);
+		
 		if (!"".equals(faqActionCode)) {
 			faqMapper.insertOrUpdateFaqKeyword(faq);
 		} else {

@@ -212,6 +212,7 @@ function processPagination(data, getUrl, sort) {
 	}
 }
 
+// 해당 행을 클릭시 체크박스 상태를 toggle하여 하단 sendTarget구역에 클릭된 유저ID가 생성 혹은 삭제된다.
 function tableEffect() {
 	$('#userData tr').css('cursor', 'pointer')
 	.click(function() {

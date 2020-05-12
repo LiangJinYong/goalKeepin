@@ -74,4 +74,6 @@ public interface ChallengeMapper {
 
 	int selectUnprocessedApprovalCount();
 
+	int selectUnprocessedSuggestionCount();
+
 }

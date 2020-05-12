@@ -23,7 +23,6 @@ public class RepoConfiguration {
 	@Bean
 	public DataSource dataSource() throws Exception {
 		DataSource dataSource = new HikariDataSource(hikariConfig());
-		System.out.println(dataSource);
 		return dataSource;
 	}
 	

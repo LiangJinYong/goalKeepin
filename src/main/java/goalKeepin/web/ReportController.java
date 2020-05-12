@@ -45,7 +45,6 @@ public class ReportController {
 		if (reportStatus == null) {
 			reportStatus = "";
 		}
-		System.out.println("@@@" + reportStatus);
 
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);

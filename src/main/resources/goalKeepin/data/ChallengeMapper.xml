@@ -95,12 +95,17 @@
 	
 	<select id="selectUnprocessedInquiryCount" resultType="int">
     	/* selectUnprocessedInquiryCount */
-		SELECT COUNT(*) FROM INQUIRY_TB WHERE INQUIRY_ST_CD = 'IN01'
+		SELECT COUNT(*) FROM INQUIRY_TB WHERE inquiry_st_cd = 'IN01'
 	</select>
 	
 	<select id="selectUnprocessedReportCount" resultType="int">
     	/* selectUnprocessedReportCount */
-		SELECT COUNT(*) FROM REPORT_TB WHERE PROCESS_STATUS = 0
+		SELECT COUNT(*) FROM REPORT_TB WHERE process_status = 0
+	</select>
+	
+	<select id="selectUnprocessedSuggestionCount" resultType="int">
+    	/* selectUnprocessedSuggestionCount */
+		SELECT COUNT(*) FROM CHALLENGE_OFFER_TB WHERE offer_st_cd = 'VO01'
 	</select>
 	
 	<select id="getTotalBaseChallengeNum" resultType="int">

@@ -49,6 +49,9 @@ header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
+							<h2 class="h5 text-center sortable" id="operatedChallengeNo">Sub Project ID</h2>
+						</th>
+						<th>
 							<h2 class="h5 text-center sortable" id="baseNmEn">Name of Project</h2>
 						</th>
 						<th>
@@ -66,13 +69,14 @@ header li {
 				<tbody>
 					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="operatedChallenge: ${page.pageData}" style="cursor: pointer;" th:id="${operatedChallenge.operatedChallengeNo}">
 						<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
+						<td th:text="${operatedChallenge.operatedChallengeNo}">Operated No</td>
 						<td th:text="${operatedChallenge.baseChallenge.baseNmEn}">Challenge Name</td>
 						<td th:text="${operatedChallenge.startDate}">Start Date</td>
 						<td th:text="${operatedChallenge.endDate}">End Date</td>
 						<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
-						<td colspan="5" class="text-center">
+						<td colspan="6" class="text-center">
 							<h5>No Data Found</h5>
 						</td>
 					</tr>

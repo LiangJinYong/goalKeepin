@@ -38,7 +38,7 @@ table {
 <body>
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left h3">Badge gift</h1>
+			<h1 class="brand pull-left h3">Gift Badge</h1>
 		</header>
 	</div>
 	
@@ -108,7 +108,7 @@ table {
 	
 	<div class="row" id="sendMessageArea" style="margin-bottom: 30px;">
 		<div class="col-md-12">
-			<span class="h5">Send badge gift to:</span>
+			<span class="h5">Send gift badge to:</span>
 		</div>
 		<div id="sendTarget">
 		</div>
@@ -123,11 +123,11 @@ table {
 			var checkedUserCount = $('#sendTarget div').length;
 			
 			if(checkedUserCount == 0) {
-				alert('Please select user to send badge gift.');
+				alert('Please select user to send gift badge.');
 				return;
 			}
 			
-			if(confirm('Are you sure to send the badge gift?')) {
+			if(confirm('Are you sure to send the gift badge?')) {
 				
 				var userNos = [];
 				$('#sendTarget div').each(function() {
@@ -149,10 +149,10 @@ table {
 						}
 					 })
 				 .done(function(json) { 
-					 alert('Badge gift sent successfully.')
+					 alert('Gift badge sent successfully.')
 				 })
 				 .fail(function() {
-					 alert('Error sending badge gift.');
+					 alert('Error sending gift badge.');
 				 });
 			}
 		});

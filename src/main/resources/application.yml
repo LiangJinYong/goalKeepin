@@ -1,7 +1,7 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:log4jdbc:mysql://makeitdbinstance.c0fr6ikoj44t.ap-northeast-2.rds.amazonaws.com:3306/DB_GOALKEEPIN?useSSL=false
+      jdbc-url: jdbc:log4jdbc:mysql://makeitdbinstance.c0fr6ikoj44t.ap-northeast-2.rds.amazonaws.com:3306/DB_GOALKEEPIN?useSSL=false&characterEncoding=utf8
       username: makeIT
       password: makeit12!
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
@@ -20,7 +20,6 @@ user:
 server:
   servlet:
     context-path: /goalkeepinmanager
-    
- 
+
   
   

@@ -63,7 +63,7 @@ public class CashReportController {
 		while(parameterNames.hasMoreElements()) {
 			String param = parameterNames.nextElement();
 			String value = request.getParameter(param);
-			System.out.println("==>" + param + ":" + value);
+			
 			model.addAttribute(param, value);
 		}
 		
