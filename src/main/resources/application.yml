@@ -21,5 +21,22 @@ server:
   servlet:
     context-path: /goalkeepinmanager
 
-  
+goalkeepin:
+  upload:
+    popup-setting: /Users/liangjinyong/Downloads/upload/popupImage/
+    notice: /Users/liangjinyong/Downloads/upload/noticeImage/
+    challenge-thumbnail: /Users/liangjinyong/Downloads/upload/challengeImage/
+    challenge-detail: /Users/liangjinyong/Downloads/upload/challengeDetailImage/
+    
+---
+spring:
+  profiles:
+    active: dev
+
+goalkeepin:
+  upload:
+    popup-setting: /var/lib/tomcat8/webapps/goalkeepinImage/popupImage/
+    notice: /var/lib/tomcat8/webapps/goalkeepinImage/noticeImage/
+    challenge-thumbnail: /var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/
+    challenge-detail: /var/lib/tomcat8/webapps/goalkeepinImage/challengeDetailImage/
   

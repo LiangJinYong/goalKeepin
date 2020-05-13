@@ -30,5 +30,8 @@ public interface PopupMapper {
 
 	void activatePopup(String activePopup);
 
+	Popup selectPopupDetail(Long popupNo);
+
+	void updatePopup(Popup popup);
 
 }

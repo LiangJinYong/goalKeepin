@@ -20,7 +20,7 @@
 	<logger name="com.blink" level="debug" appender-ref="console" />
 	<logger name="jdbc.sqlonly" level="DEBUG"
 		appender-ref="console-infolog" />
-	<logger name="jdbc.resultsettable" level="DEBUG"
+	<logger name="jdbc.resultsettable" level="ERROR"
 		appender-ref="console-infolog" />
 	<!-- 
 	<logger name="org.springframework" level="error" />

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -53,8 +54,12 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
-	private final static String THUMBNAIL_IMG_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/";
-	private final static String DETAIL_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/challengeDetailImage/";
+	
+	@Value("${goalkeepin.upload.challenge-thumbnail}")
+	private String thumbnailUploadPath;
+	
+	@Value("${goalkeepin.upload.challenge-detail}")
+	private String detailUploadPath;
 
 	@GetMapping("/baseManagement/{pageNum}")
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
@@ -146,7 +151,7 @@ public class ChallengeController {
 		
 		if (fileSize > 0) {
 			
-			String filePath = FileUploadUtils.processFileUpload(file, THUMBNAIL_IMG_UPLOAD_PATH, null);
+			String filePath = FileUploadUtils.processFileUpload(file, thumbnailUploadPath, null);
 			baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
 		}
         
@@ -384,7 +389,7 @@ public class ChallengeController {
 	@ResponseBody
 	public ResponseEntity<?> uploadDetailImages(@RequestParam("file") MultipartFile file) {
 		try {
-			String filePath = FileUploadUtils.processFileUpload(file, DETAIL_UPLOAD_PATH, null);
+			String filePath = FileUploadUtils.processFileUpload(file, detailUploadPath, null);
 			return ResponseEntity.ok().body("/app/goalkeepinImage/challengeDetailImage/" + filePath);
 		} catch (Exception e) {
 			e.printStackTrace();

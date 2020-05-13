@@ -4,10 +4,50 @@
     xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Create Popup Form</title>
+<title>Popup Detail Form</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
+.filebox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.filebox label {
+	display: inline-block;
+	padding: .5em .75em;
+	color: #999;
+	font-size: inherit;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #fdfdfd;
+	cursor: pointer;
+	border: 1px solid #ebebeb;
+	border-bottom-color: #e2e2e2;
+	border-radius: .25em;
+}
+
+.filebox.bs3-primary label {
+	color: #fff;
+	background-color: #191970;
+	border-color: #2e6da4;
+}
+
+img[name=imgPreview] {
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
+}
+
 .row {
 	margin: 15px 0 0 0;
 }
@@ -34,22 +74,29 @@ table {
 <body>
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left h3">Create a new pop-up message</h1>
+			<h1 th:if="${popup.popupNo == null}" class="brand pull-left h3">Create a Pop-up Message</h1>
+			<h1 th:if="${popup.popupNo != null}" class="brand pull-left h3">Modify a Pop-up Message</h1>
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/popup/processPopupCreation}" th:object="${popup}" enctype="multipart/form-data" id="createPopupForm">
+	<form method="post" th:action="${popup.popupNo == null ? '/goalkeepinmanager/popup/processPopupCreation' : '/goalkeepinmanager/popup/processPopupModification'}" th:object="${popup}" enctype="multipart/form-data" id="savePopupForm">
+		<input type="hidden" name="popupNo" th:field="*{popupNo}" />
 		<div class="row">
 			<div class="col-md-12">
-				<div>
-					<label class="col-md-1">Image</label>
-				</div>
-				<div class="col-md-11">
-					<input type="file" th:field="*{popupImgUrl}" required="required"  accept="image/jpeg,image/jpg,image/png">
-					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+				<div class="filebox bs3-primary preview-image">
+					<img src="" style="display: none;"><br />
+					<input class="upload-name" value="Select an image" disabled="disabled"
+						style="width: 200px;"> 
+					<label for="popupImage">Popup Image</label>
+					<input type="file" id="popupImage" class="upload-hidden" required="required"
+						 name="popupImage" accept="image/jpeg,image/jpg,image/png">
+					<div>
+						<img name="imgPreview" id="popupImgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+					</div>
 				</div>
 			</div>
 		</div>
+		
 		<div class="row">
 			<div class="col-md-12">
 				<div class="col-md-1">
@@ -107,48 +154,23 @@ table {
 			<input type="hidden" name="popupTargetNo" id="popupTargetNo">
 			<div class="row text-center" style="margin-top: 30px;">
 				<div class="col-md-11">
-					<input type="submit" value="Create" class="btn btn-primary" id="createPopup" />
+					<input type="submit" value="Save" class="btn btn-primary" id="savePopup" />
 				</div>
 			</div>
 		</section>
 	</form>
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var popupNo = /*[[*{popup.popupNo}]]*/;
+		var popupImgUrl = /*[[*{popup.popupImgUrl}]]*/;
+		var popupTypeCd = /*[[*{popup.popupTypeCd}]]*/;
+		var popupTargetNo = /*[[*{popup.popupTargetNo}]]*/;
+	</script>
 	<script type="text/javascript">
 		$(function() {
-			
 			var noticeUrl = '/goalkeepinmanager/popup/getNoticeList/';
 			var challengeUrl = '/goalkeepinmanager/popup/getChallengeList/';
-			
-			//팝업 이미지 사이즈 제한
-			 $('#popupImgUrl').change(function(e) {
-				 if(!(/\.(jpg|jpeg|png)$/i).test(this.value)) {
-					 alert('This is not an allowed file type.');
-					 e.preventDefault();
-					 this.value = '';
-		             $('#imgPreview').hide();
-		             return;
-				 }
-				 
-				 if(this.files[0].size > 1048576){
-				        alert("Popup image can't be larger than 1MB.");
-				        this.value = "";
-				        $('#imgPreview').hide();
-			     } else {
-				     readURL(this);
-			     }
-			     
-			 });
-			
-			 function readURL(input) {
-	            if (input.files && input.files[0]) {
-		            var reader = new FileReader();
-		            reader.onload = function (e) {
-	                    $('#imgPreview').attr('src', e.target.result).show();
-	                }
-	                reader.readAsDataURL(input.files[0]);
-	            }
-	         }
 			
 			$('#popupTypeCd').change(function() {
 				var selectedType = $(this).val();
@@ -189,14 +211,11 @@ table {
 						
 						var sortSymbol;
 						if(sortField == null || sortField != $(this).attr('id')) {
-							//sortSymbol = $('<span class="originalSort">&#11109;</span>').css({'marginLeft': '10px'});
 							sortSymbol = $('<span class="originalSort"></span>');
 						} else {
 							if(sortOrder == 'asc') {
-								//sortSymbol = $('<span class="asc" style="color: green;">&#11014;</span>').css({'marginLeft': '10px'});
 								sortSymbol = $('<span class="asc" style="color: green;"></span>');
 							} else {
-								//sortSymbol = $('<span class="desc" style="color: red;">&#11015;</span>').css({'marginLeft': '10px'});
 								sortSymbol = $('<span class="desc" style="color: red;"></span>');
 							}
 						}
@@ -231,7 +250,12 @@ table {
 						contentData += '<tr class="text-center" ';
 						contentData += 'id="' + contentList[i].contentNo + '">';
 						contentData += '<td>';
-						contentData += '<input type="checkbox">';
+						// 파업 정보 수정시 기존에 선택된 연결 컨텐츠의 체크박스가 체크돼야함 
+						if($('#popupTypeCd').val() == popupTypeCd && contentList[i].contentNo == popupTargetNo) {
+							contentData += '<input type="checkbox" checked="checked">';
+						} else {
+							contentData += '<input type="checkbox">';
+						}
 						contentData += '</td>';
 						contentData += '<td>';
 						contentData += contentList[i].contentNo;
@@ -382,19 +406,88 @@ table {
 				});
 			}
 			
-			$('#createPopup').click(function(e) {
+			$('#savePopup').click(function(e) {
 				
 				var checkedContentCount = $('#popupContentTable input:checked').length;
 				
-				if(checkedContentCount == 0) {
-					alert('Please select a connected content.');
-					e.preventDefault();
-				}
+				if(popupNo == null) {
+					if(checkedContentCount == 0) {
+						alert('Please select a connected content.');
+						e.preventDefault();
+					}
+				} else {
+					if($('#popupTypeCd').val() != popupTypeCd && checkedContentCount == 0) {
+						alert('Please select a connected content.');
+						e.preventDefault();
+					}
+				} 
 			});
 			
-			$('#createPopupForm').submit(function() {
-				return confirm('Are you sure to create a popup?');
+			$('#savePopupForm').submit(function() {
+				return confirm('Are you sure to save the popup?');
 			});
+			
+			if(popupImgUrl != null) {
+				
+				$('#popupImgPreview').attr('src', popupImgUrl).css('display', 'inline');
+				$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter('#popupImgPreview');
+				$('#popupImage').removeAttr('required');
+			}
+			
+			$('.close').click(function() {
+        		$(this).parent().prev().prev().prev().val('Select an image');
+        		$(this).prev('img').attr('src', '#').css('display', 'none');
+        		$(this).parent().next('input').val('0');
+        		$(this).remove();
+        		$('#popupImage').attr('required', 'required');
+        	});
+			
+			if(popupTypeCd != null) {
+				$('#popupTypeCd').val(popupTypeCd).change();
+			}
+			
+			var fileTarget = $('.filebox .upload-hidden');
+
+			fileTarget.on('change', function() {
+				if (window.FileReader) {
+					var filename = $(this)[0].files[0].name;
+				} else {
+					var filename = $(this).val().split('/').pop().split('\\')
+							.pop();
+				}
+
+				$(this).siblings('.upload-name').val(filename);
+				
+				if(this.files[0].size > 1048576) {
+			        alert("Popup image can't be larger than 1MB.");
+			        
+			        $(this).val('').next('div').empty();
+			        $(this).next().next().val('0');
+			        $(this).prevAll('.upload-name').val('Select an image');
+			    } else {
+			    	readURL(this);
+			    }
+			});
+			
+			function readURL(input) {
+	            if (input.files && input.files[0]) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+		            	var img = $(input).next().children('img');
+	                    img.attr('src', e.target.result).css('display', 'inline');
+		            	if(img.next('.close').length == 0) {
+			            	$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter(img)
+			            	.click(function() {
+			            		img.parent().prev().prev().prev().val('Select an image');
+			            		img.attr('src', '#').css('display', 'none');
+			            		$(this).remove();
+			            		img.parent().prev().val('');
+			            	});
+		            	}
+	                }
+	                reader.readAsDataURL(input.files[0]);
+	            }
+	         }
 		});
 	</script>
 </body>

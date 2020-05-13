@@ -80,7 +80,7 @@ img {
 				</thead>
 				
 				<tbody>
-					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="popup: ${page.pageData}" th:id="${popup.popupNo}">
+					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="popup: ${page.pageData}" th:id="${popup.popupNo}" style="cursor: pointer;">
 						<td>
 							<input type="checkbox" th:if="${popup.popupIsOn}" checked="checked">
 							<input type="checkbox" th:if="${!popup.popupIsOn}">
@@ -153,6 +153,8 @@ img {
 			
 			$('#popupTable tbody tr[id]').css('cursor', 'pointer')
 			.click(function() {
+				
+				/*
 				var checkbox = $(this).find('input');
 				
 				var isChecked = checkbox.prop('checked');
@@ -161,6 +163,8 @@ img {
 				if(!isChecked) {
 					$(this).siblings().find('input').prop('checked', false);
 				}
+				*/
+				window.location = '/goalkeepinmanager/popup/showPopupDetail?popupNo=' + $(this).attr('id');
 			});
 			
 			$('#popupTable input').click(function(e) {

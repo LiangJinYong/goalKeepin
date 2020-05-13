@@ -157,7 +157,8 @@ input[type=text] {
 			<div class="row">
 				<div class="col-md-4" id="thumbnailImg">
 					<h3 class="h5">Thumbnail image (jpg/jpeg/png)</h3>
-					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" /> <img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;"> <img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
+					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" />
+					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;"> <img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
 				</div>
 				<div class="col-md-4 forRecruiting">
 					<h3 class="h5">Category setting</h3>
@@ -177,21 +178,21 @@ input[type=text] {
 				<div class="row">
 					<div class="col-md-4">
 						<h3 class="h5">Minimum participation fee</h3>
-						<input type="text" name="minFee" value="10" readonly="readonly" id="minFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
+						<input type="text" name="minFee" value="10" readonly="readonly" id="minFee" style="width: 280px;" min="1" placeholder="(SGD) Please enter without comma" />
 					</div>
 					<div class="col-md-4">
 						<h3 class="h5">Maximum participation fee</h3>
-						<input type="text" class="number" name="minFee" id="maxFee" style="width: 250px;" min="1" placeholder="(SGD) Please enter without comma" />
+						<input type="text" class="number" name="minFee" id="maxFee" style="width: 280px;" min="1" placeholder="(SGD) Please enter without comma" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">
 						<h3 class="h5">Start date</h3>
-						<input type="date" name="startDate" id="startDate" style="width: 200px;" />
+						<input type="date" name="startDate" id="startDate" style="width: 280px;" />
 					</div>
 					<div class="col-md-4">
 						<h3 class="h5">End date</h3>
-						<input type="date" name="endDate" id="endDate" style="width: 200px;" />
+						<input type="date" name="endDate" id="endDate" style="width: 280px;" />
 					</div>
 				</div>
 			</section>

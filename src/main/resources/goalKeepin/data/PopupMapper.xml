@@ -101,6 +101,27 @@
 		/* activatePopup */
 		UPDATE POPUP_TB SET popup_is_on = 1 WHERE popup_no = #{activePopup};
 	</update>
+	
+	<select id="selectPopupDetail" parameterType="long" resultMap="Popup">
+		/* selectPopupDetail */
+		SELECT popup_no popupNo, popup_image_url popupImgUrl, popup_tp_cd popupTypeCd, popup_target_no popupTargetNo
+ 		FROM POPUP_TB 
+ 		WHERE popup_no = #{popupNo}
+	</select>
+	
+	<update id="updatePopup" parameterType="Popup">
+		/* updatePopup */
+		UPDATE POPUP_TB
+		SET
+		<if test="popupImgUrl != null">
+			popup_image_url = #{popupImgUrl},
+		</if>
+		<if test="popupTargetNo != null">
+			popup_target_no = #{popupTargetNo},
+		</if> 
+		popup_tp_cd = #{popupTypeCd}
+		WHERE popup_no = #{popupNo}
+	</update>
 </mapper>
 
 

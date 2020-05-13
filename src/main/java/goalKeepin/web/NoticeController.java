@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,8 @@ public class NoticeController {
 	@Autowired
 	private NoticeMapper noticeMapper;
 	
-	private final static String FILE_UPLOAD_PATH = "/var/lib/tomcat8/webapps/goalkeepinImage/noticeImage/";
+	@Value("${goalkeepin.upload.notice}")
+	private String uploadPath;
 	
 	@GetMapping("/showNoticeList/{pageNum}")
 	public String showNoticeList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
@@ -79,17 +81,17 @@ public class NoticeController {
 		long imageSizeSc = noticeImgs[2].getSize();
 		
 		if (imageSizeEn > 0) {
-			String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], FILE_UPLOAD_PATH, "en");
+			String noticeImgUrlEn = FileUploadUtils.processFileUpload(noticeImgs[0], uploadPath, "en");
 			notice.setNoticeImgUrlEn("/app/goalkeepinImage/noticeImage/" + noticeImgUrlEn);
 		}
 		
 		if (imageSizeTc > 0) {
-			String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], FILE_UPLOAD_PATH, "tc");
+			String noticeImgUrlTc = FileUploadUtils.processFileUpload(noticeImgs[1], uploadPath, "tc");
 			notice.setNoticeImgUrlTc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlTc);
 		}
 		
 		if (imageSizeSc > 0) {
-			String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], FILE_UPLOAD_PATH, "sc");
+			String noticeImgUrlSc = FileUploadUtils.processFileUpload(noticeImgs[2], uploadPath, "sc");
 			notice.setNoticeImgUrlSc("/app/goalkeepinImage/noticeImage/" + noticeImgUrlSc);
 		}
 		
