@@ -1,7 +1,7 @@
-$('#userId').focus();
+$('#userSearchText').focus();
 loadUserData('%', null);
 
-$('#userId').keyup(function() {
+$('#userSearchText').keyup(function() {
 	var sort = null;
 	
 	var ascHead = $('#tableHead .asc');
@@ -16,11 +16,11 @@ $('#userId').keyup(function() {
 	loadUserData($(this).val(), sort);
 });
 
-function loadUserData(userId, sort) {
+function loadUserData(userSearchText, sort) {
 	$.get({
 		url: '/goalkeepinmanager/rewardPayment/searchUserList/1',
 		data: {
-			userId: userId,
+			userSearchText: userSearchText,
 			sort: sort
 		},
 		dataType: 'json',
@@ -77,9 +77,9 @@ function addSortLink(data) {
 		
 		$('.table .sortable').off('click').click(function(e) {
 			if($(this).has('span.asc').length > 0) {
-				loadUserData($('#userId').val(), $(this).attr('id') + ',desc');
+				loadUserData($('#userSearchText').val(), $(this).attr('id') + ',desc');
 			} else {
-				loadUserData($('#userId').val(), $(this).attr('id') + ',asc');
+				loadUserData($('#userSearchText').val(), $(this).attr('id') + ',asc');
 			}
 		});
 	}
@@ -198,7 +198,7 @@ function processPagination(data, getUrl, sort) {
 			var pageNum = id.substring(5);
 			$.getJSON(getUrl + pageNum,
 				{
-					userId: $('#userId').val() == '' ? '%' : $('#userId').val(),
+					userSearchText: $('#userSearchText').val() == '' ? '%' : $('#userSearchText').val(),
 					sort: sort
 				},
 				function(data) {

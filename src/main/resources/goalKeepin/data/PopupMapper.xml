@@ -122,6 +122,13 @@
 		popup_tp_cd = #{popupTypeCd}
 		WHERE popup_no = #{popupNo}
 	</update>
+	
+	<delete id="deletePopup" parameterType="long">
+		/* deletePopup */
+		DELETE FROM POPUP_TB
+		WHERE popup_no = #{popupNo}
+		
+	</delete>
 </mapper>
 
 

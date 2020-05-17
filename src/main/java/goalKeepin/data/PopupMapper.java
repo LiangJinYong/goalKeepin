@@ -34,4 +34,6 @@ public interface PopupMapper {
 
 	void updatePopup(Popup popup);
 
+	void deletePopup(Long popupNo);
+
 }

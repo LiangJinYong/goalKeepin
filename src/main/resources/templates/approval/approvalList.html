@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 header a, header li {
-	margin-top: 10px;
+	margin-top: 30px;
 	color: #777;
 	font-weight: bold;
 }
@@ -39,7 +39,21 @@ header a, header li {
 				<h1 class="brand pull-left h3">Approval</h1>
 				<ul class="list-inline list-unstyled pull-right">
 						<li>
-							<label>Verification Type</label> 
+							<label>Project</label>
+							<select name="project" id="project">
+								<option value="">View All</option>
+								<option th:each="project : ${projectList}" th:value="${project.baseNo}" th:text="${project.baseNmEn}">Project Name</option>
+							</select>
+						</li>
+						<li>
+							<label>Category</label>
+							<select name="category" id="category">
+								<option value="">View All</option>
+								<option th:each="category: ${T(goalKeepin.constants.BaseHabitType).values()}" th:value="${category}" th:text="${category.baseHabitTypeName}"></option>
+							</select>
+						</li>
+						<li>
+							<label>Type</label> 
 							<select name="verificationType" id="verificationType">
 								<option value="">View All</option>
 								<option value="AU01">Photo</option>
@@ -47,7 +61,7 @@ header a, header li {
 							</select>
 						</li>
 						<li>
-							<label>Approval status</label>
+							<label>Status</label>
 							<select name="approvalStatusCd" id="approvalStatusCd">
 									<option value="">View all</option>
 									<option value="AS01">Waiting</option>
@@ -146,6 +160,8 @@ header a, header li {
 		
 		var verificationType = /*[[*{verificationType}]]*/ null;
 		var approvalStatusCd = /*[[*{approvalStatusCd}]]*/ null;
+		var project = /*[[*{project}]]*/ null;
+		var category = /*[[*{category}]]*/ null;
 	</script>
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
@@ -158,10 +174,20 @@ header a, header li {
 				$('#approvalStatusCd').val(approvalStatusCd);
 			}
 			
+			if(project != null) {
+				$('#project').val(project);
+			}
+			
+			if(category != null) {
+				$('#category').val(category);
+			}
+			
 			$('.page-link[href]').each(function(index, item) {
 				var href = $(item).attr('href');
 				href += '?verificationType=' + $('#verificationType').val();
 				href += '&approvalStatusCd=' + $('#approvalStatusCd').val();
+				href += '&project=' + $('#project').val();
+				href += '&category=' + $('#category').val();
 				
 				$(item).attr('href', href);
 			});
@@ -171,7 +197,7 @@ header a, header li {
 				window.location = '/goalkeepinmanager/approval/showApprovalDetail?authNo=' + $(this).attr('id');
 			});
 			
-			$('#verificationType, #approvalStatusCd').change(function() {
+			$('#verificationType, #approvalStatusCd, #project, #category').change(function() {
 				$('#approvalForm').submit();
 			});
 			

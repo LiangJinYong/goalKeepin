@@ -19,4 +19,8 @@ public interface CategoryMapper {
 	void insertCategoryDescriptionTrans(Category category);
 
 	void insertNewCategory(Category category);
+
+	void toggleCategoryIsMain(Long categoryNo);
+
+	void updateCategoryOrders(Map<String, Object> categoryOrder);
 }

@@ -4,8 +4,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,6 +74,9 @@ public class ApprovalController {
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
 
 		model.addAttribute("page", page);
+		
+		List<Map<String, Object>> projectList = approvalMapper.selectProjectList();
+		model.addAttribute("projectList", projectList);
 
 		return "approval/approvalList";
 	}
@@ -143,5 +146,19 @@ public class ApprovalController {
 
 		Long nextAuthNo = approvalMapper.getNextWatingAuthNo(authNo);
 		return nextAuthNo;
+	}
+	
+	@PostMapping("/deleteApproval")
+	@ResponseBody
+	public String deleteApproval(@RequestParam("authNo") Long authNo) {
+		
+		try {
+			approvalMapper.deleteApproval(authNo);
+			
+			return "200";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
 	}
 }

@@ -154,16 +154,6 @@ img {
 			$('#popupTable tbody tr[id]').css('cursor', 'pointer')
 			.click(function() {
 				
-				/*
-				var checkbox = $(this).find('input');
-				
-				var isChecked = checkbox.prop('checked');
-				checkbox.prop('checked', !isChecked);
-				
-				if(!isChecked) {
-					$(this).siblings().find('input').prop('checked', false);
-				}
-				*/
 				window.location = '/goalkeepinmanager/popup/showPopupDetail?popupNo=' + $(this).attr('id');
 			});
 			

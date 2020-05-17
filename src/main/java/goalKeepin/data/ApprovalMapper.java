@@ -27,4 +27,8 @@ public interface ApprovalMapper {
 
 	void updateChallengeResult(Map<String, Object> param);
 
+	List<Map<String, Object>> selectProjectList();
+
+	void deleteApproval(Long authNo);
+
 }

@@ -213,4 +213,16 @@ public class PopupController {
 		return "redirect:/popup/showPopupList/1";
 	}
 
+	@PostMapping("/deletePopup")
+	@ResponseBody
+	public String deletePopup(@RequestParam("popupNo") Long popupNo) {
+		
+		try {
+			popupMapper.deletePopup(popupNo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
+		return "200";
+	}
 }

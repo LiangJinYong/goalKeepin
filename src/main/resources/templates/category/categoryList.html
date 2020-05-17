@@ -5,7 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Category List</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 header a, header li {
@@ -17,6 +20,70 @@ header a, header li {
 .row {
 	margin: 15px 0 0 0;
 }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+input[name=categoryOrder] {
+	width: 60px;
+}
 </style>
 </head>
 <body>
@@ -24,6 +91,8 @@ header a, header li {
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Category management</h1>
 			<ul class="list-inline list-unstyled pull-right">
+				<li><a class="btn btn-primary" id="saveOrder" style="display: none;">Save</a></li>
+				<li><a class="btn btn-primary" id="reorderCategories">Reorder categories</a></li>
 				<li><a class="btn btn-primary" th:href="@{/category/createNewCategory}">Create a category</a></li>
 			</ul>
 		</header>
@@ -38,22 +107,32 @@ header a, header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center sortable" id="categoryNmEn">Name of category</h2>
+							<h2 class="h5 text-center sortable" id="categoryNmEn">Name of Category</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center sortable" id="challengeNum">Number of projects</h2>
+							<h2 class="h5 text-center sortable" id="challengeNum">Number of Projects</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="categoryIsMain">Shown on Mainpage</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="categoryOrder">Category Order</h2>
 						</th>
 					</tr>
 				</thead>
 				
 				<tbody>
-					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="category: ${page.pageData}">
+					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="category: ${page.pageData}" th:id="${category.categoryNo}">
 						<td th:text="${category.categoryNo}">NO</td>
 						<td th:text="${category.categoryNmEn}">Category Name</td>
 						<td th:text="${category.challengeNum}">Challenge Num</td>
+						<td>
+							<input type="checkbox" name="categoryIsMainSwitch" data-size="small" data-toggle="toggle" th:checked="${category.categoryIsMain}" th:disabled="${#lists.contains(habitTypeList, #strings.trim(#strings.toUpperCase(category.categoryNmEn)))}">
+						</td>
+						<td th:text="${category.categoryOrder}" th:data-last-order="${category.categoryOrder}">Category Order</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
-						<td colspan="3" class="text-center">
+						<td colspan="5" class="text-center">
 							<h5>No Data Found</h5>
 						</td>
 					</tr>
@@ -97,6 +176,7 @@ header a, header li {
 	</div>
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 	<script th:inline="javascript">
 		var totalRecordNum = /*[[*{page.totalRecordNum}]]*/;
 		var pageSize = /*[[*{page.pageSize}]]*/;
@@ -107,7 +187,82 @@ header a, header li {
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			addSortLink('/goalkeepinmanager/category/showCategoryList/1');	
+			addSortLink('/goalkeepinmanager/category/showCategoryList/1');
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$('input[name=categoryIsMainSwitch]').change(function() {
+				$.ajax({ url: '/goalkeepinmanager/category/toggleCategoryIsMain',  
+					 data: {
+						 categoryNo: $(this).closest('tr').attr('id')
+		 			 },  
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+				 .fail(function() {
+					 alert('Error setting category.')
+				 });
+			});
+			
+			var reorderBtnPressedStatus = false;
+			$('#reorderCategories').click(function() {
+				if(!reorderBtnPressedStatus) {
+					$(this).text('Cancel reorder');
+					$('#categoryTable tr:gt(0) td:nth-child(5)').each(function(index, item) {
+						var orderText = $(item).text();
+						$(item).empty();
+						$('<input type="number" name="categoryOrder">').val(orderText)
+						.appendTo($(item));
+					});
+					
+					$('#saveOrder').show();
+					
+					reorderBtnPressedStatus = true;
+				} else {
+					$(this).text('Reorder categories');
+					
+					$('#categoryTable tr:gt(0) td:nth-child(5)').each(function(index, item) {
+						$(item).empty();
+						$(item).text($(item).data('lastOrder'));
+					});
+					
+					$('#saveOrder').hide();
+					reorderBtnPressedStatus = false;
+				}
+			});
+			
+			$('#saveOrder').click(function() {
+				var data = [];
+				
+				$('#categoryTable tr:gt(0) td:nth-child(5)').each(function(index, item) {
+					var categoryNo = $(item).parent().attr('id');
+					var categoryOrder = $(item).find('input[name=categoryOrder]').val();
+					var item = {'categoryNo': categoryNo, 'categoryOrder': categoryOrder};
+					data.push(item);
+				});
+				
+				if(confirm('Are you sure to save the category order?')) {
+					$.ajax({ url: '/goalkeepinmanager/category/saveCategoryOrders',  
+						 data: JSON.stringify(data),
+						 method: "POST",  
+						 contentType: "application/json", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function() {
+						 window.location = '/goalkeepinmanager/category/showCategoryList/1';
+					 })
+					 .fail(function() {
+						 alert('Error reordering categories.')
+					 });
+				}
+			});
+			
 		});
 	</script>
 </body>

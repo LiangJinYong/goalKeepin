@@ -17,4 +17,5 @@ public class ApprovalDetailResponseDto {
 	private String authUserId;
 	private String authUserEmail;
 	private String approvalStatusCd;
+	private String challengeStatusCd;
 }

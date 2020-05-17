@@ -20,13 +20,13 @@
 	<select id="selectCategoryList" parameterType="map" resultMap="Category">
 		/* selectCategoryList */
 		SELECT ct.category_no categoryNo, tt.trans_en categoryNmEn,
-			(SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB WHERE challenge_category_no = ct.category_no) challengeNum
+			(SELECT COUNT(*) FROM OPERATED_CHALLENGE_TB WHERE challenge_category_no = ct.category_no) challengeNum, category_is_main categoryIsMain, category_order categoryOrder
 		FROM CATEGORY_TB ct INNER JOIN TRANSLATION_TB tt ON ct.category_nm_t_no = tt.trans_no
 		ORDER BY
 		<if test="sortField != null">
 			${sortField} ${sortOrder},
 		</if>
-		category_no DESC
+		category_order
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
 	
@@ -53,4 +53,18 @@
 		VALUES
 		(#{categoryNmTransNo}, #{categoryDescriptionTransNo})
 	</insert>
+	
+	<update id="toggleCategoryIsMain" parameterType="long">
+		/* toggleCategoryIsMain */
+		UPDATE CATEGORY_TB 
+		SET category_is_main = !category_is_main 
+		WHERE category_no = #{categoryNo}
+	</update>
+	
+	<update id="updateCategoryOrders" parameterType="map">
+		/* updateCategoryOrders */
+		UPDATE CATEGORY_TB
+		SET category_order = #{categoryOrder}
+		WHERE category_no = #{categoryNo}
+	</update>
 </mapper>

@@ -27,9 +27,14 @@ header a, header li {
 <body>
 		<input type="hidden" id="authNo" th:value="${approvalDetail.authNo}">
 		<div class="row">
-			<div class="col-md-12">
+			<header class="col-md-12">
 				<h1 class="brand pull-left h3">Verification details</h1>
-			</div>
+				<ul class="list-inline list-unstyled pull-right" th:if="${approvalDetail.challengeStatusCd == 'CH03'}">
+					<li>
+						<a class="btn btn-primary" id="deleteBtn">Delete</a>
+					</li>
+				</ul>
+			</header>
 		</div>
 
 		<section id="contentPart">
@@ -93,11 +98,10 @@ header a, header li {
 	<script type="text/javascript">
 		$(function() {
 			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
 			function processApproval(url) {
-				
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-				
 				$.ajax({ url: url,  
 					 data: {
 						 authNo: $('#authNo').val()
@@ -109,13 +113,7 @@ header a, header li {
 						}
 					 })
 				 .done(function(data) {
-					 var parentWindow = window.parent;
-				 	 var unprocessedApprovalCount = parentWindow.document.getElementById('unprocessedApprovalCount');
-				     var count = parseInt(unprocessedApprovalCount.innerText);
 					
-					 if(count > 0) {
-						 unprocessedApprovalCount.innerText = (count - 1);
-					 }
 					 if(data != '') {
 						 window.location = '/goalkeepinmanager/approval/showApprovalDetail?authNo=' + data;
 					 } else {
@@ -141,7 +139,26 @@ header a, header li {
 				}
 			});
 			
-			
+			$('#deleteBtn').click(function() {
+				if(confirm('Are you sure to delete this approval?')) {
+					$.ajax({ url: '/goalkeepinmanager/approval/deleteApproval',  
+						 data: {
+							 authNo: $('#authNo').val()
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function() {
+						 window.location = '/goalkeepinmanager/approval/showApprovalList/1';
+					 })
+					 .fail(function() {
+						 alert('Error deleting the approval.');
+					 });
+				}
+			});
 		});
 	</script>
 </body>

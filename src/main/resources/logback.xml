@@ -17,13 +17,13 @@
 	</appender>
 
 	<!-- 로거 -->
-	<logger name="com.blink" level="debug" appender-ref="console" />
+	<logger name="com.blink" level="DEBUG" appender-ref="console" />
 	<logger name="jdbc.sqlonly" level="DEBUG"
 		appender-ref="console-infolog" />
 	<logger name="jdbc.resultsettable" level="ERROR"
 		appender-ref="console-infolog" />
 	<!-- 
-	<logger name="org.springframework" level="error" />
+	<logger name="org.springframework" level="DEBUG" />
 	<logger name="org.springframework.jdbc" level="error" />
  -->
 	<!-- 루트 로거 -->

@@ -5,9 +5,17 @@
 <head>
 <meta charset="UTF-8">
 <title>Popup Detail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+}
+
 .filebox input[type="file"] {
 	position: absolute;
 	width: 1px;
@@ -76,6 +84,9 @@ table {
 		<header class="col-md-12">
 			<h1 th:if="${popup.popupNo == null}" class="brand pull-left h3">Create a Pop-up Message</h1>
 			<h1 th:if="${popup.popupNo != null}" class="brand pull-left h3">Modify a Pop-up Message</h1>
+			<ul th:if="${popup.popupNo != null}" class="list-inline list-unstyled pull-right">
+					<li><a href="#" class="btn btn-primary" id="deletePopup">Delete</a></li>
+				</ul>
 		</header>
 	</div>
 	
@@ -425,6 +436,27 @@ table {
 			
 			$('#savePopupForm').submit(function() {
 				return confirm('Are you sure to save the popup?');
+			});
+			
+			$('#deletePopup').click(function() {
+				if(confirm('Are you sure to delete this popup?')) {
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({ url: '/goalkeepinmanager/popup/deletePopup',  
+						 data: {
+							 popupNo: $('#popupNo').val() 
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/popup/showPopupList/1'; 
+					 });
+				}
 			});
 			
 			if(popupImgUrl != null) {

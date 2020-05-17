@@ -9,7 +9,8 @@
 		/* selectUserListById */
 		SELECT user_no userNo, user_id userId, user_nickname nickName, user_login_tp_cd loginTypeCd, DATE_FORMAT(user_reg_dt, '%Y-%m-%d %h:%i:%s') userRegDate
 		FROM USER_TB
-		WHERE user_id LIKE CONCAT('%', #{userId}, '%')
+		WHERE user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%')
 		ORDER BY
 		<if test="sortField != null">
 			${sortField} ${sortOrder},
@@ -22,7 +23,8 @@
 		/* getTotalUserCount */
 		SELECT COUNT(*)
 		FROM USER_TB
-		WHERE user_id LIKE CONCAT('%', #{userId}, '%')
+		WHERE user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%')
 	</select>
 	
 	<insert id="insertRewardPaymentRecords" parameterType="map">

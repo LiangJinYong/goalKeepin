@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.CommonMapper">
+
+	<select id="getContentForPushMessage" parameterType="map" resultType="string">
+		/* getContentForPushMessage */
+		SELECT result_msg 
+		FROM RESULT_CODE_TB 
+		WHERE main_cd = #{mainCode} AND detail_cd = #{detailCode} AND language_cd = #{languageCode}
+	</select>
+	
+	<select id="getLastLanguageForUser" parameterType="int" resultType="string">
+		/* getLastLanguageForUser */
+		SELECT IFNULL(user_last_lang_cd, 'LN01') 
+		FROM USER_TB 
+		WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="getChallengeNameByLanguage" parameterType="map" resultType="string">
+		/* getChallengeNameByLanguage */
+		SELECT
+		<if test='"LN01".equals(languageCode)'>
+			tt.trans_en
+		</if>
+		<if test='"LN02".equals(languageCode)'>
+			tt.trans_t_cn
+		</if>
+		<if test='"LN03".equals(languageCode)'>
+			tt.trans_s_cn
+		</if>
+		FROM BASE_CHALLENGE_TB bct
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
+		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no
+		WHERE oct.challenge_no = #{operatedChallengeNo}
+	</select>
+</mapper>
+

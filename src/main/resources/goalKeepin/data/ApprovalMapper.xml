@@ -24,6 +24,12 @@
 		<if test="approvalStatusCd != null and approvalStatusCd != ''">
 			AND cat.auth_st_cd = #{approvalStatusCd}
 		</if>
+		<if test="project != null and project != ''">
+			AND bct.base_no = #{project}
+		</if>
+		<if test="category != null and category != ''">
+			AND INSTR(bct.base_habit_tp_cd, #{category}) > 0 
+		</if>
 	</sql>
 	
 	<select id="getTotalApprovalCount" parameterType="map" resultType="int">
@@ -46,7 +52,7 @@
 	
 	<select id="selectApprovalDetail" parameterType="long" resultType="goalKeepin.web.dto.ApprovalDetailResponseDto">
 		/* selectApprovalDetail */
-		SELECT cat.auth_no authNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, tt.trans_en challengeName, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, ut.user_id authUserId, ut.user_email authUserEmail, cat.auth_st_cd approvalStatusCd 
+		SELECT cat.auth_no authNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, tt.trans_en challengeName, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, ut.user_id authUserId, ut.user_email authUserEmail, cat.auth_st_cd approvalStatusCd, oct.challenge_st_cd challengeStatusCd 
 		FROM CHALLENGE_AUTH_TB cat
 		LEFT JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no
@@ -95,5 +101,19 @@
 		WHERE entry_user_no = (SELECT auth_user_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
  		AND entry_challenge_no = (SELECT auth_c_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
 	</update>
+	
+	<select id="selectProjectList" resultType="hashmap">
+		/* selectProjectList */
+		SELECT bct.base_no baseNo, tt.trans_en baseNmEn
+		FROM BASE_CHALLENGE_TB bct
+		INNER JOIN TRANSLATION_TB tt
+		ON bct.base_nm_t_no = tt.trans_no
+		ORDER BY bct.base_reg_dt DESC		
+	</select>
+	
+	<delete id="deleteApproval" parameterType="long">
+		/* deleteApproval */
+		DELETE FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo}
+	</delete>
 </mapper>
 

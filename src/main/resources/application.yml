@@ -31,7 +31,8 @@ goalkeepin:
 ---
 spring:
   profiles:
-    active: dev
+    active:
+    - dev
 
 goalkeepin:
   upload:

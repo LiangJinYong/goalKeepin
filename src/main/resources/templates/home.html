@@ -12,7 +12,8 @@
 }
 
 .header {
-	padding: 5px; background : #191970;
+	padding: 5px; 
+	background : #191970;
 	color: #f1f1f1;
 	background: #191970;
 }
@@ -24,6 +25,8 @@
 #sideMenu h2 {
 	color: #AFADAD;
 	margin-left: -40px;
+	margin-left: -25px;
+	margin-top: 20px;
 }
 
 #sideMenu a:link, #sideMenu a:visited, #sideMenu a:hover, #sideMenu a:active
@@ -41,22 +44,18 @@
 .badge {
 	background: #F08080;
 }
-
-#sideMenu h2 {
-	margin-left: -25px;
-	margin-top: 20px;
-}
 </style>
 <body>
 	<form th:action="@{/logout}" method="post" id="logoutForm">
 		<div class="row header">
 			<div class="col-md-12">
-				<div class="col-md-6" style="background: url(images/logo_header.png) no-repeat left center">
+				<div class="col-md-6" style="background: url(images/logo_header.png) no-repeat left center" id="logoBtn">
 					<h1 class="h4" style="margin-left: 25px; margin-top: 16px;">GoalKeepin Admin</h1>
 				</div>
 				<div class="col-md-6">
 					<div class="h5 pull-right">
-						<span>Participants:</span> <span th:text="*{homepageHeaderInfo.totalParicipantCount}"></span> <span style="margin-left: 30px;">Participant amount:</span> <span th:text="*{homepageHeaderInfo.totalFeeAmount}"></span> <a href="#" id="logout" style="margin-left: 30px;"><img src="images/logout.png" title="Logout"></a>
+						<a href="#" id="logout" style="margin-left: 30px;">
+						<img src="images/logout.png" title="Logout"></a>
 					</div>
 				</div>
 			</div>
@@ -67,9 +66,13 @@
 		<div class="col-md-1" style="border-right: 3px solid lightgrey; background-color: #fff; width: 15vw; height: 91.4vh; overflow: auto;" id="sideMenu">
 			<div class="col-md-offset-2">
 				<ul class="list-unstyled">
+					`<h2 class="h5">Home</h2>
+					<ul class="list-unstyled">
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/dashboard}" target="menuFrame" class="highlight">Dashboard</a></li>
+					</ul>
 					<h2 class="h5">Project Management</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame" class="highlight">Project Lists</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame">Project Lists</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">Recruiting Projects</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">Ongoing Projects</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">Completed Projects</a></li>
@@ -80,7 +83,7 @@
 					</ul>
 					<h2 class="h5">Category Management</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a id="category" th:href="@{/category/showCategoryList/1}" target="menuFrame">Category List</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="category" th:href="@{/category/showCategoryList/1}" target="menuFrame">MainPage Category List</a></li>
 					</ul>
 					<h2 class="h5">Project Suggestion</h2>
 					<ul class="list-unstyled">
@@ -116,7 +119,7 @@
 			<!-- 
 			<iframe id="menuFrame" name="menuFrame" th:src="@{/report/showReportDetail?reportNo=1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.3vh;"></iframe>
 	 -->
-			<iframe id="menuFrame" name="menuFrame" th:src="@{/challenge/baseManagement/1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.4vh;"></iframe>
+			<iframe id="menuFrame" name="menuFrame" th:src="@{/dashboard}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.4vh;"></iframe>
 		</div>
 	</div>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
@@ -143,7 +146,12 @@
 			};
 			setInterval(function() {
 				$.ajax(getUnprocessedCounts)
-			}, 10000);
+			}, 1000000);
+			
+			$('#logoBtn').css('cursor', 'pointer')
+			.click(function() {
+				window.location.reload();
+			});
 		});
 	</script>
 </body>

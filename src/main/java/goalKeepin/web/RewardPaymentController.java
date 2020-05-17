@@ -43,7 +43,7 @@ public class RewardPaymentController {
 	
 	@GetMapping("/searchUserList/{pageNum}")
 	@ResponseBody
-	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userId") String userId, @RequestParam(value="sort", required=false) String sort) {
+	public String searchUserList(@PathVariable("pageNum") Integer pageNum, @RequestParam("userSearchText") String userSearchText, @RequestParam(value="sort", required=false) String sort) {
 		Gson gson = new Gson();
 		Map<String, Object> result = new HashMap<>();
 		
@@ -51,7 +51,7 @@ public class RewardPaymentController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
-		paramMap.put("userId", userId);
+		paramMap.put("userSearchText", userSearchText);
 		
 		if (sort != null && !"".equals(sort)) {
 			String[] sortElements = sort.split(",");

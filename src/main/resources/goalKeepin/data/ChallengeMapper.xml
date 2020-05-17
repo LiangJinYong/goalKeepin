@@ -82,12 +82,6 @@
 		<association property="operatedChallenge" resultMap="OperatedChallenge"></association>
 	</resultMap>
 	
-	<select id="selectHomepageHeaderInfo" resultType="hashmap">
-    	/* selectHomepageHeaderInfo */
-		SELECT IFNULL(SUM(challenge_entry_num), 0) totalParicipantCount, IFNULL(SUM(challenge_total_fee), 0) totalFeeAmount
-		FROM OPERATED_CHALLENGE_TB
-	</select>
-	
 	<select id="selectUnprocessedApprovalCount" resultType="int">
     	/* selectUnprocessedApprovalCount */
 		SELECT COUNT(*) FROM CHALLENGE_AUTH_TB WHERE auth_st_cd = 'AS01'
@@ -418,4 +412,49 @@
 		INNER JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
 		WHERE oct.challenge_no = #{operatedNo}
 	</select>
+	
+	<!-- Challenge Cancel and Abort -->
+	<select id="getEntryUserList" parameterType="long" resultType="hashmap">
+		/* getEntryUserList */
+		SELECT entry_user_no userNo, entry_fee entryFee 
+		FROM CHALLENGE_ENTRY_TB 
+		WHERE ENTRY_CHALLENGE_NO = #{operatedChallengeNo}
+	</select>
+	
+	<update id="paybackEntryFee" parameterType="map">
+		/* paybackEntryFee */
+		UPDATE USER_TB 
+		SET user_cash = user_cash + #{entryFee} 
+		WHERE user_no = #{userNo} 
+	</update>
+	
+	<insert id="insertUserCashRecord" parameterType="map">
+		/* insertUserCashRecord */
+		INSERT INTO USER_CASH_REPORT_TB
+		(cash_user_no, report_tp_cd, report_st_cd, report_cash_amt)
+		VALUES
+		(#{userNo}, 'CA06', 'CT02', #{entryFee})
+	</insert>
+	
+	<delete id="deleteChallengeEntry" parameterType="long">
+		/* deleteChallengeEntry */
+		DELETE FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = #{operatedChallengeNo}
+	</delete>
+	
+	<delete id="deleteOperatedChallenge" parameterType="long">
+		/* deleteOperatedChallenge */
+		DELETE FROM OPERATED_CHALLENGE_TB WHERE challenge_no = #{operatedChallengeNo}
+	</delete>
+	
+	<select id="selectReceivingPushMessageStatus" parameterType="int" resultType="boolean">
+		/* selectReceivingPushMessageStatus */
+		SELECT user_push_challenge FROM USER_TB WHERE user_no = #{userNo}
+	</select>
+	
+	<update id="updateChallengeStatus" parameterType="map">
+		/* updateChallengeStatus */
+		UPDATE OPERATED_CHALLENGE_TB 
+		SET challenge_st_cd = #{challengeStatus} 
+		WHERE challenge_no = #{operatedChallengeNo}
+	</update>
 </mapper>

@@ -76,4 +76,18 @@ public interface ChallengeMapper {
 
 	int selectUnprocessedSuggestionCount();
 
+	List<Map<String, Object>> getEntryUserList(Long operatedChallengeNo);
+
+	void paybackEntryFee(Map<String, Object> entryUser);
+
+	void insertUserCashRecord(Map<String, Object> entryUser);
+
+	void deleteChallengeEntry(Long operatedChallengeNo);
+
+	void deleteOperatedChallenge(Long operatedChallengeNo);
+
+	boolean selectReceivingPushMessageStatus(Integer userNo);
+
+	void updateChallengeStatus(Map<String, Object> statusMap);
+
 }

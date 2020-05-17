@@ -25,8 +25,8 @@ input[type=text], input[type=date] {
 	padding: 15px;
 }
 
-input[type=text][id=userId], input[type=text][id=userSearchText] {
-	width: 300px;
+input[type=text][id=userSearchText] {
+	width: 350px;
 	margin-left: 20px;
 	margin-right: 20px;
 }

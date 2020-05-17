@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+<style type="text/css">
+.row {
+	margin: 15px 0 0 0;
+}
+
+.row >div>div {
+	border: 1px solid #191970;
+	border-top-width: 3px;
+	/* margin-right: 75px; */
+}
+
+.card {
+	padding: 10px;
+}
+
+.card-title {
+	color: #AFADAD;
+}
+.card-text {
+	font-weight: bold;
+	font-size: 2em;
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<header class="col-md-12">
+			<h1 class="brand pull-left h3">Dashboard</h1>
+		</header>
+	</div>
+	<div class="row">
+		<header class="col-md-12">
+			<h2 class="brand pull-left h4" th:text="${currentDatetime}">Current Date Time</h2>
+		</header>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total User Count</h5>
+					<p class="card-text" th:text="${dashboard.totalUserCount}">Total User Count</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total Participants</h5>
+					<p class="card-text" th:text="${dashboard.totalParicipantCount}">Total Participants</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total Entry Fee</h5>
+					<p class="card-text" th:text="${dashboard.totalFeeAmount}">Total Participant Amount</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total Reward Amount</h5>
+					<p class="card-text" th:text="${dashboard.totalRewardAmount}">Total Reward Amount</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total Withdraw Amount</h5>
+					<p class="card-text" th:text="${dashboard.totalPaymentAmount}">Total Payment Amount</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Total Challenge Commission</h5>
+					<p class="card-text" th:text="${dashboard.totalCommissionAmount}">Total Commission Amount</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript">
+		
+	</script>
+</body>
+</html>

@@ -39,6 +39,7 @@
 		FROM USER_CASH_REPORT_TB ucrt
 		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
 		WHERE ucrt.report_tp_cd = 'CA03'
+		AND ucrt.report_st_cd != 'CT03'
 		AND ut.user_nationality_cd = #{nationalityCd}
 		<if test="bank != null and bank != ''">
 			AND UPPER(ucrt.report_bank) = UPPER(#{bank})

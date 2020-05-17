@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Goal Keepin</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
@@ -27,8 +27,8 @@ header li {
 #thumbnailImg img {
 	border: 1px solid gray;
 	display: block;
-	max-width:200px;
-	max-height:200px;
+	max-width: 200px;
+	max-height: 200px;
 	width: auto;
 	height: auto;
 }
@@ -41,11 +41,10 @@ header li {
 	margin-left: 10px;
 }
 
-#detailArea > div {
+#detailArea>div {
 	margin-right: 2%;
 }
 </style>
-
 <body style="padding-bottom: 40px;">
 	<div class="row">
 		<header class="col-md-12">
@@ -57,33 +56,32 @@ header li {
 				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger" style="cursor: default;">No verification</a></li>
 				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount > 0}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" class="btn btn-primary" th:text="*{'Review List(' + reviewCount + ')'}"></a></li>
 				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger" style="cursor: default;">No review</a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH01'}"><a id="cancelProject" class="btn btn-danger">Cancel</a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH02'}"><a id="abortProject" class="btn btn-danger">Abort</a></li>
 			</ul>
 		</header>
 	</div>
-	
+
 	<div th:object="${operatedChallenge}">
 		<section id="middlePart">
 			<div class="row">
 				<div class="col-md-6">
 					<h3 class="h5">Name of Project</h3>
-					<span th:text="*{baseChallenge.baseNmEn}" style="margin-right: 20px;"></span>
-					<span th:if="*{statusCd == 'CH01'}" th:text="Recruiting" class="btn btn-info" style="cursor: default;"></span>
-					<span th:if="*{statusCd == 'CH02'}" th:text="Ongoing" class="btn btn-success" style="cursor: default;"></span>
-					<span th:if="*{statusCd == 'CH03'}" th:text="Completed" class="btn btn-danger" style="cursor: default;"></span>
+					<span th:text="*{baseChallenge.baseNmEn}" style="margin-right: 20px;"></span> <span th:if="*{statusCd == 'CH01'}" th:text="Recruiting" class="btn btn-info" style="cursor: default;"></span> <span th:if="*{statusCd == 'CH02'}" th:text="Ongoing" class="btn btn-success" style="cursor: default;"></span> <span th:if="*{statusCd == 'CH03'}" th:text="Completed" class="btn btn-danger" style="cursor: default;"></span>
 				</div>
 				<div class="col-md-6">
 					<h3 class="h5">Registration Date</h3>
 					<span th:text="*{#dates.format(regDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-md-12">
 					<h3 class="h5">Habit type</h3>
 					<span th:text="*{baseChallenge.searchKeyword}">Base Habit Type Text</span>
 				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-md-4" id="thumbnailImg">
 					<h3 class="h5">Thumbnail image</h3>
@@ -91,22 +89,15 @@ header li {
 				</div>
 				<div class="col-md-4">
 					<h3 class="h5">Category setting</h3>
-					<span th:if="*{category.categoryNo != 0}" th:text="*{category.categoryNmEn}"></span>
-					<span th:if="*{category.categoryNo == 0}">No category</span>
+					<span th:if="*{category.categoryNo != 0}" th:text="*{category.categoryNmEn}"></span> <span th:if="*{category.categoryNo == 0}">No category</span>
 				</div>
 				<div class="col-md-4">
 					<h3 class="h5">Level Restriction</h3>
-	 				<span th:if="*{gradeCd} == 'LV00'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV00.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV02'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV02.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV03'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV03.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV04'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV04.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV05'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV05.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV06'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV06.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV07'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV07.gradeName}"></span>
-					<span th:if="*{gradeCd} == 'LV08'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV08.gradeName}"></span>
-				</div>			
+					<span th:if="*{gradeCd} == 'LV00'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV00.gradeName}"></span> <span th:if="*{gradeCd} == 'LV02'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV02.gradeName}"></span> <span th:if="*{gradeCd} == 'LV03'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV03.gradeName}"></span> <span th:if="*{gradeCd} == 'LV04'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV04.gradeName}"></span> <span th:if="*{gradeCd} == 'LV05'"
+						th:text="${T(goalKeepin.constants.ChallengeGrade).LV05.gradeName}"></span> <span th:if="*{gradeCd} == 'LV06'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV06.gradeName}"></span> <span th:if="*{gradeCd} == 'LV07'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV07.gradeName}"></span> <span th:if="*{gradeCd} == 'LV08'" th:text="${T(goalKeepin.constants.ChallengeGrade).LV08.gradeName}"></span>
+				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-md-4">
 					<h3 class="h5">Minimum participation fee (SGD)</h3>
@@ -117,7 +108,7 @@ header li {
 					<span th:text="*{maxFee}"></span>
 				</div>
 			</div>
-			
+
 			<div class="row">
 				<div class="col-md-4">
 					<h3 class="h5">Start date</h3>
@@ -129,7 +120,7 @@ header li {
 				</div>
 			</div>
 		</section>
-		
+
 		<div class="row">
 			<div class="col-md-12">
 				<h2 class="h3">Verification Method</h2>
@@ -140,37 +131,32 @@ header li {
 				<div class="row">
 					<div class="col-md-3">
 						<span>Available day for verification</span>
-					</div>			
+					</div>
 					<div class="col-md-9">
-						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD01'}" th:text="'Mon/Tue/Wed/Thu/Fri'"></span>
-								<span th:if="*{baseChallenge.baseAuthDateCd == 'AD02'}" th:text="'Sat/Sun'"></span>
-								<span th:if="*{baseChallenge.baseAuthDateCd == 'AD03'}" th:text="'Mon/Tue/Wed/Thu/Fri/Sat/Sun'"></span>
+						<span th:if="*{baseChallenge.baseAuthDateCd == 'AD01'}" th:text="'Mon/Tue/Wed/Thu/Fri'"></span> <span th:if="*{baseChallenge.baseAuthDateCd == 'AD02'}" th:text="'Sat/Sun'"></span> <span th:if="*{baseChallenge.baseAuthDateCd == 'AD03'}" th:text="'Mon/Tue/Wed/Thu/Fri/Sat/Sun'"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Frequency</span>
 					</div>
 					<div class="col-md-9">
-						<span th:text="*{baseChallenge.baseAuthFrequency}"></span>
-							<span th:if="*{(baseChallenge.baseAuthDateCd == 'AD01' and baseChallenge.baseAuthFrequency == 5)
+						<span th:text="*{baseChallenge.baseAuthFrequency}"></span> <span th:if="*{(baseChallenge.baseAuthDateCd == 'AD01' and baseChallenge.baseAuthFrequency == 5)
 										or (baseChallenge.baseAuthDateCd == 'AD02' and baseChallenge.baseAuthFrequency == 2)
-										or (baseChallenge.baseAuthDateCd == 'AD03' and baseChallenge.baseAuthFrequency == 7)}"
-								 th:text="'(Everyday)'"></span>
+										or (baseChallenge.baseAuthDateCd == 'AD03' and baseChallenge.baseAuthFrequency == 7)}" th:text="'(Everyday)'"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Available time period for verification</span>
 					</div>
 					<div class="col-md-9">
-						<span th:text="*{baseChallenge.baseAuthFromTime}"></span>
-							 ~ <span th:text="*{baseChallenge.baseAuthToTime}"></span>
+						<span th:text="*{baseChallenge.baseAuthFromTime}"></span> ~ <span th:text="*{baseChallenge.baseAuthToTime}"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Number of verification per day</span>
@@ -179,48 +165,44 @@ header li {
 						<span th:text="*{baseChallenge.baseAuthNumDaily}"></span> Times
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Method</span>
 					</div>
 					<div class="col-md-9">
-						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span>
-						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
+						<span th:if="*{baseChallenge.baseAuthMethodCd == 'AU01'}" th:text="'Photo'"></span> <span th:if="*{baseChallenge.baseAuthMethodCd == 'AU02'}" th:text="'Voice'"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Contents Privacy</span>
 					</div>
 					<div class="col-md-9">
-						<span th:if="*{baseChallenge.baseAuthIsOpen == 1}" th:text="'Public'"></span>
-						<span th:if="*{baseChallenge.baseAuthIsOpen == 0}" th:text="'Private'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsOpen == 1}" th:text="'Public'"></span> <span th:if="*{baseChallenge.baseAuthIsOpen == 0}" th:text="'Private'"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Verification Frequency</span>
 					</div>
 					<div class="col-md-9">
-						<span th:if="*{baseChallenge.baseAuthInterval != 0}" th:text="*{baseChallenge.baseAuthInterval} + 'Hours'"></span>
-							<span th:if="*{baseChallenge.baseAuthInterval == 0}" th:text="'No limit'"></span>
+						<span th:if="*{baseChallenge.baseAuthInterval != 0}" th:text="*{baseChallenge.baseAuthInterval} + 'Hours'"></span> <span th:if="*{baseChallenge.baseAuthInterval == 0}" th:text="'No limit'"></span>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-md-3">
 						<span>Photo album Availability</span>
 					</div>
 					<div class="col-md-9">
-						<span th:if="*{baseChallenge.baseAuthIsAlbum == 1}" th:text="'Possible'"></span>
-						<span th:if="*{baseChallenge.baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
+						<span th:if="*{baseChallenge.baseAuthIsAlbum == 1}" th:text="'Possible'"></span> <span th:if="*{baseChallenge.baseAuthIsAlbum == 0}" th:text="'Impossible'"></span>
 					</div>
 				</div>
 			</section>
-			
+
 			<section id="challengeDetail">
 				<div class="row">
 					<div class="col-md-12">
@@ -248,26 +230,28 @@ header li {
 				</div>
 			</section>
 		</section>
-			
+
 		<section id="detailArea">
-		 	<div class="row">
-		 		<h2 class="h5">Project details (English)</h2>
-		 		<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
-		 	</div>
-		 	<div class="row">
-		 		<h2 class="h5">Project details (Traditional)</h2>
-		 		<textarea id="baseDetailTc" class="summernote" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
-		 	</div>
-		 	<div class="row">
-		 		<h2 class="h5">Project details (Simplified)</h2>
-		 		<textarea id="baseDetailSc" class="summernote" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
-		 	</div>
-		 </section>
-		
+			<div class="row">
+				<h2 class="h5">Project details (English)</h2>
+				<textarea id="baseDetailEn" class="summernote" th:field="*{baseChallenge.baseDetailEn}" required="required"></textarea>
+			</div>
+			<div class="row">
+				<h2 class="h5">Project details (Traditional)</h2>
+				<textarea id="baseDetailTc" class="summernote" th:field="*{baseChallenge.baseDetailTc}" required="required"></textarea>
+			</div>
+			<div class="row">
+				<h2 class="h5">Project details (Simplified)</h2>
+				<textarea id="baseDetailSc" class="summernote" th:field="*{baseChallenge.baseDetailSc}" required="required"></textarea>
+			</div>
+		</section>
+
 	</div>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
-	
+	<script th:inline="javascript">
+    	var operatedChallengeNo = /*[[*{operatedChallenge.operatedChallengeNo}]]*/ null;
+	</script>
 	<script type="text/javascript">
 		$(function() {
 			$('.summernote').summernote({
@@ -291,6 +275,52 @@ header li {
 			 $('#baseDetailTc').summernote('disable');
 			 $('#baseDetailSc').summernote('disable');
 		});
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		$('#cancelProject').click(function() {
+			if(confirm('Are you sure to cancel this project?')) {
+				$.ajax({ url: '/goalkeepinmanager/challenge/cancelProject',  
+					 data: {
+						 operatedChallengeNo: operatedChallengeNo
+		 			 },
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00';
+					 })
+					 .fail(function() {
+						 alert('Error cancelling the project.')
+					 });
+			}
+		});
+		
+		$('#abortProject').click(function() {
+			if(confirm('Are you sure to abort this project?')) {
+				$.ajax({ url: '/goalkeepinmanager/challenge/abortProject',  
+					 data: {
+						 operatedChallengeNo: operatedChallengeNo
+		 			 },
+					 method: "POST",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/ongoing/1?hibitTypeCd=HT00';
+					 })
+					 .fail(function() {
+						 alert('Error aborting the project.');
+					 });
+			}
+	});
+		
 	</script>
 </body>
 </html>

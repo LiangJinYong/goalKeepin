@@ -33,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.ChallengeMapper;
+import goalKeepin.data.CommonMapper;
+import goalKeepin.data.InquiryMapper;
 import goalKeepin.model.BaseChallenge;
 import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.Page;
@@ -40,6 +42,7 @@ import goalKeepin.model.ParticipantEntry;
 import goalKeepin.model.Review;
 import goalKeepin.service.PageService;
 import goalKeepin.util.DateUtils;
+import goalKeepin.util.FCMUtils;
 import goalKeepin.util.FileUploadUtils;
 
 @Controller
@@ -54,6 +57,12 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
+	
+	@Autowired
+	private InquiryMapper inquiryMapper;
+	
+	@Autowired
+	private CommonMapper commonMapper;
 	
 	@Value("${goalkeepin.upload.challenge-thumbnail}")
 	private String thumbnailUploadPath;
@@ -394,6 +403,113 @@ public class ChallengeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().build();
+		}
+	}
+	
+	@PostMapping("/cancelProject")
+	@ResponseBody
+	public String cancelProject(@RequestParam("operatedChallengeNo") Long operatedChallengeNo) {
+		
+		try {
+			List<Map<String, Object>> entryUserList = challengerMapper.getEntryUserList(operatedChallengeNo);
+			
+			for(Map<String, Object> entryUser : entryUserList) {
+				
+				challengerMapper.paybackEntryFee(entryUser);
+				
+				challengerMapper.insertUserCashRecord(entryUser);
+				
+				// send push message
+				Integer userNo = (Integer) entryUser.get("userNo");
+				boolean isReceivingPushMessage = challengerMapper.selectReceivingPushMessageStatus(userNo);
+				
+				if (isReceivingPushMessage) {
+
+					String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
+					String languageCode = commonMapper.getLastLanguageForUser(userNo);
+					
+					Map<String, String> param = new HashMap<>();
+					param.put("mainCode", "P101");
+					param.put("detailCode", "S001");
+					param.put("languageCode", languageCode);
+					String title = commonMapper.getContentForPushMessage(param);
+					param.put("detailCode", "S002");
+					String body = commonMapper.getContentForPushMessage(param);
+					
+					param.put("operatedChallengeNo", String.valueOf(operatedChallengeNo));
+					String challengeName = commonMapper.getChallengeNameByLanguage(param);
+					body = body.replace("###", challengeName);
+					
+					String type = "PS01";
+
+					if (pushToken != null) {
+						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+					}
+				}
+			}
+			
+			challengerMapper.deleteChallengeEntry(operatedChallengeNo);
+			
+			challengerMapper.deleteOperatedChallenge(operatedChallengeNo);
+			
+			return "200";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
+		}
+	}
+
+	@PostMapping("/abortProject")
+	@ResponseBody
+	public String abortProject(@RequestParam("operatedChallengeNo") Long operatedChallengeNo) {
+		
+		try {
+			List<Map<String, Object>> entryUserList = challengerMapper.getEntryUserList(operatedChallengeNo);
+			
+			for(Map<String, Object> entryUser : entryUserList) {
+				
+				challengerMapper.paybackEntryFee(entryUser);
+				
+				challengerMapper.insertUserCashRecord(entryUser);
+				
+				// send push message
+				Integer userNo = (Integer) entryUser.get("userNo");
+				boolean isReceivingPushMessage = challengerMapper.selectReceivingPushMessageStatus(userNo);
+				
+				if (isReceivingPushMessage) {
+
+					String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
+					String languageCode = commonMapper.getLastLanguageForUser(userNo);
+					
+					Map<String, String> param = new HashMap<>();
+					param.put("mainCode", "P102");
+					param.put("detailCode", "S001");
+					param.put("languageCode", languageCode);
+					String title = commonMapper.getContentForPushMessage(param);
+					param.put("detailCode", "S002");
+					String body = commonMapper.getContentForPushMessage(param);
+					
+					param.put("operatedChallengeNo", String.valueOf(operatedChallengeNo));
+					String challengeName = commonMapper.getChallengeNameByLanguage(param);
+					body = body.replace("###", challengeName);
+					
+					String type = "PS01";
+
+					if (pushToken != null) {
+						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+					}
+				}
+			}
+			Map<String, Object> statusMap = new HashMap<>();
+			
+			statusMap.put("operatedChallengeNo", operatedChallengeNo);
+			statusMap.put("challengeStatus", "CH04");
+			challengerMapper.updateChallengeStatus(statusMap);
+			
+			return "200";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "500";
 		}
 	}
 }

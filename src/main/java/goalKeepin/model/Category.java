@@ -17,5 +17,9 @@ public class Category {
 	private String categoryDescriptionTc;
 	private String categoryDescriptionSc;
 	
-	private int challengeNum;
+	private Integer challengeNum;
+	
+	private boolean categoryIsMain;
+	
+	private Integer categoryOrder;
 }
