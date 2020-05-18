@@ -9,14 +9,20 @@
 		/* getTotalUserCount */
 		SELECT COUNT(*) totalUserCount
 		FROM USER_TB 
-		WHERE user_nationality_cd = #{nationalityCd}
+		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%') ) 
+		AND user_nationality_cd = #{nationalityCd}
 	</select>
 	
 	<select id="selectUserListByIdAndNickname" parameterType="map" resultType="hashmap">
-		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_login_tp_cd loginTypeCd, DATE_FORMAT(user_reg_dt, '%Y-%m-%d %h:%i:%s') userRegDate
-		FROM USER_TB
-		WHERE ( user_id LIKE CONCAT('%', #{userSearchText}, '%')
-		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%') )
+		/* selectUserListByIdAndNickname */
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_cash userCash
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND cash_user_no = ut.user_no), 0) withdrawAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND cash_user_no = ut.user_no), 0) rewardAmount
+		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate
+		FROM USER_TB ut
+		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%'))
 		AND user_nationality_cd = #{nationalityCd}
 		ORDER BY
 		<if test="sortField != null">
@@ -25,4 +31,67 @@
 		user_no DESC
 		LIMIT ${startIndex}, ${pageSize}
 	</select>
+	
+	<select id="selectUserListForDownload" parameterType="string" resultType="hashmap">
+		/* selectUserListForDownload */
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_cash userCash
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND cash_user_no = ut.user_no), 0) withdrawAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND cash_user_no = ut.user_no), 0) rewardAmount
+		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate
+		FROM USER_TB ut
+		WHERE user_nationality_cd = #{nationalityCd}
+		ORDER BY user_no DESC
+	</select>
+	
+	<select id="selectUserDetail" parameterType="long" resultType="goalKeepin.web.dto.UserDetailDto">
+		/* selectUserDetail */
+		SELECT user_no userNo, user_id userId, user_grade_cd userGrade, CONCAT(user_first_nm, ' ', user_last_nm) username, user_nickname nickname, user_phonenum phoneNumber, user_email email, user_image_url userImageUrl, user_cash userCash, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate 
+		FROM USER_TB 
+		WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="selectYellowCardNumber" parameterType="long" resultType="int">
+		/* selectUserDetail */
+		SELECT y_card_num FROM USER_TB WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="selectRedCardNumber" parameterType="long" resultType="int">
+		/* selectRedCardNumber */
+		SELECT r_card_num FROM USER_TB WHERE user_no = #{userNo}
+	</select>
+	
+	<update id="increaseYellowCardNumber" parameterType="long">
+		/* increaseYellowCardNumber */
+		UPDATE USER_TB
+		SET y_card_num = y_card_num + 1
+		WHERE user_no = #{userNo}
+	</update>
+	
+	<update id="resetYellowCardNumber" parameterType="long">
+		/* resetYellowCardNumber */
+		UPDATE USER_TB
+		SET y_card_num = 0
+		WHERE user_no = #{userNo}
+	</update>
+	
+	<update id="increaseRedCardNumber" parameterType="long">
+		/* increaseRedCardNumber */
+		UPDATE USER_TB
+		SET r_card_num = r_card_num + 1
+		WHERE user_no = #{userNo}
+	</update>
+	
+	<update id="updateRedCardExpiredDate" parameterType="map">
+		/* updateRedCardExpiredDate */
+		UPDATE USER_TB
+		SET R_CARD_EXPIRED_DT = DATE_ADD(NOW(), INTERVAL ${expiredMonthNumber} MONTH)
+		WHERE user_no = #{userNo}
+	</update>
+	
+	<update id="clearToken" parameterType="long">
+		/* clearToken */
+		UPDATE USER_TB
+		SET user_login_token = NULL
+		WHERE user_no = #{userNo}
+	</update>
 </mapper>

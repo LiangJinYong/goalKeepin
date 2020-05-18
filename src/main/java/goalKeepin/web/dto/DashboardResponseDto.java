@@ -1,5 +1,8 @@
 package goalKeepin.web.dto;
 
+import java.util.List;
+import java.util.Map;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -13,4 +16,9 @@ public class DashboardResponseDto {
 	private final Double totalRewardAmount;
 	private final Double totalPaymentAmount;
 	private final Double totalCommissionAmount;
+	
+	private List<Map<String, Object>> recentOngoingProjectList;
+	private List<Map<String, Object>> todayApprovalList;
+	private List<Map<String, Object>> unpaidRewardList;
+	
 }

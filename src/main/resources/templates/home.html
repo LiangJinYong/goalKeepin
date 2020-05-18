@@ -74,12 +74,12 @@
 					<ul class="list-unstyled">
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/baseManagement/1}" target="menuFrame">Project Lists</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/recruiting/1?hibitTypeCd=HT00}" target="menuFrame">Recruiting Projects</a></li>
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">Ongoing Projects</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="ongoingProjects" th:href="@{/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00}" target="menuFrame">Ongoing Projects</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/challenge/showOperatedChallengeListByStatus/expired/1?habitTypeCd=HT00}" target="menuFrame">Completed Projects</a></li>
 					</ul>
 					<h2 class="h5">Verification Approval</h2>
 					<ul class="list-unstyled">
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/approval/showApprovalList/1?verificationType=&approvalStatusCd=}" target="menuFrame">Approval <span class="badge" th:text="${unprocessedApprovalCount}" id="unprocessedApprovalCount">unprocessedApprovalCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="approval" th:href="@{/approval/showApprovalList/1?verificationType=&approvalStatusCd=}" target="menuFrame">Approval <span class="badge" th:text="${unprocessedApprovalCount}" id="unprocessedApprovalCount">unprocessedApprovalCount</span></a></li>
 					</ul>
 					<h2 class="h5">Category Management</h2>
 					<ul class="list-unstyled">
@@ -106,7 +106,7 @@
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/faq/showFaqList/1}" target="menuFrame">FAQ</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">Inquiry <span class="badge" th:text="${unprocessedInquiryCount}" id="unprocessedInquiryCount">unprocessedReportCount</span></a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/statistics/showStatisticsLink}" target="menuFrame">Statistics</a></li>
-						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">Reward Payment</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a id="rewardPayment" th:href="@{/rewardPayment/showRewardPaymentDetail}" target="menuFrame">Reward Payment</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/badgeGift/showBadgeGiftDetail}" target="menuFrame">Gift Badge</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">Push Notification</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">Pop-up Setting</a></li>

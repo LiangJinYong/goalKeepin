@@ -40,7 +40,7 @@ function loadUserData(userSearchText, sort) {
 				processPagination(data, getUrl, sort);
 			} else {
 				$('#userData').empty();
-				var row = '<tr class="text-center"><td colspan="5">No Data Found</td></tr>';
+				var row = '<tr class="text-center"><td colspan="9">No Data Found</td></tr>';
 				$('#userData').append(row);
 				$('#pagingArea').empty();
 			}
@@ -84,20 +84,29 @@ function addSortLink(data) {
 
 function processTableData(pageData, pageNum, pageSize) {
 	$('#userData').empty();
-	
 	// table data
 	for(var i=0; i<pageData.length; i++) {
-		var row = '<tr class="text-center">';
+		var row = '<tr class="text-center" style="cursor: pointer;" id="' + pageData[i].userNo + '">';
 		row += '<td>';
 		row += (parseInt(pageNum) - 1) * pageSize + (i + 1);
 		row += '</td><td>';
+		row += '<a href="/goalkeepinmanager/user/showUserDetail?userNo=' + pageData[i].userNo + '">'
 		row += pageData[i].userId;
+		row += '</a>'
 		row += '</td><td>';
 		row += pageData[i].nickName;
 		row += '</td><td>';
-		row += pageData[i].loginTypeCd;
+		row += pageData[i].userCash;
 		row += '</td><td>';
-		row += pageData[i].userRegDate;
+		row += pageData[i].withdrawAmount;
+		row += '</td><td>';
+		row += pageData[i].rewardAmount;
+		row += '</td><td>';
+		row += pageData[i].yellowCardNumber;
+		row += '</td><td>';
+		row += pageData[i].redCardNumber;
+		row += '</td><td>';
+		row += pageData[i].redCardExpiredDate;
 		row += '</td></tr>';
 		
 		$('#userData').append(row);

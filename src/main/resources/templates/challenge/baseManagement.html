@@ -37,9 +37,6 @@ header a, header li {
 							<h2 class="h5 text-center">NO</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center sortable" id="baseNo">Project ID</h2>
-						</th>
-						<th>
 							<h2 class="h5 text-center sortable" id="name">Name of Project</h2>
 						</th>
 						<th>
@@ -56,7 +53,6 @@ header a, header li {
 				<tbody>
 					<tr th:if="*{page.totalRecordNum > 0}" class="text-center" th:each="challenge: ${page.pageData}" th:id="${challenge.baseNo}" style="cursor: pointer;">
 						<td th:text="${challenge.baseNo}">NO</td>
-						<td th:text="${challenge.baseNo}">Base No</td>
 						<td th:text="${challenge.name}">Challenge Name</td>
 						<td th:text="${challenge.recruiting}">Recruiting Challenge</td>
 						<td th:text="${challenge.ongoing}">Ongoing Challenge</td>

@@ -10,23 +10,45 @@
 	margin: 15px 0 0 0;
 }
 
-.row >div>div {
+.row > div > div {
 	border: 1px solid #191970;
 	border-top-width: 3px;
-	/* margin-right: 75px; */
 }
 
 .card {
 	padding: 10px;
+	background-color: #fcfcfc;
 }
 
-.card-title {
+table thead {
+	background-color: #fcfcfc;
+}
+
+.card-title, caption {
 	color: #AFADAD;
+	font-weight: bold;
 }
 .card-text {
 	font-weight: bold;
 	font-size: 2em;
 	text-align: center;
+}
+
+.waiting {
+	color: blue;
+}
+
+.approved {
+	color: green;
+}
+
+.denied {
+	color: red;
+
+}
+
+caption a {
+	text-decoration: underline;
 }
 </style>
 </head>
@@ -67,6 +89,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div class="row">
 		<div class="col-md-4">
 			<div class="card">
@@ -93,9 +116,130 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="row" style="margin-top: 60px;">
+		<div class="col-md-4">
+			<table id="projectTable" class="table table-striped table-hover">
+				<caption>Recent Ongoing Projects<a class="pull-right" id="moreProjects" href="#">More</a></caption>
+				<thead>
+					<tr>
+						<th>
+							<h2 class="h5 text-center">Sub Project Id</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Name of Projects</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Number of Participants</h2>
+						</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) > 0}" class="text-center" th:each="recentProject: ${dashboard.recentOngoingProjectList}">
+						<td th:text="${recentProject.subProjectId}">Sub Project Id</td>
+						<td th:text="${recentProject.projectName}">Name of Projects</td>
+						<td th:text="${recentProject.numOfParticipants}">Number of Participants</td>
+					</tr>
+					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) == 0}" class="text-center">
+						<td colspan="3" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-4">
+			<table id="projectTable" class="table table-striped table-hover">
+				<caption>Approvals For Today<a class="pull-right" id="moreApprovals" href="#">More</a></caption>
+				<thead>
+					<tr>
+						<th>
+							<h2 class="h5 text-center">Approval Id</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Type</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Status</h2>
+						</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:if="${#lists.size(dashboard.todayApprovalList) > 0}" class="text-center" th:each="todayApproval: ${dashboard.todayApprovalList}">
+						<td th:text="${todayApproval.authId}">Approval Id</td>
+						<td th:if="${todayApproval.authTypeCd == 'AU01'}" th:text="Photo">Type</td>
+						<td th:if="${todayApproval.authTypeCd == 'AU02'}" th:text="Voice">Type</td>
+						<td class="waiting" th:if="${todayApproval.authStatusCd == 'AS01'}" th:text="Waiting">Status</td>
+						<td class="approved" th:if="${todayApproval.authStatusCd == 'AS02'}" th:text="Approved">Status</td>
+						<td class="denied" th:if="${todayApproval.authStatusCd == 'AS03'}" th:text="Disapproved">Status</td>
+					</tr>
+					<tr th:if="${#lists.size(dashboard.todayApprovalList) == 0}" class="text-center">
+						<td colspan="3" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-4">
+			<table id="projectTable" class="table table-striped table-hover">
+				<caption>Unpaid Reward<a class="pull-right" id="moreRewards" href="#">More</a></caption>
+				<thead>
+					<tr>
+						<th>
+							<h2 class="h5 text-center">Sub Project Id</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Name of Projects</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center">Number of Participants</h2>
+						</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) > 0}" class="text-center" th:each="recentProject: ${dashboard.recentOngoingProjectList}">
+						<td th:text="${recentProject.subProjectId}">Sub Project Id</td>
+						<td th:text="${recentProject.projectName}">Name of Projects</td>
+						<td th:text="${recentProject.numOfParticipants}">Number of Participants</td>
+					</tr>
+					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) == 0}" class="text-center">
+						<td colspan="3" class="text-center">
+							<h5>No Data Found</h5>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
+		$('#moreProjects').click(function() {
+			setHighlight('ongoingProjects');
+			window.location = '/goalkeepinmanager/challenge/showOperatedChallengeListByStatus/ongoing/1?habitTypeCd=HT00'; 
+		});
 		
+		$('#moreApprovals').click(function() {
+			setHighlight('approval');
+			window.location = '/goalkeepinmanager/approval/showApprovalList/1?verificationType=&approvalStatusCd='; 
+		});
+		
+		$('#moreRewards').click(function() {
+			setHighlight('rewardPayment');
+			$('#rewardPayment').scroll();
+			window.location = '/goalkeepinmanager/rewardPayment/showRewardPaymentDetail'; 
+		});
+		
+		function setHighlight(highlightElementId) {
+			 var parentWindow = window.parent;
+			 var highlightElementId = parentWindow.document.getElementById(highlightElementId);
+			 $(highlightElementId).parents('ul').parent('ul').find('a').removeClass('highlight');
+			 $(highlightElementId).addClass('highlight');
+		}
 	</script>
 </body>
 </html>

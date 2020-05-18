@@ -53,10 +53,22 @@ table {
 							<h2 class="h5 text-center sortable" id="nickName">Nickname</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center sortable" id="loginTypeCd">Login Type</h2>
+							<h2 class="h5 text-center sortable" id="userCash">Cash Amount</h2>
 						</th>
 						<th>
-							<h2 class="h5 text-center sortable" id="userRegDate">Sign up Date</h2>
+							<h2 class="h5 text-center sortable" id="withdrawAmount">Withdraw Amount</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="rewardAmount">Reward Amount</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="yellowCardNumber">Yellow Card</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="redCardNumber">Red Card</h2>
+						</th>
+						<th>
+							<h2 class="h5 text-center sortable" id="redCardExpiredDate">Red Card Expired Date</h2>
 						</th>
 					</tr>
 				</thead>
@@ -73,13 +85,21 @@ table {
 		</nav>
 	</div>
 	
+	<div class="row">
+		<div class="col-md-4">
+			<a id="downloadExcel" th:href="@{/user/excelDownload/} + ${country}" class="btn btn-primary">Download Excel</a>
+		</div>
+	</div>
+	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
-	<script th:inline="javascript">
-	</script>
 	<script type="text/javascript" th:src="@{/js/userSearchByForUserList.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			
+			$('#userData tr').hover(function() {
+				$(this).css('backgroundColor', 'red');
+			}, function() {
+				$(this).css('backgroundColor', 'white');
+			});
 		});
 	</script>
 </body>

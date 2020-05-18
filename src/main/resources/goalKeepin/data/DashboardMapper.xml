@@ -34,5 +34,24 @@
 		/* selectTotalCommissionAmount */
 		SELECT COUNT(*) FROM USER_CASH_REPORT_TB WHERE REPORT_TP_CD = 'CA03' AND REPORT_ST_CD = 'CT02'
 	</select>
+	
+	<select id="selectRecentOngongProjectList" resultType="hashmap">
+		/* selectRecentOngongProjectList */
+		SELECT oct.challenge_no subProjectId, tt.trans_en projectName, (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = oct.challenge_no) numOfParticipants  
+		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no
+		WHERE oct.challenge_st_cd = 'CH02'
+		ORDER BY oct.challenge_start_dt DESC 
+		LIMIT 5
+	</select>
+	
+	<select id="selectTodayApprovalList" resultType="hashmap">
+		/* selectTodayApprovalList */
+		SELECT auth_no authId, auth_tp_cd authTypeCd, auth_st_cd authStatusCd 
+		FROM CHALLENGE_AUTH_TB cat 
+		WHERE DATE(auth_reg_dt) = CURDATE()
+		ORDER BY auth_reg_dt DESC 
+		LIMIT 5
+	</select>
 </mapper>
 

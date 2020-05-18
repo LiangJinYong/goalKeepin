@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>User List</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+<style type="text/css">
+.row {
+	margin: 15px 0 0 0;
+}
+
+#userSearchText {
+	width: 350px;
+}
+
+table {
+	border: 1px solid #ccc;
+}
+
+.userItem {
+	margin-bottom: 20px;
+}
+
+span.title {
+	font-weight: bold;
+	margin-right: 20px;
+}
+
+h2 + span {
+	margin-left: 40px;
+}
+</style>
+</head>
+<body>
+	<input type="hidden" th:value="${userDetail.userNo}" id="userNo">
+	<div class="row header">
+		<header class="col-md-12 navbar-header">
+			<h1 class="brand pull-left h3">Basic User Information</h1>
+		</header>
+	</div>
+	<section id="basicInfoPart">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-6">
+					<div class="userItem">
+						<span class="title">User ID:</span><span th:text="${userDetail.userId}"></span>
+					</div>
+					<div class="userItem">
+						<span class="title">Grade:</span><span th:text="${userDetail.userGrade}">Grade</span>
+					</div>
+					<div class="userItem">
+						<span class="title">Name:</span><span th:text="${userDetail.username}">Kim</span>
+					</div>
+					<div class="userItem">
+						<span class="title">Phone Number:</span><span th:text="${userDetail.phoneNumber}">123123123</span>
+					</div>
+					<div class="userItem">
+						<span class="title">Email:</span><span th:text="${userDetail.email}">test@gmail.com</span>
+					</div>
+					<div class="userItem">
+						<span class="title">Nickname:</span><span th:text="${userDetail.nickname}">Goalkeepin</span>
+					</div>
+					<div class="userItem">
+						<span class="title">User Cash:</span><span th:text="${userDetail.userCash}">2000</span>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div>
+						<span class="h5">User Photo</span>
+					</div>
+					<div class="text-center" style="margin-top: 40px;">
+					    <img id="userPhoto" th:src="${userDetail.userImageUrl}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="h3">Penalty</h2>
+		</div>
+	</div>
+	
+	<section id="penaltyPart">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-4">
+					<h2 class="h5">Yellow Card</h2>
+					<span th:text="${userDetail.yellowCardNumber}"></span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Red Card</h2>
+					<span th:text="${userDetail.redCardNumber}"></span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Red Card Expired Date</h2>
+					<span th:text="${userDetail.redCardExpiredDate}"></span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-4">
+					<a class="btn btn-warning" id="giveYellowCard">Give Yellow Card</a>
+				</div>
+				<div class="col-md-4">
+					<a class="btn btn-danger" id="giveRedCard">Give Red Card</a>
+				</div>			
+			</div>
+		</div>
+	</section>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="h3">Cash Report</h2>
+		</div>
+	</div>
+	<section id="cashReportPart">
+		<div class="row">
+			<div class="col-md-12">
+				<label>Cash Report Type</label>
+				<select name="cashReportType">
+					<option>Reward</option>
+					<option>Reward</option>
+					<option>Reward</option>
+					<option>Reward</option>
+					<option>Reward</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<table>
+					<thead>
+						<th>No</th>
+						<th>Amount</th>
+						<th>Registration Date</th>
+						<th>Process Status</th>
+					</thead>
+				</table>	
+			</div>
+		</div>
+	</section>
+
+
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$('#giveYellowCard').click(function() {
+				if(confirm('Are you sure to give the user a yellow card?')) {
+					$.ajax({ url: '/goalkeepinmanager/user/giveYellowCard',  
+						 data: {
+							userNo: $('#userNo').val() 
+						 },
+						 method: "POST",  
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function() {
+						 alert('Giving the user a yellow card successfully.');
+						 location.reload();
+					 })
+					 .fail(function() {
+						 alert('Error giving yellow card.')
+					 });
+				}
+			});
+			
+			$('#giveRedCard').click(function() {
+				alert('r');
+			});
+		});
+	</script>
+</body>
+</html>

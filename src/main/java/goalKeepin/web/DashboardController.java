@@ -2,6 +2,8 @@ package goalKeepin.web;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +36,14 @@ public class DashboardController {
 		Double totalPaymentAmount=dashboardMapper.selectTotalPaymentAmount();
 		Double totalCommissionAmount=dashboardMapper.selectTotalCommissionAmount();
 		
+		List<Map<String, Object>> recentOngoingProjectList = dashboardMapper.selectRecentOngongProjectList();
+		List<Map<String, Object>> todayApprovalList = dashboardMapper.selectTodayApprovalList();
+//		List<Map<String, Object>> unpaidRewardList = dashboardMapper.selectUnpaidRewardList();
+		
 		DashboardResponseDto dashboard = new DashboardResponseDto(totalUserCount, totalParicipantCount, totalFeeAmount, totalRewardAmount, totalPaymentAmount, totalCommissionAmount);
+		dashboard.setRecentOngoingProjectList(recentOngoingProjectList);
+		dashboard.setTodayApprovalList(todayApprovalList);
+		
 		model.addAttribute("dashboard", dashboard);
 		return "dashboard/dashboard";
 	}

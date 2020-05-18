@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class User {
 
-	private long userNo;
+	private Long userNo;
 	private String userId;
 	private String loginTypeCd;
 	private String nickName;
