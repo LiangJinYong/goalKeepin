@@ -213,7 +213,8 @@
 		FROM CATEGORY_TB ct
 		INNER JOIN TRANSLATION_TB tt
 		ON ct.category_nm_t_no = tt.trans_no
-		ORDER BY category_no DESC
+		WHERE ct.category_is_main = 1
+		ORDER BY category_order ASC, category_no DESC
 	</select>
 	
 	<insert id="insertOperatedChallengeInfo" parameterType="OperatedChallenge">
@@ -228,6 +229,7 @@
 		FROM BASE_CHALLENGE_TB bct
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
 		WHERE bct.base_no = #{baseNo}
+		AND challenge_st_cd IN ('CH01', 'CH02', 'CH03')
 	</sql>
 	
 	<select id="getOperatedChallengeCountByBase" parameterType="long" resultType="int">
@@ -445,11 +447,6 @@
 		/* deleteOperatedChallenge */
 		DELETE FROM OPERATED_CHALLENGE_TB WHERE challenge_no = #{operatedChallengeNo}
 	</delete>
-	
-	<select id="selectReceivingPushMessageStatus" parameterType="int" resultType="boolean">
-		/* selectReceivingPushMessageStatus */
-		SELECT user_push_challenge FROM USER_TB WHERE user_no = #{userNo}
-	</select>
 	
 	<update id="updateChallengeStatus" parameterType="map">
 		/* updateChallengeStatus */

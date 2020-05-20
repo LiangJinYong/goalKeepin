@@ -44,6 +44,7 @@ import goalKeepin.service.PageService;
 import goalKeepin.util.DateUtils;
 import goalKeepin.util.FCMUtils;
 import goalKeepin.util.FileUploadUtils;
+import goalKeepin.util.SortUtils;
 
 @Controller
 @RequestMapping("/challenge")
@@ -74,19 +75,7 @@ public class ChallengeController {
 	public String baseManagement(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
-		
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
 		
 		List<Map<String, Object>> pageData = challengerMapper.selectBaseChallengeList(paramMap);
 		int totalRecordNum = challengerMapper.getTotalBaseChallengeNum();
@@ -114,21 +103,10 @@ public class ChallengeController {
 		}
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
+		
 		paramMap.put("statusCd", statusCd);
 		paramMap.put("habitTypeCd", habitTypeCd);
-		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
 		
 		int totalRecordNum = challengerMapper.getAllOperatedChallengeCount(paramMap);
 		List<OperatedChallenge> pageData = challengerMapper.selectAllOperatedChallengeList(paramMap);
@@ -163,7 +141,6 @@ public class ChallengeController {
 			String filePath = FileUploadUtils.processFileUpload(file, thumbnailUploadPath, null);
 			baseChallenge.setBaseThumbnailUrl("/app/goalkeepinImage/challengeImage/" + filePath);
 		}
-        
         
         challengerMapper.insertOrUpdateBaseNmTrans(baseChallenge);
 		challengerMapper.insertOrUpdateBaseAuthDescTrans(baseChallenge);
@@ -232,20 +209,9 @@ public class ChallengeController {
 	public String showOperatedChallengeList(@RequestParam("baseNo") Long baseNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
-		paramMap.put("baseNo", baseNo);
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
 		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
+		paramMap.put("baseNo", baseNo);
 		
 		List<OperatedChallenge> pageData = challengerMapper.selectOperatedChallengeListByBaseNo(paramMap);
 		int totalRecordNum = challengerMapper.getOperatedChallengeCountByBase(baseNo);
@@ -279,20 +245,9 @@ public class ChallengeController {
 	public String showParticipantList(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("operatedNo", operatedNo);
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
 		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
+		paramMap.put("operatedNo", operatedNo);
 		
 		int challengeProofCount = challengerMapper.getChallengeProofCount(operatedNo);
 		model.addAttribute("challengeProofCount", challengeProofCount);
@@ -369,21 +324,9 @@ public class ChallengeController {
 	public String showReviewListByChallenge(@RequestParam("operatedNo") Long operatedNo, @PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
+		
 		paramMap.put("operatedNo", operatedNo);
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
-		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
-		
 		List<Review> pageData = challengerMapper.selectReviewListByChallenge(paramMap);
 		int totalRecordNum = challengerMapper.getReviewCountByChallenge(operatedNo);
 		
@@ -421,11 +364,11 @@ public class ChallengeController {
 				
 				// send push message
 				Integer userNo = (Integer) entryUser.get("userNo");
-				boolean isReceivingPushMessage = challengerMapper.selectReceivingPushMessageStatus(userNo);
+				boolean isReceivingPushMessage = commonMapper.selectReceivingChallengePushStatus(userNo);
 				
 				if (isReceivingPushMessage) {
 
-					String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
+					String pushToken = commonMapper.getPushTokenByUserNo(userNo);
 					String languageCode = commonMapper.getLastLanguageForUser(userNo);
 					
 					Map<String, String> param = new HashMap<>();
@@ -474,11 +417,10 @@ public class ChallengeController {
 				
 				// send push message
 				Integer userNo = (Integer) entryUser.get("userNo");
-				boolean isReceivingPushMessage = challengerMapper.selectReceivingPushMessageStatus(userNo);
+				boolean isReceivingPushMessage = commonMapper.selectReceivingChallengePushStatus(userNo);
 				
 				if (isReceivingPushMessage) {
-
-					String pushToken = inquiryMapper.getPushTokenByUserNo(userNo);
+					String pushToken = commonMapper.getPushTokenByUserNo(userNo);
 					String languageCode = commonMapper.getLastLanguageForUser(userNo);
 					
 					Map<String, String> param = new HashMap<>();

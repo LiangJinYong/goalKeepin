@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import goalKeepin.data.CommonMapper;
 import goalKeepin.data.InquiryMapper;
 import goalKeepin.util.FCMUtils;
 
@@ -17,6 +18,9 @@ public class PushNotificationController {
 
 	@Autowired
 	private InquiryMapper inquiryMapper;
+	
+	@Autowired
+	private CommonMapper commonMapper;
 	
 	@GetMapping("/showPushNotificationDetail")
 	public String showPushNotificationDetail() {
@@ -31,7 +35,7 @@ public class PushNotificationController {
 		String[] users = userNos.split(",");
 		
 		for(String userNo : users) {
-			String pushToken = inquiryMapper.getPushTokenByUserNo(Long.parseLong(userNo));
+			String pushToken = commonMapper.getPushTokenByUserNo(Long.parseLong(userNo));
 			String title = "[GoalKeepin]";
 			String body = notificationMessage;
 			String type = "PS06";

@@ -32,7 +32,7 @@
 	
 	<select id="selectTotalCommissionAmount" resultType="double">
 		/* selectTotalCommissionAmount */
-		SELECT COUNT(*) FROM USER_CASH_REPORT_TB WHERE REPORT_TP_CD = 'CA03' AND REPORT_ST_CD = 'CT02'
+		SELECT FORMAT(IFNULL(SUM(failed_fee),0) * 0.099, 1) FROM OPERATED_CHALLENGE_TB
 	</select>
 	
 	<select id="selectRecentOngongProjectList" resultType="hashmap">

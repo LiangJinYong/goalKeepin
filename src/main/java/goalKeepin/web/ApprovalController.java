@@ -24,6 +24,7 @@ import goalKeepin.data.ApprovalMapper;
 import goalKeepin.model.Approval;
 import goalKeepin.model.Page;
 import goalKeepin.service.PageService;
+import goalKeepin.util.SortUtils;
 import goalKeepin.web.dto.ApprovalDetailResponseDto;
 
 @Controller
@@ -51,22 +52,10 @@ public class ApprovalController {
 		}
 
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
-
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
+		
 		Map<String, String[]> approvalFormParam = request.getParameterMap();
 		paramMap.putAll(convertParamMap(approvalFormParam));
-
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
 
 		List<Approval> pageData = approvalMapper.selectApprovalList(paramMap);
 		int totalRecordNum = approvalMapper.getTotalApprovalCount(paramMap);

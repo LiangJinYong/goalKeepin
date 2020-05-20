@@ -32,6 +32,19 @@ span.title {
 h2 + span {
 	margin-left: 40px;
 }
+
+.waiting {
+	color: red;
+}
+
+.finished {
+	color: green;
+}
+
+#userPhoto {
+	max-width:200px;
+	max-height:200px;
+}
 </style>
 </head>
 <body>
@@ -73,7 +86,8 @@ h2 + span {
 						<span class="h5">User Photo</span>
 					</div>
 					<div class="text-center" style="margin-top: 40px;">
-					    <img id="userPhoto" th:src="${userDetail.userImageUrl}">
+					    <img id="userPhoto" th:if="${userDetail.userImageUrl != null}" th:src="${userDetail.userImageUrl}">
+					    <img id="userPhoto" th:if="${userDetail.userImageUrl == null}" src="/app/goalkeepinImage/userImage/noImage.jpg">
 					</div>
 				</div>
 			</div>
@@ -107,10 +121,10 @@ h2 + span {
 		<div class="row">
 			<div class="col-md-12">
 				<div class="col-md-4">
-					<a class="btn btn-warning" id="giveYellowCard">Give Yellow Card</a>
+					<a class="btn btn-warning" id="giveYellowCard" th:if="${userDetail.redCardNumber < 2}">Give Yellow Card</a>
 				</div>
 				<div class="col-md-4">
-					<a class="btn btn-danger" id="giveRedCard">Give Red Card</a>
+					<a class="btn btn-danger" id="giveRedCard" th:if="${userDetail.redCardNumber < 2}">Give Red Card</a>
 				</div>			
 			</div>
 		</div>
@@ -125,30 +139,30 @@ h2 + span {
 		<div class="row">
 			<div class="col-md-12">
 				<label>Cash Report Type</label>
-				<select name="cashReportType">
-					<option>Reward</option>
-					<option>Reward</option>
-					<option>Reward</option>
-					<option>Reward</option>
-					<option>Reward</option>
+				<select id="cashReportType" name="cashReportType" style="margin-left: 20px;">
+					<option value="">-- SELECT --</option>
+					<option th:each="cashReportType: ${T(goalKeepin.constants.CashReportType).values()}" th:value="${cashReportType}" th:text="${cashReportType.cashReportTypeName}"></option>
 				</select>
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-12">
-				<table>
+				<table id="cashReportTable" class="table table-striped table-hover">
 					<thead>
-						<th>No</th>
-						<th>Amount</th>
-						<th>Registration Date</th>
-						<th>Process Status</th>
+						<tr>
+							<th class="h5 text-center">No</th>
+							<th class="h5 text-center">Amount</th>
+							<th class="h5 text-center">Registration Date</th>
+							<th class="h5 text-center">Process Status</th>
+						</tr>
 					</thead>
+					<tbody id="userData">
+					</tbody>
 				</table>	
 			</div>
 		</div>
 	</section>
-
 
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
@@ -178,7 +192,71 @@ h2 + span {
 			});
 			
 			$('#giveRedCard').click(function() {
-				alert('r');
+				if(confirm('Are you sure to give the user a red card?')) {
+					$.ajax({ url: '/goalkeepinmanager/user/giveRedCard',  
+						 data: {
+							userNo: $('#userNo').val() 
+						 },
+						 method: "POST",  
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function() {
+						 alert('Giving the user a red card successfully.');
+						 location.reload();
+					 })
+					 .fail(function() {
+						 alert('Error giving red card.')
+					 });
+				}
+			});
+			
+			$('#cashReportType').change(function() {
+				$.ajax({ url: '/goalkeepinmanager/user/getCashReportList',  
+					 data: {
+						 userNo: $('#userNo').val(),
+						 cashReportType: $('#cashReportType').val()
+					 },
+					 method: "GET",  
+					 dataType: "text", 
+					 beforeSend : function(xhr) {
+					    xhr.setRequestHeader(header, token);
+						}
+					 })
+					 .done(function(cashReportList) {
+						 cashReportList = JSON.parse(cashReportList);
+						 console.log(cashReportList);
+						$('#userData').empty();
+						for(var i=0; i<cashReportList.length; i++) {
+							
+							var cashReport = cashReportList[i];
+							
+							var reportStatusName;
+							switch(cashReport.reportStatusCd) {
+								case 'CT01':
+									reportStatusName = '<span class="waiting">Waiting</span>';
+									break;
+								case 'CT02':
+									reportStatusName = '<span class="finished">Finished</span>';
+									break;
+							}
+							
+							var row = '<tr class="text-center" id="' + cashReport.userNo + '">';
+							row += '<td>';
+							row += (i + 1);
+							row += '</td><td>';
+							row += cashReport.reportCashAmt;
+							row += '</td><td>';
+							row += cashReport.cashReportRegDate;
+							row += '</td><td>';
+							row += reportStatusName;
+							row += '</td></tr>';
+							
+							$('#userData').append(row);
+						}
+						
+					 });
 			});
 		});
 	</script>

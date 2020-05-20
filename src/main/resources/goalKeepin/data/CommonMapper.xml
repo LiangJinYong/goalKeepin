@@ -36,5 +36,27 @@
 		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no
 		WHERE oct.challenge_no = #{operatedChallengeNo}
 	</select>
+	
+	<select id="getPushTokenByUserNo" parameterType="long" resultType="string">
+		/* getPushTokenByUserNo */
+		SELECT user_push_token 
+		FROM USER_TB 
+		WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="selectReceivingChallengePushStatus" parameterType="int" resultType="boolean">
+		/* selectReceivingChallengePushStatus */
+		SELECT user_push_challenge FROM USER_TB WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="selectReceivingRelationPushStatus" parameterType="int" resultType="boolean">
+		/* selectReceivingRelationPushStatus */
+		SELECT user_push_relation FROM USER_TB WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="selectReceivingAdPushStatus" parameterType="int" resultType="boolean">
+		/* selectReceivingAdPushStatus */
+		SELECT user_push_ad FROM USER_TB WHERE user_no = #{userNo}
+	</select>
 </mapper>
 

@@ -22,8 +22,6 @@ public interface UserMapper {
 
 	void increaseYellowCardNumber(Long userNo);
 
-	void resetYellowCardNumber(Long userNo);
-
 	void increaseRedCardNumber(Long userNo);
 
 	int selectRedCardNumber(Long userNo);
@@ -31,4 +29,6 @@ public interface UserMapper {
 	void updateRedCardExpiredDate(Map<String, Object> param);
 
 	void clearToken(Long userNo);
+
+	List<Map<String, Object>> selectCashReportList(Map<String, Object> param);
 }

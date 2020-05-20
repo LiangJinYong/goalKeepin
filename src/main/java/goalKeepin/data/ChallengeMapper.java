@@ -86,8 +86,6 @@ public interface ChallengeMapper {
 
 	void deleteOperatedChallenge(Long operatedChallengeNo);
 
-	boolean selectReceivingPushMessageStatus(Integer userNo);
-
 	void updateChallengeStatus(Map<String, Object> statusMap);
 
 }

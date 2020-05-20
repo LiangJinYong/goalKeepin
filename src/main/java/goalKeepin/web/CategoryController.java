@@ -1,7 +1,6 @@
 package goalKeepin.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import goalKeepin.data.CategoryMapper;
 import goalKeepin.model.Category;
 import goalKeepin.model.Page;
 import goalKeepin.service.PageService;
+import goalKeepin.util.SortUtils;
 
 @Controller
 @RequestMapping("/category")
@@ -40,19 +40,7 @@ public class CategoryController {
 	public String showCategoryList(@PathVariable("pageNum") Integer pageNum, Model model, @RequestParam(value="sort", required=false) String sort) {
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
-		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
 		
 		List<Category> pageData = categoryMapper.selectCategoryList(paramMap);
 		int totalRecordNum = categoryMapper.getTotalCategoryCount();
@@ -83,6 +71,8 @@ public class CategoryController {
 	public String processCagegoryCreation(Category category) {
 		categoryMapper.insertCategoryNmTrans(category);
 		categoryMapper.insertCategoryDescriptionTrans(category);
+		Integer categoryOrder = categoryMapper.selectNextCategoryOrder();
+		category.setCategoryOrder(categoryOrder);
 		categoryMapper.insertNewCategory(category);
 		return "redirect:/category/showCategoryList/1";
 	}

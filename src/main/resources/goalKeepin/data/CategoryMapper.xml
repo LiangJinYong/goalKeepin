@@ -49,9 +49,9 @@
 	<insert id="insertNewCategory" parameterType="Category">
 		/* insertNewCategory */
 		INSERT INTO CATEGORY_TB
-		(category_nm_t_no, category_txt_t_no)
+		(category_nm_t_no, category_txt_t_no, category_order)
 		VALUES
-		(#{categoryNmTransNo}, #{categoryDescriptionTransNo})
+		(#{categoryNmTransNo}, #{categoryDescriptionTransNo}, #{categoryOrder})
 	</insert>
 	
 	<update id="toggleCategoryIsMain" parameterType="long">
@@ -67,4 +67,9 @@
 		SET category_order = #{categoryOrder}
 		WHERE category_no = #{categoryNo}
 	</update>
+	
+	<select id="selectNextCategoryOrder" resultType="int">
+		/* selectNextCategoryOrder */
+		SELECT IFNULL(MAX(category_order), 0) + 1 FROM CATEGORY_TB
+	</select>
 </mapper>

@@ -12,4 +12,12 @@ public interface CommonMapper {
 	String getLastLanguageForUser(Integer userNo);
 
 	String getChallengeNameByLanguage(Map<String, String> param);
+	
+	String getPushTokenByUserNo(long userNo);
+
+	boolean selectReceivingChallengePushStatus(Integer userNo);
+	
+	boolean selectReceivingRelationPushStatus(Integer userNo);
+	
+	boolean selectReceivingAdPushStatus(Integer userNo);
 }

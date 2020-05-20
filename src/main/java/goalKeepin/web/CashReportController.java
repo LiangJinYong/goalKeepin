@@ -36,6 +36,7 @@ import goalKeepin.data.CashReportMapper;
 import goalKeepin.model.CashReport;
 import goalKeepin.model.Page;
 import goalKeepin.service.PageService;
+import goalKeepin.util.SortUtils;
 
 @Controller
 @RequestMapping("/cashReport")
@@ -68,23 +69,12 @@ public class CashReportController {
 		}
 		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
+		
 		paramMap.put("nationalityCd", nationalityCd);
 		
 		Map<String, String[]> cashReportFormParam = request.getParameterMap();
 		paramMap.putAll(convertParamMap(cashReportFormParam));
-		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
 		
 		int totalRecordNum = cashReportMapper.getTotalCashReportCount(paramMap);
 		List<CashReport> pageData = cashReportMapper.selectCashReportList(paramMap);

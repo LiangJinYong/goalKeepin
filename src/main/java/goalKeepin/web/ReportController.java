@@ -19,6 +19,7 @@ import goalKeepin.data.ReportMapper;
 import goalKeepin.model.Page;
 import goalKeepin.model.Report;
 import goalKeepin.service.PageService;
+import goalKeepin.util.SortUtils;
 import goalKeepin.web.dto.ReportDetailResponseDto;
 import goalKeepin.web.dto.ReportingUser;
 
@@ -39,26 +40,14 @@ public class ReportController {
 	public String showReportList(@RequestParam(name = "reportStatus", required = false) String reportStatus,
 			@PathVariable("pageNum") Integer pageNum, Model model,
 			@RequestParam(value = "sort", required = false) String sort) {
+		
 		int pageSize = props.getPageSize();
-		Map<String, Object> paramMap = new HashMap<>();
-
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
+		
 		if (reportStatus == null) {
 			reportStatus = "";
 		}
-
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
 		paramMap.put("reportStatus", reportStatus);
-
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
 
 		List<Report> pageData = reportMapper.selectReportList(paramMap);
 		int totalRecordNum = reportMapper.getTotalReportCount(paramMap);

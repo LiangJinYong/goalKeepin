@@ -59,11 +59,4 @@
 		inquiry_st_cd = 'IN02'
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
-	
-	<select id="getPushTokenByUserNo" parameterType="long" resultType="string">
-		/* getPushTokenByUserNo */
-		SELECT user_push_token 
-		FROM USER_TB 
-		WHERE user_no = #{userNo}
-	</select>
 </mapper>

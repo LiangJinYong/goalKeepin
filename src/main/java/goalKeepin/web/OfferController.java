@@ -18,6 +18,7 @@ import goalKeepin.data.OfferMapper;
 import goalKeepin.model.Offer;
 import goalKeepin.model.Page;
 import goalKeepin.service.PageService;
+import goalKeepin.util.SortUtils;
 
 @Controller
 @RequestMapping("/offer")
@@ -37,24 +38,12 @@ public class OfferController {
 		
 		int pageSize = props.getPageSize();
 		
-		Map<String, Object> paramMap = new HashMap<>();
+		Map<String, Object> paramMap = SortUtils.getParamMap(pageNum, pageSize, model, sort);
 		
 		if (offerStatusCd == null) {
 			offerStatusCd = "VO00";
 		}
 		paramMap.put("offerStatusCd", offerStatusCd);
-		paramMap.put("startIndex", (pageNum - 1) * pageSize);
-		paramMap.put("pageSize", pageSize);
-		
-		if (sort != null) {
-			String[] sortElements = sort.split(",");
-			String sortField = sortElements[0];
-			String sortOrder = sortElements[1];
-			model.addAttribute("sortField", sortField);
-			model.addAttribute("sortOrder", sortOrder);
-			paramMap.put("sortField", sortField);
-			paramMap.put("sortOrder", sortOrder);
-		}
 		
 		List<Offer> pageData = offerMapper.selectOfferList(paramMap);
 		int totalRecordNum = offerMapper.getTotalOfferCount(paramMap);

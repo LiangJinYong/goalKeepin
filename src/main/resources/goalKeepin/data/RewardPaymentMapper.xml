@@ -38,4 +38,91 @@
 	</insert>
 	
 	
+	<!-- NEW -->
+	<sql id="completedChallengeList">
+		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no
+		WHERE oct.challenge_st_cd = 'CH03'
+		<if test="challengeIsAllPaid != null and challengeIsAllPaid != ''">
+			AND (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB cet WHERE obtain_reward_by_result = 0 AND cet.entry_challenge_no = oct.challenge_no) > 0
+		</if>
+	</sql>
+	
+	<select id="selectCompletedChallengeList" parameterType="map" resultType="goalKeepin.web.dto.CompletedChallengeResponseDto">
+		/* selectCompletedChallengeList */
+		SELECT oct.challenge_no challengeNo, tt.trans_en challengeName, oct.challenge_total_fee totalParticipationFee
+		, CASE WHEN oct.challenge_total_fee = 0 THEN 0 ELSE (oct.challenge_total_fee - IFNULL(oct.failed_fee, 0)) / oct.challenge_total_fee * 100 END refundRate
+		, oct.challenge_total_fee - IFNULL(oct.failed_fee, 0) totalRefundAmount 
+		, (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB cet WHERE obtain_reward_by_result = 1 AND cet.entry_challenge_no = oct.challenge_no) paidRewardNumber,
+		(SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB cet WHERE obtain_reward_by_result = 0 AND cet.entry_challenge_no = oct.challenge_no) unpaidRewardNumber
+		<include refid="completedChallengeList" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		challenge_start_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="getTotalCompletedChallengeNum" parameterType="map" resultType="int">
+		/* getTotalCompletedChallengeNum */
+		SELECT COUNT(*)
+		<include refid="completedChallengeList" />
+	</select>
+	
+	<sql id="rewardUser">
+		FROM CHALLENGE_ENTRY_TB cet INNER JOIN USER_TB ut ON cet.entry_user_no = ut.user_no
+		WHERE cet.entry_challenge_no = #{challengeNo}
+	</sql>
+	
+	<select id="selectRewardUserList" parameterType="map" resultType="goalKeepin.web.dto.RewardUserResponseDto">
+		/* selectRewardUserList */
+		SELECT ut.user_no userNo, ut.user_id userId, cet.entry_use_cash participationFee, cet.entry_result completeRate, IFNULL(reward_amt, 0) rewardAmount, CASE WHEN ut.r_card_num > 0 THEN 1 ELSE 0 END hasRedCard, cet.obtain_reward_by_result hasPaidReward
+		<include refid="rewardUser" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		entry_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="getTotalRewardUserNum" parameterType="map" resultType="int">
+		/* getTotalRewardUserNum */
+		SELECT COUNT(*)
+		<include refid="rewardUser" />
+	</select>
+	
+	<update id="updateRewardUser" parameterType="map">
+		/* updateRewardUser */
+		UPDATE CHALLENGE_ENTRY_TB
+		SET reward_amt = #{rewardAmount}
+		, obtain_reward_by_result = 1
+		WHERE entry_challenge_no = #{challengeNo}
+		AND entry_user_no = #{userNo}
+	</update>
+	
+	<insert id="insertUserCashReport" parameterType="map">
+		/* insertUserCashReport */
+		INSERT INTO USER_CASH_REPORT_TB (cash_user_no, report_tp_cd, report_st_cd, report_cash_amt)
+		VALUES (#{userNo}, 'CA02', 'CT02', #{rewardAmount})
+	</insert>
+	
+	<select id="selectCompletedChallengeListForDownload" resultType="goalKeepin.web.dto.CompletedChallengeResponseDto">
+		/* selectCompletedChallengeListForDownload */
+		SELECT oct.challenge_no challengeNo, tt.trans_en challengeName, oct.challenge_total_fee totalParticipationFee
+		, CASE WHEN oct.challenge_total_fee = 0 THEN 0 ELSE (oct.challenge_total_fee - IFNULL(oct.failed_fee, 0)) / oct.challenge_total_fee * 100 END refundRate
+		, oct.challenge_total_fee - IFNULL(oct.failed_fee, 0) totalRefundAmount 
+		, (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB cet WHERE obtain_reward_by_result = 1 AND cet.entry_challenge_no = oct.challenge_no) paidRewardNumber,
+		(SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB cet WHERE obtain_reward_by_result = 0 AND cet.entry_challenge_no = oct.challenge_no) unpaidRewardNumber
+		<include refid="completedChallengeList" />
+		ORDER BY challenge_start_dt DESC
+	</select>
+	
+	<select id="selectRewardUserListForDownload" parameterType="long" resultType="goalKeepin.web.dto.RewardUserResponseDto">
+		/* selectRewardUserListForDownload */
+		SELECT ut.user_no userNo, ut.user_id userId, cet.entry_use_cash participationFee, cet.entry_result completeRate, IFNULL(reward_amt, 0) rewardAmount, CASE WHEN ut.r_card_num > 0 THEN 1 ELSE 0 END hasRedCard, cet.obtain_reward_by_result hasPaidReward
+		<include refid="rewardUser" />
+		ORDER BY entry_reg_dt DESC
+	</select>
 </mapper>

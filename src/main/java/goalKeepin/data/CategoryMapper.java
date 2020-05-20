@@ -23,4 +23,6 @@ public interface CategoryMapper {
 	void toggleCategoryIsMain(Long categoryNo);
 
 	void updateCategoryOrders(Map<String, Object> categoryOrder);
+
+	Integer selectNextCategoryOrder();
 }

@@ -75,9 +75,7 @@ public class UserController {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startIndex", (pageNum - 1) * pageSize);
 		paramMap.put("pageSize", pageSize);
-		paramMap.put("userSearchText", userSearchText);
-		paramMap.put("nationalityCd", nationalityCd);
-
+		
 		if (sort != null && !"".equals(sort)) {
 			String[] sortElements = sort.split(",");
 			String sortField = sortElements[0];
@@ -88,6 +86,10 @@ public class UserController {
 			paramMap.put("sortField", sortField);
 			paramMap.put("sortOrder", sortOrder);
 		}
+		
+		paramMap.put("userSearchText", userSearchText);
+		paramMap.put("nationalityCd", nationalityCd);
+
 
 		List<Map<String, String>> pageData = userMapper.selectUserListByIdAndNickname(paramMap);
 		int totalRecordNum = userMapper.getTotalUserCount(paramMap);
@@ -120,7 +122,6 @@ public class UserController {
 		if (yellowCardNumber == 0) {
 			userMapper.increaseYellowCardNumber(userNo);
 		} else if (yellowCardNumber == 1) {
-			userMapper.resetYellowCardNumber(userNo);
 			userMapper.increaseRedCardNumber(userNo);
 			
 			int redCardNumber = userMapper.selectRedCardNumber(userNo);
@@ -137,6 +138,38 @@ public class UserController {
 			}
 		}
 		return "200";
+	}
+	
+	@PostMapping("/giveRedCard")
+	@ResponseBody
+	public String giveRedCard(@RequestParam("userNo") Long userNo) {
+			
+		int redCardNumber = userMapper.selectRedCardNumber(userNo);
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("userNo", userNo);
+		if (redCardNumber == 0) {
+			param.put("expiredMonthNumber", 1);
+			userMapper.increaseRedCardNumber(userNo);
+			userMapper.updateRedCardExpiredDate(param);
+		} else if (redCardNumber == 1) {
+			param.put("expiredMonthNumber", 3);
+			userMapper.increaseRedCardNumber(userNo);
+			userMapper.updateRedCardExpiredDate(param);
+			userMapper.clearToken(userNo);
+		}
+		return "200";
+	}
+	
+	@GetMapping("/getCashReportList")
+	@ResponseBody
+	public List<Map<String, Object>> getCashReportList(@RequestParam("userNo") Long userNo, @RequestParam("cashReportType") String cashReportType) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("userNo", userNo);
+		param.put("cashReportType", cashReportType);
+		List<Map<String, Object>> result = userMapper.selectCashReportList(param);
+		
+		return result;
 	}
 
 	@GetMapping("/excelDownload/{country}")

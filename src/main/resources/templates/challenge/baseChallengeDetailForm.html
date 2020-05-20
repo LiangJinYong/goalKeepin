@@ -158,7 +158,8 @@ input[type=text] {
 				<div class="col-md-4" id="thumbnailImg">
 					<h3 class="h5">Thumbnail image (jpg/jpeg/png)</h3>
 					<input type="file" name="baseThumbnailUrl" th:field="*{baseThumbnailUrl}" class="add" required="required" accept="image/jpeg,image/jpg,image/png" />
-					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;"> <img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
+					<img id="imgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+					<img th:src="*{baseThumbnailUrl}" class="view" style="margin-top: 10px; margin-left: 100px;">
 				</div>
 				<div class="col-md-4 forRecruiting">
 					<h3 class="h5">Category setting</h3>

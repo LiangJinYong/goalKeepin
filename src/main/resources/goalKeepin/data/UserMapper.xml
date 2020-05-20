@@ -67,17 +67,10 @@
 		WHERE user_no = #{userNo}
 	</update>
 	
-	<update id="resetYellowCardNumber" parameterType="long">
-		/* resetYellowCardNumber */
-		UPDATE USER_TB
-		SET y_card_num = 0
-		WHERE user_no = #{userNo}
-	</update>
-	
 	<update id="increaseRedCardNumber" parameterType="long">
 		/* increaseRedCardNumber */
 		UPDATE USER_TB
-		SET r_card_num = r_card_num + 1
+		SET y_card_num = 0, r_card_num = r_card_num + 1
 		WHERE user_no = #{userNo}
 	</update>
 	
@@ -94,4 +87,14 @@
 		SET user_login_token = NULL
 		WHERE user_no = #{userNo}
 	</update>
+	
+	<select id="selectCashReportList" parameterType="map" resultType="hashmap">
+		/* selectCashReportList */
+		SELECT cash_report_no cashReportNo, report_cash_amt reportCashAmt, DATE_FORMAT(report_reg_dt, '%Y-%m-%d %h:%i:%s') cashReportRegDate, report_st_cd reportStatusCd
+		FROM USER_CASH_REPORT_TB
+		WHERE cash_user_no = #{userNo}
+		AND report_st_cd != 'CT03'
+		AND report_tp_cd = #{cashReportType}
+		ORDER BY report_reg_dt DESC
+	</select>
 </mapper>
