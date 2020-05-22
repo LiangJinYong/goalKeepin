@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Banner Detail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+<style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+}
+
+.filebox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.filebox label {
+	display: inline-block;
+	padding: .5em .75em;
+	color: #999;
+	font-size: inherit;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #fdfdfd;
+	cursor: pointer;
+	border: 1px solid #ebebeb;
+	border-bottom-color: #e2e2e2;
+	border-radius: .25em;
+}
+
+.filebox.bs3-primary label {
+	color: #fff;
+	background-color: #191970;
+	border-color: #2e6da4;
+}
+
+img[name=imgPreview] {
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+#contentArea {
+	display: none;
+	margin-left: -10px;
+}
+
+table {
+	border: 1px solid #ccc;
+}
+
+#imgPreview {
+	border: 1px solid gray;
+	display: block;
+	max-width:200px;
+	max-height:200px;
+	width: auto;
+	height: auto;
+}
+
+</style>
+</head>
+<body>
+	<div class="row">
+		<header class="col-md-12">
+			<h1 th:if="${banner.bannerNo == null}" class="brand pull-left h3">Create a Banner</h1>
+			<h1 th:if="${banner.bannerNo != null}" class="brand pull-left h3">Modify a Banner</h1>
+			<ul th:if="${banner.bannerNo != null}" class="list-inline list-unstyled pull-right">
+					<li><a href="#" class="btn btn-primary" id="deleteBanner">Delete</a></li>
+				</ul>
+		</header>
+	</div>
+	
+	<form method="post" th:action="${banner.bannerNo == null ? '/goalkeepinmanager/banner/processBannerCreation' : '/goalkeepinmanager/banner/processBannerModification'}" th:object="${banner}" enctype="multipart/form-data" id="saveBannerForm">
+		<section id="selectPart">
+			<input type="hidden" name="bannerNo" th:field="*{bannerNo}" />
+			<div class="row">
+				<div class="col-md-12">
+					<div class="filebox bs3-primary preview-image">
+						<img src="" style="display: none;"><br />
+						<input class="upload-name" value="Select an image" disabled="disabled"
+							style="width: 200px;"> 
+						<label for="bannerImage">Banner Image</label>
+						<input type="file" id="bannerImage" class="upload-hidden" required="required"
+							 name="bannerImage" accept="image/jpeg,image/jpg,image/png">
+							 <span style="margin-left: 30px; color: #191970;">* Recommended image size proportion is 1:3.</span>
+						<div>
+							<img name="imgPreview" id="bannerImgPreview" src="#" style="display: none; margin-top: 10px; margin-left: 100px;">
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<label>Type</label>
+					<select th:field="*{bannerTypeCd}">
+						<option value="BA00">Type</option>
+						<option value="BA01">Notice</option>
+						<option value="BA02">Challenge</option>
+						<option value="BA03">External URL</option>
+					</select>
+				</div>
+			</div>
+		</section>
+		
+		<section id="contentArea">
+			<div class="row">
+				<div class="col-md-12">
+					<label>Connected Content</label>
+				</div>
+			</div>
+			<section id="tableContent">
+				<div class="row">
+					<div class="col-md-12">
+						<table id="bannerContentTable" class="table table-striped table-hover">
+							<thead id="tableHead">
+								<tr>
+									<th>
+									</th>
+									<th>
+										<h2 class="h5 text-center">NO</h2>
+									</th>
+									<th>
+										<h2 class="h5 text-center sortable" id="contentTitleEn">Title</h2>
+									</th>
+									<th>
+										<h2 class="h5 text-center sortable" id="contentRegDate">Registration Date</h2>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="contentData"></tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="row text-center">
+					<div class="col-md-11">
+						<nav aria-label="Page navigation" id="pagingArea">
+							
+						</nav>
+					</div>
+				</div>
+			</section>
+			<section id="externalUrlArea">
+				<div class="row">
+					<div class="col-md-12">
+							<label>External Url</label>
+							<input type="text" id="externalUrl" style="width: 300px; margin-left: 30px;" th:value="*{bannerTypeCd == 'BA03' ? bannerTarget : ''}">
+					</div>
+				</div>
+			</section>
+			
+			<input type="hidden" name="bannerTarget" id="bannerTarget">
+			<div class="row">
+				<div class="col-md-12">
+					<input id="bannerIsMain" th:field="*{bannerIsMain}" type="checkbox" value="0"><label for="bannerIsMain" style="margin-left: 10px;">Do you want the banner to be exposed on main page?</label>
+				</div>
+			</div>
+			<div class="row text-center" style="margin-top: 30px;">
+				<div class="col-md-11">
+					<input type="submit" value="Save" class="btn btn-primary" id="saveBanner" />
+				</div>
+			</div>
+		</section>
+	</form>
+	
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var bannerNo = /*[[*{banner.bannerNo}]]*/;
+		var bannerImgUrl = /*[[*{banner.bannerImgUrl}]]*/;
+		var bannerTypeCd = /*[[*{banner.bannerTypeCd}]]*/;
+		var bannerTarget = /*[[*{banner.bannerTarget}]]*/;
+		var bannerIsMain = /*[[*{banner.bannerIsMain}]]*/;
+	</script>
+	<script type="text/javascript">
+	
+		$(function() {
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$('#bannerIsMain').change(function(e) {
+				
+				if($(this).prop('checked')) {
+					if(bannerNo == null || (bannerNo != null && !bannerIsMain)) {
+						$.ajax({ url: '/goalkeepinmanager/banner/getMainBannerCount',  
+							 data: { 
+				 			 },  
+							 method: "GET",  
+							 dataType: "text", 
+							 beforeSend : function(xhr) {
+							    xhr.setRequestHeader(header, token);
+								}
+							 })
+						 .done(function(count) {
+							 if(parseInt(count) >= 3) {
+								 alert('3 banners have already been set to display on main page.');
+								 $('#bannerIsMain').prop('checked', false);
+							 }
+						 });
+					}
+					
+					$(this).val('1');
+				} else {
+					$(this).val('0');
+				}
+			});
+			
+			var noticeUrl = '/goalkeepinmanager/popup/getNoticeList/';
+			var challengeUrl = '/goalkeepinmanager/popup/getChallengeList/';
+			
+			$('#bannerTypeCd').change(function() {
+				var selectedType = $(this).val();
+				
+				if('BA01' == selectedType) {
+					loadContentData(noticeUrl, null);
+				} else if ('BA02' == selectedType) {
+					loadContentData(challengeUrl, null);
+				} else if ('BA03' == selectedType) {
+					$('#contentArea').show();
+					$('#externalUrlArea').show();
+					$('#tableContent').hide();
+				} else {
+					$('#contentArea').hide();
+				}
+			});
+			
+			function loadContentData(getUrl, sort) {
+				$('#contentData').empty();
+				$('#pagingArea').empty();
+				$('#contentArea').show();
+				$('#tableContent').show();
+				$('#externalUrlArea').hide();
+				
+				$.getJSON(getUrl + 1,
+					{
+						sort: sort
+					},
+					function(data) {
+						addSortLink(data);
+						processTableData(data);
+						processPagination(data, getUrl);
+						processTableNo();
+				});
+			}
+			
+			function addSortLink(data) {
+				var sortField = data.sortField;
+				var sortOrder = data.sortOrder;
+				
+				if(data.page.totalRecordNum > 1) {
+					$('.table .sortable').each(function() {
+						$(this).css({'cursor': 'pointer', 'color': '#3A7FBA'});
+						
+						var sortSymbol;
+						if(sortField == null || sortField != $(this).attr('id')) {
+							sortSymbol = $('<span class="originalSort"></span>');
+						} else {
+							if(sortOrder == 'asc') {
+								sortSymbol = $('<span class="asc" style="color: green;"></span>');
+							} else {
+								sortSymbol = $('<span class="desc" style="color: red;"></span>');
+							}
+						}
+						$(this).find('span').remove();
+						$(this).append(sortSymbol);
+					});
+					
+					$('.table .sortable').off('click').click(function(e) {
+						var bannerTypeCd = $('#bannerTypeCd').val();
+						
+						var getUrl = noticeUrl;
+						if(bannerTypeCd == 'PO02') {
+							getUrl = challengeUrl;
+						}
+						
+						if($(this).has('span.asc').length > 0) {
+							loadContentData(getUrl, $(this).attr('id') + ',desc')
+						} else {
+							loadContentData(getUrl, $(this).attr('id') + ',asc')
+						}
+					});
+				}
+			}
+			
+			function processTableData(data) {
+				$('#contentData').empty();
+				var contentList = data.page.pageData;
+				var contentData = '';
+				
+				if(contentList.length > 0) {
+					for(var i=0; i < contentList.length; i++) {
+						contentData += '<tr class="text-center" ';
+						contentData += 'id="' + contentList[i].contentNo + '">';
+						contentData += '<td>';
+						// 배너 정보 수정시 기존에 선택된 연결 컨텐츠의 체크박스가 체크돼야함 
+						if($('#bannerTypeCd').val() == bannerTypeCd && contentList[i].contentNo == bannerTarget) {
+							contentData += '<input type="checkbox" checked="checked">';
+						} else {
+							contentData += '<input type="checkbox">';
+						}
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentNo;
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentTitleEn;
+						contentData += '</td>';
+						contentData += '<td>';
+						contentData += contentList[i].contentRegDate;
+						contentData += '</td>';
+						contentData += '</tr>';
+					}
+				} else {
+					contentData += '<tr class="text-center">';
+					contentData += '<td colspan="4">No Data Found</td>';
+					contentData += '</tr>';
+				}
+				
+				$('#contentData').append(contentData);
+				
+				$('#bannerContentTable tbody tr').css('cursor', 'pointer')
+				.click(function() {
+					var checkbox = $(this).find('input');
+					var isChecked = checkbox.prop('checked');
+					checkbox.prop('checked', !isChecked);
+					
+					if(!isChecked) {
+						$(this).siblings().find('input').prop('checked', false);
+						$('#bannerTarget').val($(this).attr('id'));
+					}
+				});
+				
+				$('#bannerContentTable input').click(function(e) {
+					e.stopPropagation();
+					
+					if($(this).prop('checked')) {
+						$(this).parents('tr').siblings().find('input').prop('checked', false);					
+						$('#bannerTarget').val($(this).parents('tr').attr('id'));
+					}
+				});
+			}
+			
+			function processPagination(data, getUrl) {
+				$('#pagingArea').empty();
+				var currentPageNum = data.page.pageNum;
+				var totalPageNum = data.page.totalPageNum;
+				
+				if(totalPageNum > 0) {
+					var pagination = '<ul class="pagination" id="pagination">';
+					
+					if(totalPageNum > 10 && currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;&lt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-1">'
+						pagination += '&lt;&lt;</a></li>';
+					}
+					
+					if(currentPageNum == 1) {
+						pagination += '<li class="page-item"><a class="page-link">&lt;</a></li>';
+					}
+					
+					if(currentPageNum > 1) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum - 1) + '">'
+						pagination += '&lt;</a></li>';
+					}
+					
+					for(var i=data.page.firstPageNum; i<=data.page.lastPageNum; i++) {
+						pagination += '<li class="page-item page-no';
+						if(data.page.pageNum == i) {
+							pagination += ' active';
+						}
+						pagination += '">';
+						pagination += '<a style="cursor: pointer" class="page-link"';
+						pagination += ' id="page-' + i + '"';
+						pagination += '>';
+						pagination += i;
+						pagination += '</a>';
+						pagination += '</li>';
+					}
+					
+					if(currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;</a></li>';
+					}
+					
+					if(currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + (currentPageNum + 1) + '">'
+						pagination += '&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum == totalPageNum) {
+						pagination += '<li class="page-item"><a class="page-link">&gt;&gt;</a></li>';
+					}
+					
+					if(totalPageNum > 10 && currentPageNum < totalPageNum) {
+						pagination += '<li class="page-item">';
+						pagination += '<a style="cursor: pointer" class="page-link" ';
+						pagination += 'id="page-' + totalPageNum + '">'
+						pagination += '&gt;&gt;</a></li>';
+					}
+					
+					pagination += '</ul>';
+					
+					$('#pagingArea').append(pagination);
+					
+					$('.pagination a[id]').click(function() {
+						
+						var sort = null;
+						var ascHead = $('#tableHead .asc');
+						var descHead = $('#tableHead .desc');
+						
+						if(ascHead.length > 0) {
+							sort = $('#tableHead .asc').parent().attr('id') + ',asc';
+						} else if(descHead.length > 0) {
+							sort = $('#tableHead .desc').parent().attr('id') + ',desc';
+						}
+						
+						var id = $(this).attr('id');
+						// id: page-xxx
+						var pageNum = id.substring(5);
+						$.getJSON(getUrl + pageNum,
+							{
+								sort: sort
+							},
+							function(data) {
+								processTableData(data);
+								processPagination(data, getUrl);
+								processTableNo();
+							}
+						);
+					});
+				}
+			}
+			
+			function processTableNo() {
+				var noIndex = $('.table thead th').index($('.table thead th:contains("NO")'));
+				var pageNum = parseInt($('#pagination li.active a').text());
+				
+				$('.table tbody tr td:nth-child(' + (noIndex + 1) + ')').each(function(index, item) {
+					$(item).text((pageNum - 1) * 5 + (index+1));
+				});
+			}
+			
+			$('#saveBanner').click(function(e) {
+
+				var bannerTypeCd = $('#bannerTypeCd').val();
+				
+				if(bannerTypeCd != 'BA03') {
+					var checkedContentCount = $('#bannerContentTable input:checked').length;
+					
+					if(bannerNo == null) {
+						if(checkedContentCount == 0) {
+							alert('Please select a connected content.');
+							e.preventDefault();
+						}
+					} else {
+						if($('#bannerTypeCd').val() != bannerTypeCd && checkedContentCount == 0) {
+							alert('Please select a connected content.');
+							e.preventDefault();
+						}
+					}
+				} else {
+					var externalUrl = $('#externalUrl').val();
+					
+					if(externalUrl == '') {
+						alert('Please input an external URL.');
+						e.preventDefault();
+					}
+				}
+			});
+			
+			$('#saveBannerForm').submit(function(e) {
+				if(confirm('Are you sure to save the banner?')) {
+					var bannerTypeCd = $('#bannerTypeCd').val();
+					if(bannerTypeCd == 'BA03') {
+						$('#bannerTarget').val($('#externalUrl').val());
+					} else if(bannerTypeCd == 'BA01' || bannerTypeCd == 'BA02') {
+						var contentId = $('#bannerContentTable input:checked').parent().parent().attr('id');
+						$('#bannerTarget').val(contentId);
+					}
+				}
+			});
+			
+			$('#deleteBanner').click(function() {
+				if(confirm('Are you sure to delete this banner?')) {
+					$.ajax({ url: '/goalkeepinmanager/banner/deleteBanner',  
+						 data: {
+							 bannerNo: $('#bannerNo').val() 
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/banner/showBannerList/1'; 
+					 })
+					 .fail(function() {
+						 alert('Error deleting banner.');
+					 });
+				}
+			});
+			
+			if(bannerImgUrl != null) {
+				
+				$('#bannerImgPreview').attr('src', bannerImgUrl).css('display', 'inline');
+				$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter('#bannerImgPreview');
+				$('#bannerImage').removeAttr('required');
+			}
+			
+			$('.close').click(function() {
+        		$(this).parent().prev().prev().prev().val('Select an image');
+        		$(this).prev('img').attr('src', '#').css('display', 'none');
+        		$(this).parent().next('input').val('0');
+        		$(this).remove();
+        		$('#bannerImage').attr('required', 'required');
+        	});
+			
+			if(bannerTypeCd != null) {
+				$('#bannerTypeCd').val(bannerTypeCd).change();
+			}
+			
+			var fileTarget = $('.filebox .upload-hidden');
+
+			fileTarget.on('change', function() {
+				if (window.FileReader) {
+					var filename = $(this)[0].files[0].name;
+				} else {
+					var filename = $(this).val().split('/').pop().split('\\')
+							.pop();
+				}
+
+				$(this).siblings('.upload-name').val(filename);
+				
+				if(this.files[0].size > 1048576) {
+			        alert("Banner image can't be larger than 1MB.");
+			        
+			        $(this).val('').next('div').empty();
+			        $(this).next().next().val('0');
+			        $(this).prevAll('.upload-name').val('Select an image');
+			    } else {
+			    	readURL(this);
+			    }
+			});
+			
+			function readURL(input) {
+	            if (input.files && input.files[0]) {
+		            var reader = new FileReader();
+		            reader.onload = function (e) {
+		            	var img = $(input).next().next().children('img');
+	                    img.attr('src', e.target.result).css('display', 'inline');
+		            	if(img.next('.close').length == 0) {
+			            	$('<span class="close" style="float: none; margin-left: 20px;">x</span>').insertAfter(img)
+			            	.click(function() {
+			            		img.parent().prev().prev().prev().val('Select an image');
+			            		img.attr('src', '#').css('display', 'none');
+			            		$(this).remove();
+			            		img.parent().prev().val('');
+			            	});
+		            	}
+	                }
+	                reader.readAsDataURL(input.files[0]);
+	            }
+	         }
+		});
+	</script>
+</body>
+</html>

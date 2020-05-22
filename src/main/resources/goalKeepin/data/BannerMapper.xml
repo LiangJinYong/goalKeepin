@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.BannerMapper">
+	
+	<resultMap type="Banner" id="Banner">
+		<id property="bannerNo" column="bannerNo" />
+		<result property="bannerImgUrl" column="bannerImgUrl" />
+		<result property="bannerTypeCd" column="bannerTypeCd" />
+		<result property="bannerTarget" column="bannerTarget" />
+		<result property="bannerTargetNameEn" column="bannerTargetNameEn" />
+		<result property="bannerIsOn" column="bannerIsOn" />
+		<result property="bannerIsMain" column="bannerIsMain" />
+	</resultMap>
+	
+	<select id="getTotalBannerCount" resultType="int">
+		/* getTotalBannerCount */
+		SELECT COUNT(*) FROM BANNER_TB
+	</select>
+	
+	<select id="selectBannerList" parameterType="map" resultMap="Banner">
+		/* selectBannerList */
+		SELECT banner_no bannerNo
+		, banner_img_url bannerImgUrl
+		, banner_tp bannerTypeCd,
+		CASE WHEN banner_tp = 'BA01' THEN 
+		(SELECT tt.trans_en FROM NOTICE_TB nt INNER JOIN TRANSLATION_TB tt ON nt.notice_title_t_no = tt.trans_no WHERE nt.notice_no = bt.target)
+		WHEN banner_tp = 'BA02' THEN  
+		(SELECT tt.trans_en FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no = tt.trans_no WHERE oct.challenge_no = bt.target)
+		ELSE target END bannerTargetNameEn
+		, banner_is_on bannerIsOn
+        , banner_is_main bannerIsMain
+		FROM BANNER_TB bt
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if> 
+		banner_is_on DESC, banner_no DESC
+        LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<insert id="insertNewBanner" parameterType="Banner">
+		/* insertNewBanner */
+		INSERT INTO BANNER_TB (banner_img_url, banner_tp, target, banner_is_on, banner_is_main)
+		VALUES (#{bannerImgUrl}, #{bannerTypeCd}, #{bannerTarget}, 0, #{bannerIsMain})
+	</insert>
+	
+	<update id="updateBannerActiveStatus" parameterType="map">
+		/* updateBannerActiveStatus */
+		UPDATE BANNER_TB 
+		SET banner_is_on = #{bannerIsOn}
+		WHERE banner_no = #{bannerNo};
+	</update>
+	
+	<select id="selectBannerDetail" parameterType="long" resultMap="Banner">
+		/* selectBannerDetail */
+		SELECT banner_no bannerNo, banner_img_url bannerImgUrl, banner_tp bannerTypeCd, target bannerTarget, banner_is_main bannerIsMain
+ 		FROM BANNER_TB 
+ 		WHERE banner_no = #{bannerNo}
+	</select>
+	
+	<update id="updateBanner" parameterType="Banner">
+		/* updateBanner */
+		UPDATE BANNER_TB
+		SET
+		<if test="bannerImgUrl != null">
+			banner_img_url = #{bannerImgUrl},
+		</if>
+		<if test="bannerTarget != null">
+			target = #{bannerTarget},
+		</if>
+		banner_tp = #{bannerTypeCd},
+		banner_is_main = #{bannerIsMain}
+		WHERE banner_no = #{bannerNo}
+	</update>
+	
+	<delete id="deleteBanner" parameterType="long">
+		/* deleteBanner */
+		DELETE FROM BANNER_TB
+		WHERE banner_no = #{bannerNo}
+	</delete>
+	
+	<select id="selectMainBannerCount" resultType="int">
+		/* selectMainBannerCount */
+		SELECT COUNT(*) FROM BANNER_TB WHERE banner_is_main = 1
+	</select>
+</mapper>
+
+

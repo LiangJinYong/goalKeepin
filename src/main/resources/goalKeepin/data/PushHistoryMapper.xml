@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.PushHistoryMapper">
+
+	<sql id="pushHistory">
+		FROM PUSH_TB pt INNER JOIN USER_TB ut
+		ON pt.push_receive_user_no = ut.user_no
+	</sql>
+
+	<select id="selectPushHistoryList" parameterType="map" resultType="goalKeepin.web.dto.PushHistoryResponseDto">
+		/* selectPushHistoryList */
+		SELECT pt.push_no pushNo, ut.user_id pushReceiveUserId, pt.push_title pushTitle, pt.push_msg pushMsg, pt.push_tp pushTypeName, pt.push_reg_dt pushRegDate
+		<include refid="pushHistory" />
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		pt.PUSH_REG_DT DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="getTotalPushHistoryCount" resultType="int">
+		SELECT COUNT(*)
+		<include refid="pushHistory" />
+	</select>
+</mapper>
+

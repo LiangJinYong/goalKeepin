@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Approval Deatail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+<style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+#verificationImg {
+	max-width:200px;
+	max-height:200px;
+}
+
+label {
+	margin-right: 20px;
+}
+
+
+</style>
+</head>
+<body>
+		
+		<div class="row">
+			<header class="col-md-12">
+				<h1 class="brand pull-left h3">Gift Setting</h1>
+			</header>
+		</div>
+		
+		<form id="giftSettingForm" th:action="@{/giftSetting/saveGiftSetting}" method="post" th:object="${giftSetting}">
+			<input type="hidden" name="giftSettingNo" th:value="${giftSetting.giftSettingNo}">
+			<section id="giftSettingPart">
+				<div class="row">
+					<div class="col-md-1">
+						<label>Type</label>
+					</div>
+					<div class="col-md-11">
+						<select name="giftSettingType">
+							<option value="CASH" th:selected="${giftSetting.giftSettingType == 'CASH'}">CASH</option>
+							<option value="BADGE" th:selected="${giftSetting.giftSettingType == 'BADGE'}">BADGE</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-1">
+						<label>Amount</label>
+					</div>
+					<div class="col-md-11">
+						<input type="number" name="giftSettingAmount" th:value="${giftSetting.giftSettingAmount}">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<input type="submit" id="saveBtn" value="Save" class="btn btn-primary" />
+					</div>
+				</div>
+			</section>
+		</form>
+
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('#giftSettingForm').submit(function(e) {
+				if(!confirm('Are you sure to save the gift setting?')) {
+					e.preventDefault();
+				}
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.BalanceMapper">
+	
+	<select id="selectTotalServiceCharge" resultType="double">
+		/* selectTotalServiceCharge */
+		SELECT COUNT(*) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02'
+	</select>
+	
+	<select id="selectTotalPenaltyAmount" resultType="double">
+		/* selectTotalPenaltyAmount */
+		SELECT IFNULL(SUM(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA09' AND report_st_cd = 'CT02'
+	</select>
+	
+	<select id="selectUserListByIdAndNickname" parameterType="map" resultType="hashmap">
+		/* selectUserListByIdAndNickname */
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName 
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA01' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) cashCharge
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA04' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) participationFee
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) withdrawAmount
+		, (SELECT COUNT(*) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no) serviceCharge
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) rewardAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA9' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) penaltyAmount
+		FROM USER_TB ut
+		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%'))
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		user_no DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="getTotalUserCount" parameterType="map" resultType="int">
+		/* getTotalUserCount */
+		SELECT COUNT(*) totalUserCount
+		FROM USER_TB 
+		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
+		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%'))
+	</select>
+	
+	<select id="selectUserListForDownload" resultType="hashmap">
+		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName 
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA01' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) cashCharge
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA04' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) participationFee
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) withdrawAmount
+		, (SELECT COUNT(*) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no) serviceCharge
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) rewardAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA9' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) penaltyAmount
+		FROM USER_TB ut
+		ORDER BY user_no DESC
+	</select>
+</mapper>
+

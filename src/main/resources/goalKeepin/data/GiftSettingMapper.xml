@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.GiftSettingMapper">
+
+	<resultMap type="GiftSetting" id="GiftSetting">
+		<id property="giftSettingNo" column="giftSettingNo" />
+ 		<result property="giftSettingType" column="giftSettingType" />
+ 		<result property="giftSettingAmount" column="giftSettingAmount" />
+	</resultMap>
+	
+	<select id="selectGiftSettingInfo" resultType="GiftSetting">
+		/* selectGiftSettingInfo */
+		SELECT set_no giftSettingNo, set_tp giftSettingType, set_amt giftSettingAmount FROM GIFT_SETTING_TB LIMIT 1
+	</select>
+	
+	<update id="updateGiftSetting" parameterType="GiftSetting">
+		/* updateGiftSetting */
+		UPDATE GIFT_SETTING_TB
+		SET set_tp = #{giftSettingType}
+		, set_amt = #{giftSettingAmount}
+		WHERE set_no = #{giftSettingNo}
+	</update>
+</mapper>
+
