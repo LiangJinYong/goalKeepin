@@ -1,8 +1,11 @@
 package goalKeepin.data;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+
+import goalKeepin.model.PushRecord;
 
 @Mapper
 public interface CommonMapper {
@@ -20,4 +23,8 @@ public interface CommonMapper {
 	boolean selectReceivingRelationPushStatus(Integer userNo);
 	
 	boolean selectReceivingAdPushStatus(Integer userNo);
+
+	void insertSendPushRecord(PushRecord pushRecord);
+
+	List<Integer> selectAllUserNos();
 }

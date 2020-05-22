@@ -31,4 +31,12 @@ public interface UserMapper {
 	void clearToken(Long userNo);
 
 	List<Map<String, Object>> selectCashReportList(Map<String, Object> param);
+
+	void subtractReward(long userNo);
+
+	Double selectTotalReward(long userNo);
+
+	Double selectCurrentUserCash(long userNo);
+
+	void insertUserReportRecord(Map<String, Object> param);
 }

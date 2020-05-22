@@ -34,6 +34,7 @@ import goalKeepin.constants.LoginType;
 import goalKeepin.data.CommonMapper;
 import goalKeepin.data.RewardPaymentMapper;
 import goalKeepin.model.Page;
+import goalKeepin.model.PushRecord;
 import goalKeepin.service.PageService;
 import goalKeepin.util.FCMUtils;
 import goalKeepin.util.SortUtils;
@@ -95,7 +96,6 @@ public class RewardPaymentController {
 		Page page = pageService.getPage(pageNum, pageData, totalRecordNum, pageSize);
 		
 		result.put("page", page);
-		
 		
 		return gson.toJson(result);
 	}
@@ -177,10 +177,12 @@ public class RewardPaymentController {
 					String challengeName = commonMapper.getChallengeNameByLanguage(param);
 					body = body.replace("###", challengeName);
 					
-					String type = "PS01";
+					String type = "PS07";
 
 					if (pushToken != null) {
 						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+						PushRecord pushRecord = new PushRecord(userNo, title, body, type, challengeNo.intValue());
+						commonMapper.insertSendPushRecord(pushRecord);
 					}
 				}
 			}

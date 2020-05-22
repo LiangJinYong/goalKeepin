@@ -32,7 +32,7 @@
 	
 	<select id="selectTotalCommissionAmount" resultType="double">
 		/* selectTotalCommissionAmount */
-		SELECT FORMAT(IFNULL(SUM(failed_fee),0) * 0.099, 1) FROM OPERATED_CHALLENGE_TB
+		SELECT FORMAT(IFNULL(SUM(reward_amt),0) / 90.1 * 9.9, 1) FROM CHALLENGE_ENTRY_TB
 	</select>
 	
 	<select id="selectRecentOngongProjectList" resultType="hashmap">

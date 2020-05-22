@@ -49,10 +49,12 @@ public class MainController {
 		int unprocessedInquiryCount = challengerMapper.selectUnprocessedInquiryCount();
 		int unprocessedReportCount = challengerMapper.selectUnprocessedReportCount();
 		int unprocessedApprovalCount = challengerMapper.selectUnprocessedApprovalCount();
+		int unprocessedSuggestionCount = challengerMapper.selectUnprocessedSuggestionCount();
 		
 		result.put("unprocessedInquiryCount", unprocessedInquiryCount);
 		result.put("unprocessedReportCount", unprocessedReportCount);
 		result.put("unprocessedApprovalCount", unprocessedApprovalCount);
+		result.put("unprocessedSuggestionCount", unprocessedSuggestionCount);
 		
 		return result;
 	}

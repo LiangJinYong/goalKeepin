@@ -34,11 +34,11 @@ import org.springframework.web.multipart.MultipartFile;
 import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.ChallengeMapper;
 import goalKeepin.data.CommonMapper;
-import goalKeepin.data.InquiryMapper;
 import goalKeepin.model.BaseChallenge;
 import goalKeepin.model.OperatedChallenge;
 import goalKeepin.model.Page;
 import goalKeepin.model.ParticipantEntry;
+import goalKeepin.model.PushRecord;
 import goalKeepin.model.Review;
 import goalKeepin.service.PageService;
 import goalKeepin.util.DateUtils;
@@ -58,9 +58,6 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeMapper challengerMapper;
-	
-	@Autowired
-	private InquiryMapper inquiryMapper;
 	
 	@Autowired
 	private CommonMapper commonMapper;
@@ -383,10 +380,12 @@ public class ChallengeController {
 					String challengeName = commonMapper.getChallengeNameByLanguage(param);
 					body = body.replace("###", challengeName);
 					
-					String type = "PS01";
+					String type = "PS08";
 
 					if (pushToken != null) {
 						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+						PushRecord pushRecord = new PushRecord(userNo, title, body, type, -1);
+						commonMapper.insertSendPushRecord(pushRecord);
 					}
 				}
 			}
@@ -435,10 +434,12 @@ public class ChallengeController {
 					String challengeName = commonMapper.getChallengeNameByLanguage(param);
 					body = body.replace("###", challengeName);
 					
-					String type = "PS01";
+					String type = "PS08";
 
 					if (pushToken != null) {
 						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+						PushRecord pushRecord = new PushRecord(userNo, title, body, type, operatedChallengeNo.intValue());
+						commonMapper.insertSendPushRecord(pushRecord);
 					}
 				}
 			}

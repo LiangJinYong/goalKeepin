@@ -24,4 +24,14 @@ public interface ReportMapper {
 
 	void processReport(Long reportNo);
 
+	void updateYellowCardForReport(Long reportNo);
+
+	void updateRedCardForReport(Long reportNo);
+
+	long selectAuthNoByReportNo(Long reportNo);
+
+	long selectUserNoByReportNo(Long reportNo);
+
+	String selectChallengeStatus(Long reportNo);
+
 }

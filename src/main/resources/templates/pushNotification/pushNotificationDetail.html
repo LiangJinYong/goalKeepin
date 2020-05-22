@@ -107,10 +107,7 @@ table {
 	<div class="row">
 		<div class="col-md-12">
 			<span style="margin-right: 20px;">Message</span>
-			<!-- 
-			<input type="text" name="notificationMessage" id="notificationMessage" placeholder="Please enter notification content" style="width: 400px; margin-right: 20px;">
-			 -->
-			<textarea style="width: 50%; height: 100px; margin-right: 30px;" name="notificationMessage" placeholder="Please enter notification content"></textarea>
+			<textarea style="width: 50%; height: 100px; margin-right: 30px;" id="notificationMessage" name="notificationMessage" placeholder="Please enter notification content"></textarea>
 			<a href="#" class="btn btn-primary" id="doSend" style="margin-top: -25px;">Send</a>
 			<a href="#" class="btn btn-primary" id="doSendToAll" style="display: none; margin-top: -25px;">Send To Everyone</a>
 		</div>
@@ -198,8 +195,9 @@ table {
 						var token = $("meta[name='_csrf']").attr("content");
 						var header = $("meta[name='_csrf_header']").attr("content");
 						
-						$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotificationToAll',  
+						$.ajax({ url: '/goalkeepinmanager/pushNotification/sendingPushNotification',  
 							data: {
+								userNos: 'sendToAll',
 								notificationMessage: notificationMessage
 							},
 							 method: "POST",  

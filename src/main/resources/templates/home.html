@@ -102,6 +102,7 @@
 					</ul>
 					<h2 class="h5">Others</h2>
 					<ul class="list-unstyled">
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/balance}" target="menuFrame">Balance</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/notice/showNoticeList/1}" target="menuFrame">Notice</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/faq/showFaqList/1}" target="menuFrame">FAQ</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/inquiry/showInquiryList/1?inquiryStatusCd=IN00}" target="menuFrame">Inquiry <span class="badge" th:text="${unprocessedInquiryCount}" id="unprocessedInquiryCount">unprocessedReportCount</span></a></li>
@@ -109,8 +110,11 @@
 						<li style="list-style-image: url(images/dot.jpeg);"><a id="rewardPayment" th:href="@{/rewardPayment/showCompletedChallengeList/1?challengeIsAllPaid=}" target="menuFrame">Reward Payment</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/badgeGift/showBadgeGiftDetail}" target="menuFrame">Gift Badge</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/pushNotification/showPushNotificationDetail}" target="menuFrame">Push Notification</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/pushHistory/showPushHistoryList/1}" target="menuFrame">Push History</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/popup/showPopupList/1}" target="menuFrame">Pop-up Setting</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/banner/showBannerList/1}" target="menuFrame">Banner</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/report/showReportList/1?reportStatus=}" target="menuFrame">Report<span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/giftSetting/showGiftSettingDetail}" target="menuFrame">Gift Setting</a></li>
 					</ul>
 				</ul>
 			</div>
@@ -146,7 +150,7 @@
 			};
 			setInterval(function() {
 				$.ajax(getUnprocessedCounts)
-			}, 1000000);
+			}, 10000);
 			
 			$('#logoBtn').css('cursor', 'pointer')
 			.click(function() {

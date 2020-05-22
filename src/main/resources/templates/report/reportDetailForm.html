@@ -18,7 +18,7 @@ header a, header li {
 }
 
 .row {
-	margin: 15px 0 40px 0;
+	margin: 15px 0 20px 0;
 }
 
 input[name^=faqQuestion] {
@@ -39,6 +39,12 @@ textarea{
 	max-height:200px;
 }
 
+.card {
+	margin-left: 20px;
+	width: 20px;
+	height: 35px;
+}
+
 </style>
 </head>
 <body>
@@ -47,7 +53,9 @@ textarea{
 		<header class="col-md-12">
 			<h1 class="brand pull-left h3">Report details</h1>
 			<ul th:if="*{!reportDetail.processStatus}" class="list-inline list-unstyled pull-right">
-				<li><a href="#" class="btn btn-primary" id="processReport">Process</a></li>
+				<li><a href="#" class="btn btn-warning" id="giveYellowCard">Yellow Card</a></li>
+				<li><a href="#" class="btn btn-danger" id="giveRedCard">Red Card</a></li>
+				<li><a href="#" class="btn btn-primary" id="approvalReport">Approval</a></li>
 			</ul>
 		</header>
 	</div>
@@ -75,7 +83,8 @@ textarea{
 					<span th:text="${reportDetail.challengeName}"></span><br /><br />
 					<span class="h5" style="margin-top: 20px; padding-top: 15px;">Process status:</span>
 					<a href="#" th:if="${!reportDetail.processStatus}" class="btn btn-info" style="margin-left: 20px; cursor: default;">Waiting</a>
-					<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Completed</a><br /><br />
+					<a href="#" th:if="${reportDetail.processStatus}" class="btn btn-success" style="margin-left: 20px; cursor: default;">Completed</a>
+					<br /><br />
 					<span class="h5">Report Count: <span id="reportCount" th:text="${reportDetail.reportCount}"></span></span>
 					<h2 class="h5" style="margin-top: 20px; padding-top: 15px;">Reported User Information</h2>
 					<p>
@@ -86,6 +95,12 @@ textarea{
 						<span>User email:</span>
 						<span th:text="${reportDetail.reportedUserEmail}" class="font-weight-bold"></span>
 					</p>
+					<p>
+					<span>Penalty:</span>
+					<img th:if="${reportDetail.receivedYellowCard}" th:src="@{/images/yellowcard.png}" class="card">
+					<img th:if="${reportDetail.receivedRedCard}" th:src="@{/images/redcard.png}" class="card">
+					<span th:if="${!reportDetail.receivedYellowCard and !reportDetail.receivedRedCard}"> None</span>
+				</p>
 				</div>
 			</div>
 		</div>
@@ -147,14 +162,28 @@ textarea{
 	<script type="text/javascript">
 		$(function() {
 			
-			$('#processReport').click(function() {
-				if(confirm('Are you sure to process this report?')) {
+			$('#approvalReport, #giveYellowCard, #giveRedCard').click(function() {
+				var confirmText = 'Are you sure to approval this report?';
+				var processAction = 'approval';
+				
+				var btnId = $(this).attr('id');
+				
+				if('giveYellowCard' == btnId) {
+					confirmText = 'Are you sure to give this report a yellow card?';
+					processAction = 'giveYellowCard';
+				} else if ('giveRedCard' == btnId) {
+					confirmText = 'Are you sure to give this report a red card?';
+					processAction = 'giveRedCard';
+				}
+				
+				if(confirm(confirmText)) {
 					var token = $("meta[name='_csrf']").attr("content");
 					var header = $("meta[name='_csrf_header']").attr("content");
 					
 					$.ajax({ url: '/goalkeepinmanager/report/processReport',  
 						 data: {
-							 reportNo: $('#reportNo').val() 
+							 reportNo: $('#reportNo').val(),
+							 processAction: processAction
 			 			 },  
 						 method: "POST",  
 						 dataType: "text", 

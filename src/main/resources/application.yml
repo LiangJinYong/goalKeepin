@@ -27,6 +27,7 @@ goalkeepin:
     notice: /Users/liangjinyong/Downloads/upload/noticeImage/
     challenge-thumbnail: /Users/liangjinyong/Downloads/upload/challengeImage/
     challenge-detail: /Users/liangjinyong/Downloads/upload/challengeDetailImage/
+    banner: /Users/liangjinyong/Downloads/upload/bannerImage/
     
 ---
 spring:
@@ -40,4 +41,5 @@ goalkeepin:
     notice: /var/lib/tomcat8/webapps/goalkeepinImage/noticeImage/
     challenge-thumbnail: /var/lib/tomcat8/webapps/goalkeepinImage/challengeImage/
     challenge-detail: /var/lib/tomcat8/webapps/goalkeepinImage/challengeDetailImage/
+    banner: /var/lib/tomcat8/webapps/goalkeepinImage/bannerImage/
   

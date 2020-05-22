@@ -17,8 +17,8 @@
 	<select id="selectUserListByIdAndNickname" parameterType="map" resultType="hashmap">
 		/* selectUserListByIdAndNickname */
 		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_cash userCash
-		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND cash_user_no = ut.user_no), 0) withdrawAmount
-		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND cash_user_no = ut.user_no), 0) rewardAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) withdrawAmount
+		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) rewardAmount
 		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate
 		FROM USER_TB ut
 		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
@@ -84,7 +84,7 @@
 	<update id="clearToken" parameterType="long">
 		/* clearToken */
 		UPDATE USER_TB
-		SET user_login_token = NULL
+		SET user_login_token = 'Red Card'
 		WHERE user_no = #{userNo}
 	</update>
 	
@@ -97,4 +97,36 @@
 		AND report_tp_cd = #{cashReportType}
 		ORDER BY report_reg_dt DESC
 	</select>
+	
+	<update id="subtractReward" parameterType="long">
+		/* subtractReward */
+		UPDATE USER_TB
+		SET user_cash = (
+			CASE
+				WHEN user_cash > (SELECT IFNULL(SUM(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' and report_st_cd='CT02')  then USER_CASH - (select ifnull(sum(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' AND report_st_cd='CT02')
+		        ELSE 0
+			END
+		)
+		WHERE USER_NO = #{userNo}
+	</update>
+	
+	<select id="selectTotalReward" parameterType="long" resultType="double">
+		/* selectTotalReward */
+		SELECT IFNULL(SUM(report_cash_amt), 0) 
+		FROM USER_CASH_REPORT_TB 
+		WHERE cash_user_no = #{userNo}
+		AND report_tp_cd = 'CA02' 
+		AND report_st_cd='CT02'
+	</select>
+	
+	<select id="selectCurrentUserCash" parameterType="long" resultType="double">
+		/* selectCurrentUserCash */
+		SELECT user_cash FROM USER_TB WHERE user_no = ${userNo}
+	</select>
+	
+	<insert id="insertUserReportRecord" parameterType="map">
+		INSERT INTO 
+		USER_CASH_REPORT_TB (cash_user_no, report_tp_cd, report_st_cd, report_cash_amt)
+		VALUES (#{userNo}, 'CA09', 'CT02', #{reportCashAmount})
+	</insert>
 </mapper>

@@ -18,6 +18,7 @@ import goalKeepin.data.CommonMapper;
 import goalKeepin.data.InquiryMapper;
 import goalKeepin.model.Inquiry;
 import goalKeepin.model.Page;
+import goalKeepin.model.PushRecord;
 import goalKeepin.service.PageService;
 import goalKeepin.util.FCMUtils;
 import goalKeepin.util.SortUtils;
@@ -75,15 +76,29 @@ public class InquiryController {
 
 			inquiryMapper.updateInquiryStatus(inquiry);
 
-			long userNo = inquiry.getInquiryUser().getUserNo();
+			// push
+			int userNo = inquiry.getInquiryUser().getUserNo().intValue();
+			boolean isReceivingPushMessage = commonMapper.selectReceivingRelationPushStatus(userNo);
 
-			String pushToken = commonMapper.getPushTokenByUserNo(userNo);
-			String title = "Inquiry Answer";
-			String body = inquiry.getInquiryReplyCotent();
-			String type = "PS06";
-
-			if (pushToken != null) {
-				FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+			if (isReceivingPushMessage) {
+				String pushToken = commonMapper.getPushTokenByUserNo(userNo);
+				String languageCode = commonMapper.getLastLanguageForUser(userNo);
+				
+				Map<String, String> param = new HashMap<>();
+				param.put("mainCode", "P104");
+				param.put("detailCode", "S001");
+				param.put("languageCode", languageCode);
+				
+				String title = commonMapper.getContentForPushMessage(param); //"Inquiry Answer";
+				String body = inquiry.getInquiryReplyCotent();
+				String type = "PS06";
+				int targetNumber = inquiry.getInquiryNo().intValue();
+				
+				if (pushToken != null) {
+					FCMUtils.sendFCM(userNo, pushToken, title, body, targetNumber, type);
+					PushRecord pushRecord = new PushRecord(userNo, title, body, type, targetNumber);
+					commonMapper.insertSendPushRecord(pushRecord);
+				}
 			}
 
 		} catch (Exception e) {

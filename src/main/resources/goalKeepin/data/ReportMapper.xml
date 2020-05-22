@@ -43,7 +43,7 @@
 	
 	<select id="selectReportDetail" parameterType="long" resultType="goalKeepin.web.dto.ReportDetailResponseDto">
 		/* selectReportDetail */
-		SELECT rt.report_no reportNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, ut.user_id reportedUserId, ut.user_email reportedUserEmail, rt.process_status processStatus, rt.report_content reportContent, ut2.user_id reportingUserId, ut2.user_email reportingUserEmail, rt.report_reg_dt reportRegDate, tt.trans_en challengeName 
+		SELECT rt.report_no reportNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, ut.user_id reportedUserId, ut.user_email reportedUserEmail, rt.process_status processStatus, rt.report_content reportContent, ut2.user_id reportingUserId, ut2.user_email reportingUserEmail, rt.report_reg_dt reportRegDate, tt.trans_en challengeName, cat.auth_is_y_card receivedYellowCard, CASE WHEN auth_st_cd = 'AS04' THEN 1 ELSE 0 END receivedRedCard
 		FROM REPORT_TB rt
 		INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no
 		INNER JOIN USER_TB ut ON rt.reported_user_no = ut.user_no
@@ -83,4 +83,37 @@
 		WHERE report_no = #{reportNo}
 	</update>
 	
+	<update id="updateYellowCardForReport" parameterType="long">
+		/* updateYellowCardForReport */
+		UPDATE CHALLENGE_AUTH_TB
+		SET auth_is_y_card = 1
+		WHERE auth_no = 
+		(SELECT challenge_auth_no FROM REPORT_TB WHERE report_no = #{reportNo})
+	</update>
+	
+	<update id="updateRedCardForReport" parameterType="long">
+		/* updateRedCardForReport */
+		UPDATE CHALLENGE_AUTH_TB
+		SET auth_st_cd = 'AS04'
+		WHERE auth_no = 
+		(SELECT challenge_auth_no FROM REPORT_TB WHERE report_no = #{reportNo})
+	</update>
+	
+	<select id="selectAuthNoByReportNo" parameterType="long" resultType="long">
+		/* selectAuthNoByReportNo */
+		SELECT challenge_auth_no FROM REPORT_TB WHERE report_no = #{reportNo}
+	</select>
+	
+	<select id="selectUserNoByReportNo" parameterType="long" resultType="long">
+		/* selectUserNoByReportNo */
+		SELECT reported_user_no FROM REPORT_TB WHERE report_no = #{reportNo}
+	</select>
+	
+	<select id="selectChallengeStatus" parameterType="long" resultType="string">
+		/* selectChallengeStatus */
+		SELECT challenge_st_cd 
+		FROM OPERATED_CHALLENGE_TB 
+		WHERE CHALLENGE_NO = 
+		(SELECT cat.auth_c_no FROM REPORT_TB rt INNER JOIN CHALLENGE_AUTH_TB cat ON rt.challenge_auth_no = cat.auth_no WHERE report_no = #{reportNo})
+	</select>
 </mapper>

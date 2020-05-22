@@ -157,6 +157,19 @@ public class UserController {
 			userMapper.increaseRedCardNumber(userNo);
 			userMapper.updateRedCardExpiredDate(param);
 			userMapper.clearToken(userNo);
+			
+			Double totalReward = userMapper.selectTotalReward(userNo);
+			Double currentUserCash = userMapper.selectCurrentUserCash(userNo);
+			
+			Double reportCashAmount = totalReward;
+			
+			if (totalReward > currentUserCash) {
+				reportCashAmount = currentUserCash;
+			}
+			
+			param.put("reportCashAmount", reportCashAmount);
+			userMapper.insertUserReportRecord(param);
+			userMapper.subtractReward(userNo);
 		}
 		return "200";
 	}

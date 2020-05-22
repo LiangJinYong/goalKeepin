@@ -16,9 +16,6 @@
 		/* insertBadgeGiftRecords */
 		INSERT INTO GIFT_TB
 		(GIFT_RECEIVE_USER_NO, GIFT_SEND_USER_NO, GIFT_PRICE, GIFT_IS_AVAILABLE)
-		VALUES
-		<foreach collection="userNoArr" item="userNo" separator=",">
-            (#{userNo}, 0, #{badgeValue}, 1)
-        </foreach>
+		VALUES (#{userNo}, 0, #{badgeValue}, 1)
 	</insert>
 </mapper>

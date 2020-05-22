@@ -68,7 +68,7 @@ public class FCMUtils {
 
 	}
 
-	public static void sendFCM(long userNo, String pushToken, String title, String body, String type) throws JSONException {
+	public static void sendFCM(int userNo, String pushToken, String title, String body, String type) throws JSONException {
 		try {
 			URL url = new URL("https://fcm.googleapis.com/fcm/send");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();

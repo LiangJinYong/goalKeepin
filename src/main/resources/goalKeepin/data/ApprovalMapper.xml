@@ -80,10 +80,11 @@
 	
 	<select id="getChallengeAuthNum" parameterType="long" resultType="int">
 		/* getChallengeAuthNum */
-		SELECT COUNT(*) 
+		SELECT COUNT(*)
 		FROM CHALLENGE_AUTH_TB
 		WHERE auth_c_no = (SELECT auth_c_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
 		AND auth_user_no = (SELECT auth_user_no FROM CHALLENGE_AUTH_TB WHERE auth_no = #{authNo})
+		AND auth_st_cd = 'AS02'
 	</select>
 	
 	<select id="getChallengeMaxResult" parameterType="long" resultType="int">

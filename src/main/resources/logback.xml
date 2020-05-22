@@ -18,7 +18,7 @@
 
 	<!-- 로거 -->
 	<logger name="com.blink" level="DEBUG" appender-ref="console" />
-	<logger name="jdbc.sqlonly" level="DEBUG"
+	<logger name="jdbc.sqlonly" level="ERROR"
 		appender-ref="console-infolog" />
 	<logger name="jdbc.resultsettable" level="ERROR"
 		appender-ref="console-infolog" />

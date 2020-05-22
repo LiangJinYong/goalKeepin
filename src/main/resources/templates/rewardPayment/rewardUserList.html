@@ -28,7 +28,7 @@ header a, header li {
 	color: green;
 }
 
-#rewardAmount {
+#rewardAmountNumber {
 	width: 60px;
 }
 </style>
@@ -85,7 +85,7 @@ header a, header li {
 						
 						<td class="text-center" th:if="${rewardUser.hasRedCard or rewardUser.hasPaidReward}" th:text="${rewardUser.rewardAmount}">Reward Amount</td>
 						<td class="text-center" th:if="${!rewardUser.hasRedCard and !rewardUser.hasPaidReward}">
-							<input type="number" id="rewardAmount" min="0" th:value="${rewardUser.rewardAmount}" />
+							<input type="number" id="rewardAmountNumber" min="0" th:value="${rewardUser.rewardAmount}" />
 						</td>
 						
 						<td class="text-center" th:if="${rewardUser.hasRedCard}" th:text="'Yes'">Has Red Card</td>

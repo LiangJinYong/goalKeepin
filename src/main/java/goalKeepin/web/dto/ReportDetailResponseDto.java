@@ -22,6 +22,8 @@ public class ReportDetailResponseDto {
 	private String reportingUserEmail;
 	private boolean processStatus;
 	private Date reportRegDate;
+	private boolean receivedYellowCard;
+	private boolean receivedRedCard;
 	
 	List<ReportingUser> reportingUserList = new ArrayList<>();
 }

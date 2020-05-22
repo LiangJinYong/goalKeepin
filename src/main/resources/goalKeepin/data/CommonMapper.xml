@@ -58,5 +58,15 @@
 		/* selectReceivingAdPushStatus */
 		SELECT user_push_ad FROM USER_TB WHERE user_no = #{userNo}
 	</select>
+	
+	<insert id="insertSendPushRecord" parameterType="goalKeepin.model.PushRecord">
+		/* insertSendPushRecord */
+		INSERT INTO PUSH_TB (push_receive_user_no, push_title, push_msg, push_tp, push_target)
+		VALUES (#{pushReceiveUserNo}, #{pushTitle}, #{pushMsg}, #{pushType}, #{pushTarget})
+	</insert>
+	
+	<select id="selectAllUserNos" resultType="int">
+		SELECT user_no FROM USER_TB WHERE USER_PUSH_AD = 1
+	</select>
 </mapper>
 
