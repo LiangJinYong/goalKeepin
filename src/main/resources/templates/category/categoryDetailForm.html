@@ -4,7 +4,7 @@
     xmlns:sec="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Create Category Form</title>
+<title>Category Detail Form</title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
@@ -28,47 +28,47 @@ textarea {
 		</header>
 	</div>
 	
-	<form method="post" th:action="@{/category/processCagegoryCreation}" th:object="${category}" id="createCategory">
+	<form method="post" th:action="${category.categoryNo == null ? '/goalkeepinmanager/category/processCagegoryCreation' : '/goalkeepinmanager/category/processCagegoryModification'}" th:object="${category}" id="saveCategory">
 		<div class="row" id="categoryName">
 			<div class="col-md-4">
 				<h2 class="h5">Name of category (English)</h2>
-				<input type="text" name="categoryNmEn" placeholder="Please enter category" required="required">
+				<input type="text" th:field="*{categoryNmEn}" placeholder="Please enter category" required="required">
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Name of category (Traditional)</h2>
-				<input type="text" name="categoryNmTc" placeholder="Please enter category" required="required">
+				<input type="text" th:field="*{categoryNmTc}" placeholder="Please enter category" required="required">
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Name of category (Simplified)</h2>
-				<input type="text" name="categoryNmSc" placeholder="Please enter category" required="required">
+				<input type="text" th:field="*{categoryNmSc}" placeholder="Please enter category" required="required">
 			</div>
 		</div>
 		
 		<div class="row">
 			<div class="col-md-4">
 				<h2 class="h5">Single line description (English)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionEn" placeholder="Please enter details" required="required"></textarea>
+				<textarea rows="5" style="width: 100%;" th:field="*{categoryDescriptionEn}" placeholder="Please enter details" required="required"></textarea>
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Single line description (Traditional)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionTc" placeholder="Please enter details" required="required"></textarea>
+				<textarea rows="5" style="width: 100%;" th:field="*{categoryDescriptionTc}" placeholder="Please enter details" required="required"></textarea>
 			</div>
 			<div class="col-md-4">
 				<h2 class="h5">Single line description (Simplified)</h2>
-				<textarea rows="5" style="width: 100%;" name="categoryDescriptionSc" placeholder="Please enter details" required="required"></textarea>
+				<textarea rows="5" style="width: 100%;" th:field="*{categoryDescriptionSc}" placeholder="Please enter details" required="required"></textarea>
 			</div>
 		</div>
 		
 		<div class="row text-center" style="margin-top: 30px;">
-			<input type="submit" value="Create" class="btn btn-primary" />
+			<input type="submit" value="Save" class="btn btn-primary" />
 		</div>
 	</form>
 	
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#createCategory').submit(function(e) {
-				return confirm('Are you sure to create a category?');
+			$('#saveCategory').submit(function(e) {
+				return confirm('Are you sure to save the category?');
 			});
 		});
 	</script>

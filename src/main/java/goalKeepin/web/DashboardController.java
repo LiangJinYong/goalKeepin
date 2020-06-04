@@ -38,11 +38,12 @@ public class DashboardController {
 		
 		List<Map<String, Object>> recentOngoingProjectList = dashboardMapper.selectRecentOngongProjectList();
 		List<Map<String, Object>> todayApprovalList = dashboardMapper.selectTodayApprovalList();
-//		List<Map<String, Object>> unpaidRewardList = dashboardMapper.selectUnpaidRewardList();
+		List<Map<String, Object>> unpaidRewardList = dashboardMapper.selectUnpaidRewardList();
 		
 		DashboardResponseDto dashboard = new DashboardResponseDto(totalUserCount, totalParicipantCount, totalFeeAmount, totalRewardAmount, totalPaymentAmount, totalCommissionAmount);
 		dashboard.setRecentOngoingProjectList(recentOngoingProjectList);
 		dashboard.setTodayApprovalList(todayApprovalList);
+		dashboard.setUnpaidRewardList(unpaidRewardList);
 		
 		model.addAttribute("dashboard", dashboard);
 		return "dashboard/dashboard";

@@ -25,4 +25,6 @@ public interface CategoryMapper {
 	void updateCategoryOrders(Map<String, Object> categoryOrder);
 
 	Integer selectNextCategoryOrder();
+
+	Category selectCategoryDetail(Long categoryNo);
 }

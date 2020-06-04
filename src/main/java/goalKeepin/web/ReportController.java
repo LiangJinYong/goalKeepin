@@ -96,7 +96,7 @@ public class ReportController {
 			
 			int yellowCardNumber = userMapper.selectYellowCardNumber(userNo);
 			
-			if (yellowCardNumber == 0) {
+			if (yellowCardNumber == 0) { 
 				userMapper.increaseYellowCardNumber(userNo);
 			} else if (yellowCardNumber == 1) {
 				userMapper.increaseRedCardNumber(userNo);

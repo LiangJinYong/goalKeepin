@@ -89,11 +89,11 @@ input[name=categoryOrder] {
 <body>
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="brand pull-left h3">Category management</h1>
+			<h1 class="brand pull-left h3">Category Management</h1>
 			<ul class="list-inline list-unstyled pull-right">
 				<li><a class="btn btn-primary" id="saveOrder" style="display: none;">Save</a></li>
-				<li><a class="btn btn-primary" id="reorderCategories">Reorder categories</a></li>
-				<li><a class="btn btn-primary" th:href="@{/category/createNewCategory}">Create a category</a></li>
+				<li><a class="btn btn-primary" id="reorderCategories">Reorder Categories</a></li>
+				<li><a class="btn btn-primary" th:href="@{/category/createNewCategory}">Create A Category</a></li>
 			</ul>
 		</header>
 	</div>
@@ -122,7 +122,7 @@ input[name=categoryOrder] {
 				</thead>
 				
 				<tbody>
-					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="category: ${page.pageData}" th:id="${category.categoryNo}">
+					<tr th:if="${page.totalRecordNum > 0}" class="text-center" th:each="category: ${page.pageData}" th:id="${category.categoryNo}" style="cursor: pointer;">
 						<td th:text="${category.categoryNo}">NO</td>
 						<td th:text="${category.categoryNmEn}">Category Name</td>
 						<td th:text="${category.challengeNum}">Challenge Num</td>
@@ -187,6 +187,10 @@ input[name=categoryOrder] {
 	<script type="text/javascript" th:src="@{/js/tableNo.js}"></script>
 	<script type="text/javascript">
 		$(function() {
+			$('#categoryTable tbody tr[id]').click(function() {
+				window.location = '/goalkeepinmanager/category/showCategoryDetail?categoryNo=' + $(this).attr('id');
+			});
+			
 			addSortLink('/goalkeepinmanager/category/showCategoryList/1');
 			
 			var token = $("meta[name='_csrf']").attr("content");

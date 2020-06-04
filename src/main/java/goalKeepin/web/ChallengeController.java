@@ -157,8 +157,12 @@ public class ChallengeController {
 		List<Map<Integer, String>> categoryList = challengerMapper.selectCategoryList();
 		model.addAttribute("categoryList", categoryList);
 		
-		int modifiable = challengerMapper.selectModifiable(baseNo); 
+		boolean modifiable = challengerMapper.selectModifiable(baseNo); 
 		model.addAttribute("modifiable", modifiable);
+		
+		boolean deletable = challengerMapper.selectDeletable(baseNo);
+		model.addAttribute("deletable", deletable);
+		
 		int operatedChallengeCount = challengerMapper.getOperatedChallengeCountByBase(baseNo);
 		model.addAttribute("operatedChallengeCount", operatedChallengeCount);
 		
@@ -454,6 +458,13 @@ public class ChallengeController {
 			e.printStackTrace();
 			return "500";
 		}
+	}
+	
+	@PostMapping("/deleteBaseChallenge")
+	@ResponseBody
+	public String deleteBaseChallenge(@RequestParam("baseNo") Long baseNo) {
+		challengerMapper.updateBaseChallengeStatus(baseNo);
+		return "200";
 	}
 }
 

@@ -126,7 +126,8 @@
     
     <sql id="baseChallenge">
     	FROM BASE_CHALLENGE_TB bct
-		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no  = tt.TRANS_NO
+		INNER JOIN TRANSLATION_TB tt ON bct.base_nm_t_no  = tt.trans_no
+		WHERE bct.base_is_on = 1
     </sql>
 
 	<insert id="insertOrUpdateBaseChallenge" parameterType="BaseChallenge">
@@ -170,9 +171,14 @@
 		ON DUPLICATE KEY UPDATE trans_en = #{baseDetailEn}, trans_s_cn = #{baseDetailSc}, trans_t_cn = #{baseDetailTc}
 	</insert>
 	
-	<select id="selectModifiable" parameterType="long" resultType="int">
+	<select id="selectModifiable" parameterType="long" resultType="boolean">
 		/* selectModifiable */
 		SELECT COUNT(*) = 0 FROM OPERATED_CHALLENGE_TB WHERE challenge_base_no = #{baseNo}
+	</select>
+	
+	<select id="selectDeletable" parameterType="long" resultType="boolean">
+		/* selectDeletable */
+		SELECT COUNT(*) = 0 FROM OPERATED_CHALLENGE_TB WHERE challenge_base_no = #{baseNo} AND (challenge_st_cd = 'CH01' OR challenge_st_cd = 'CH02')
 	</select>
 	
 	<select id="selectBaseChallengeByNo" parameterType="long" resultType="BaseChallenge">
@@ -453,5 +459,12 @@
 		UPDATE OPERATED_CHALLENGE_TB 
 		SET challenge_st_cd = #{challengeStatus} 
 		WHERE challenge_no = #{operatedChallengeNo}
+	</update>
+	
+	<update id="updateBaseChallengeStatus" parameterType="long">
+		/* updateBaseChallengeStatus */
+		UPDATE BASE_CHALLENGE_TB
+		SET base_is_on = 0
+		WHERE base_no = #{baseNo}
 	</update>
 </mapper>

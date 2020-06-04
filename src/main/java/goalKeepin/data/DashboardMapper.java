@@ -24,4 +24,6 @@ public interface DashboardMapper {
 
 	List<Map<String, Object>> selectTodayApprovalList();
 
+	List<Map<String, Object>> selectUnpaidRewardList();
+
 }

@@ -103,8 +103,16 @@
 	</select>
 	
 	<update id="updateOfferToVoted" parameterType="Offer">
+		/* updateOfferToVoted */
 		UPDATE CHALLENGE_OFFER_TB
 		SET offer_st_cd = 'VO03'
 		WHERE offer_no = #{offerNo}
 	</update>
+	
+	<delete id="deleteOffer" parameterType="long">
+		/* deleteOffer */
+		DELETE FROM TRANSLATION_TB WHERE trans_no = (SELECT offer_title_t_no FROM CHALLENGE_OFFER_TB WHERE offer_no = #{offerNo});
+		DELETE FROM TRANSLATION_TB WHERE trans_no = (SELECT offer_title_t_no FROM CHALLENGE_OFFER_TB WHERE offer_no = #{offerNo});
+		DELETE FROM CHALLENGE_OFFER_TB WHERE offer_no = #{offerNo}
+	</delete>
 </mapper>

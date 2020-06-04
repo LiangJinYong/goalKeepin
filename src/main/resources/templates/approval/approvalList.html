@@ -67,6 +67,7 @@ header a, header li {
 									<option value="AS01">Waiting</option>
 									<option value="AS02">Approved</option>
 									<option value="AS03">Denied</option>
+									<option value="AS04">Denied by Red Card</option>
 							</select>
 						</li>
 					</ul>
@@ -104,6 +105,7 @@ header a, header li {
 							<td class="text-center waiting" th:if="${approval.approvalStatusCd == 'AS01'}" th:text="Waiting">Verification Type</td>
 							<td class="text-center approved" th:if="${approval.approvalStatusCd == 'AS02'}" th:text="Approved">Verification Type</td>
 							<td class="text-center denied" th:if="${approval.approvalStatusCd == 'AS03'}" th:text="Denied">Verification Type</td>
+							<td class="text-center denied" th:if="${approval.approvalStatusCd == 'AS04'}" th:text="'Denied by Red Card'">Verification Type</td>
 						</tr>
 						<tr th:if="${page.totalRecordNum == 0}">
 							<td colspan="5" class="text-center">

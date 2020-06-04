@@ -180,7 +180,7 @@ public class RewardPaymentController {
 					String type = "PS07";
 
 					if (pushToken != null) {
-						FCMUtils.sendFCM(userNo, pushToken, title, body, type);
+						FCMUtils.sendFCM(userNo, pushToken, title, body, challengeNo.intValue(), type);
 						PushRecord pushRecord = new PushRecord(userNo, title, body, type, challengeNo.intValue());
 						commonMapper.insertSendPushRecord(pushRecord);
 					}

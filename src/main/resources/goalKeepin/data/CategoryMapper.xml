@@ -7,7 +7,17 @@
 
 	<resultMap type="Category" id="Category">
 		<id property="categoryNo" column="categoryNo" />
+		
+ 		<result property="categoryNmTransNo" column="categoryNmTransNo" />
  		<result property="categoryNmEn" column="categoryNmEn" />
+ 		<result property="categoryNmTc" column="categoryNmTc" />
+ 		<result property="categoryNmSc" column="categoryNmSc" />
+ 		
+ 		<result property="categoryDescriptionTransNo" column="categoryDescriptionTransNo" />
+ 		<result property="categoryDescriptionEn" column="categoryDescriptionEn" />
+ 		<result property="categoryDescriptionTc" column="categoryDescriptionTc" />
+ 		<result property="categoryDescriptionSc" column="categoryDescriptionSc" />
+ 		
  		<result property="challengeNum" column="challengeNum" />
 	</resultMap>
 	
@@ -71,5 +81,20 @@
 	<select id="selectNextCategoryOrder" resultType="int">
 		/* selectNextCategoryOrder */
 		SELECT IFNULL(MAX(category_order), 0) + 1 FROM CATEGORY_TB
+	</select>
+	
+	<select id="selectCategoryDetail" parameterType="long" resultMap="Category">
+		/* selectCategoryDetail */
+		SELECT ct.category_no categoryNo
+		, ct.category_nm_t_no categoryNmTransNo
+		, (SELECT trans_en FROM TRANSLATION_TB WHERE trans_no = ct.category_nm_t_no) categoryNmEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB WHERE trans_no = ct.category_nm_t_no) categoryNmTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB WHERE trans_no = ct.category_nm_t_no) categoryNmSc
+		, ct.category_txt_t_no categoryDescriptionTransNo
+		, (SELECT trans_en FROM TRANSLATION_TB WHERE trans_no = ct.category_txt_t_no) categoryDescriptionEn
+		, (SELECT trans_t_cn FROM TRANSLATION_TB WHERE trans_no = ct.category_txt_t_no) categoryDescriptionTc
+		, (SELECT trans_s_cn FROM TRANSLATION_TB WHERE trans_no = ct.category_txt_t_no) categoryDescriptionSc
+		FROM CATEGORY_TB ct
+        WHERE category_no =  #{categoryNo}
 	</select>
 </mapper>

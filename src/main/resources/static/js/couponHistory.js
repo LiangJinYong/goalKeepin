@@ -1,26 +1,13 @@
-$('#userSearchText').focus();
-loadUserData('%', null);
 
-$('#userSearchText').keyup(function() {
-	var sort = null;
-	
-	var ascHead = $('#tableHead .asc');
-	var descHead = $('#tableHead .desc');
-	
-	if(ascHead.length > 0) {
-		sort = $('#tableHead .asc').parent().attr('id') + ',asc';
-	} else if(descHead.length > 0) {
-		sort = $('#tableHead .desc').parent().attr('id') + ',desc';
-	}
-	
-	loadUserData($(this).val(), sort);
-});
+if(couponNo != null) {
+	loadCouponHistoryData(null);
+}
 
-function loadUserData(userSearchText, sort) {
+
+function loadCouponHistoryData(sort) {
 	$.get({
-		url: '/goalkeepinmanager/balance/searchUserListByIdAndNickname/1',
+		url: '/goalkeepinmanager/coupon/getCouponHistoryData/' + couponNo + '/1',
 		data: {
-			userSearchText: userSearchText,
 			sort: sort
 		},
 		dataType: 'json',
@@ -32,18 +19,18 @@ function loadUserData(userSearchText, sort) {
 			addSortLink(data);
 			
 			if(pageData.length > 0) {
-				var getUrl = '/goalkeepinmanager/balance/searchUserListByIdAndNickname/';
+				var getUrl = '/goalkeepinmanager/coupon/getCouponHistoryData/' + couponNo + '/';
 				
 				processTableData(pageData, pageNum, pageSize);
 				processPagination(data, getUrl, sort);
 			} else {
 				$('#userData').empty();
-				var row = '<tr class="text-center"><td colspan="9">No Data Found</td></tr>';
-				$('#userData').append(row);
+				var row = '<tr class="text-center"><td colspan="4">No Data Found</td></tr>';
+				$('#couponData').append(row);
 				$('#pagingArea').empty();
 			}
 		}, error: function() {
-			alert('Error searching users');
+			alert('Error searching coupon history');
 		}
 	});
 }
@@ -72,19 +59,19 @@ function addSortLink(data) {
 		
 		$('.table .sortable').off('click').click(function(e) {
 			if($(this).has('span.asc').length > 0) {
-				loadUserData($('#userSearchText').val(), $(this).attr('id') + ',desc');
+				loadCouponHistoryData($(this).attr('id') + ',desc');
 			} else {
-				loadUserData($('#userSearchText').val(), $(this).attr('id') + ',asc');
+				loadCouponHistoryData($(this).attr('id') + ',asc');
 			}
 		});
 	}
 }
 
 function processTableData(pageData, pageNum, pageSize) {
-	$('#userData').empty();
+	$('#couponData').empty();
 	// table data
 	for(var i=0; i<pageData.length; i++) {
-		var row = '<tr class="text-center" style="cursor: pointer;" id="' + pageData[i].userNo + '">';
+		var row = '<tr class="text-center">';
 		row += '<td>';
 		row += (parseInt(pageNum) - 1) * pageSize + (i + 1);
 		row += '</td><td>';
@@ -92,20 +79,10 @@ function processTableData(pageData, pageNum, pageSize) {
 		row += '</td><td>';
 		row += pageData[i].nickName;
 		row += '</td><td>';
-		row += pageData[i].cashCharge.format();
-		row += '</td><td>';
-		row += pageData[i].participationFee.format();
-		row += '</td><td>';
-		row += pageData[i].withdrawAmount.format();
-		row += '</td><td>';
-		row += pageData[i].serviceCharge.format();
-		row += '</td><td>';
-		row += pageData[i].rewardAmount.format();
-		row += '</td><td>';
-		row += pageData[i].penaltyAmount.format();
+		row += pageData[i].couponUseDate;
 		row += '</td></tr>';
 		
-		$('#userData').append(row);
+		$('#couponData').append(row);
 	}
 }
 
@@ -185,7 +162,6 @@ function processPagination(data, getUrl, sort) {
 			var pageNum = id.substring(5);
 			$.getJSON(getUrl + pageNum,
 				{
-					userSearchText: $('#userSearchText').val() == '' ? '%' : $('#userSearchText').val(),
 					sort: sort
 				},
 				function(data) {

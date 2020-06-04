@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Offer Detail</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
@@ -19,7 +21,7 @@
 }
 
 header li {
-	margin-top: 30px;
+	margin-top: 10px;
 	color: #777;
 	font-weight: bold;
 }
@@ -50,7 +52,11 @@ input[type=text] {
 <body>
 	<div class="row">
 		<header class="col-md-12">
-			<h1 class="h3">Create project suggestion</h1>
+			<h1 th:if="${offer.offerNo == null}" class="brand pull-left h3">Create Project Suggestion</h1>
+			<h1 th:if="${offer.offerNo != null}" class="brand pull-left h3">Project Suggestion Detail</h1>
+			<ul th:if="${offer.offerStatusCd == 'VO03'}" class="list-inline list-unstyled pull-right">
+				<li><a href="#" class="btn btn-primary" id="deleteOffer">Delete</a></li>
+			</ul>
 		</header>
 	</div>
 
@@ -139,22 +145,43 @@ input[type=text] {
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$(function() {
-			$('#createOffer')
-					.submit(
-							function(e) {
-								var buttonId = $(this).find(
-										'input[type=submit]').attr('id')
+			$('#createOffer').submit(function(e) {
+				var buttonId = $(this).find('input[type=submit]').attr('id');
 
-								if ('startVoting' == buttonId) {
-									if (!confirm('Are you sure to create and start voting this project suggestion?')) {
-										e.preventDefault();
-									}
-								} else if ('completeVoting' == buttonId) {
-									if (!confirm('Are you sure to complete voting for this project suggestion?')) {
-										e.preventDefault();
-									}
-								}
-							});
+				if ('startVoting' == buttonId) {
+					if (!confirm('Are you sure to create and start voting this project suggestion?')) {
+						e.preventDefault();
+					}
+				} else if ('completeVoting' == buttonId) {
+					if (!confirm('Are you sure to complete voting for this project suggestion?')) {
+						e.preventDefault();
+					}
+				}
+			});
+			
+			$('#deleteOffer').click(function() {
+				if(confirm('Are you sure to delete this project suggestion?')) {
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({ url: '/goalkeepinmanager/offer/deleteOffer',  
+						 data: {
+							 offerNo: $('#offerNo').val() 
+			 			 },  
+						 method: "POST",  
+						 dataType: "text", 
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function(json) { 
+						 window.location = '/goalkeepinmanager/offer/showOfferList/1?offerStatusCd=VO00'; 
+					 })
+					 .fail(function() {
+						 alert('Error deleting offer.');
+					 });
+				}
+			});
 		});
 	</script>
 </body>

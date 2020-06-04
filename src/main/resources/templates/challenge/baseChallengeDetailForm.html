@@ -85,9 +85,10 @@ input[type=text] {
 			<h1 th:if="*{baseChallenge.baseNo == null}" class="brand pull-left h3">Create a project</h1>
 			<h1 th:if="*{baseChallenge.baseNo != null}" class="brand pull-left h3">Details of created projects</h1>
 			<ul th:if="*{baseChallenge != null and baseChallenge.baseNo != null}" class="list-inline list-unstyled pull-right" id="headerBtn">
-				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'Project list (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">Project List</a></li>
-				<li><a class="btn btn-primary" id="startRecruiting" href="#">Start a project</a></li>
-				<li th:if="*{modifiable == 1}"><a class="btn btn-primary" href="#" id="modifyChallengeDetail">Edit</a></li>
+				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'Project List (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">Project List</a></li>
+				<li><a class="btn btn-primary" id="startRecruiting" href="#">Start A Project</a></li>
+				<li th:if="*{modifiable}"><a class="btn btn-primary" href="#" id="modifyChallengeDetail">Edit</a></li>
+				<li th:if="*{deletable}"><a class="btn btn-danger" href="#" id="deleteBaseChallenge">Delete</a></li>
 			</ul>
 		</header>
 	</div>
@@ -448,8 +449,7 @@ input[type=text] {
 			      
 			      form_data.append('file', file);
 			      
-			      $.ajax(
-			            {
+			      $.ajax({
 			               data: form_data,
 			               type: "POST",
 			               url: '/goalkeepinmanager/challenge/detailImage',
@@ -608,6 +608,28 @@ input[type=text] {
 					 $('#baseThumbnailUrl').attr('required', 'required');
 				 });
 				 
+			 });
+			 
+			 $('#deleteBaseChallenge').click(function() {
+				 if(confirm('Are you sure to delete the base project?')) {
+						
+						$.ajax({ url: '/goalkeepinmanager/challenge/deleteBaseChallenge',  
+							 data: {
+								 baseNo: $('#baseNo').val() 
+				 			 },  
+							 method: "POST",  
+							 dataType: "text", 
+							 beforeSend : function(xhr) {
+							    xhr.setRequestHeader(header, token);
+								}
+							 })
+						 .done(function(json) { 
+							 window.location = '/goalkeepinmanager/challenge/baseManagement/1'; 
+						 })
+						 .fail(function() {
+							 alert('Error deleting base project.');
+						 });
+					}
 			 });
 			 
 			 // 모집 시작하기 버튼 처리
@@ -819,7 +841,7 @@ input[type=text] {
 							}
 						 })
 						 .done(function(json) { 
-							 window.location = '/goalkeepinmanager/challenge/showOperatedChallengeList/1?baseNo=' + $('#baseNo').val(); 
+							 window.location = '/goalkeepinmanager/challenge/baseManagement/1'; 
 						 });
 				 	}
 				 });
@@ -848,17 +870,25 @@ input[type=text] {
 				 processHabitType();
 			 });
 			 
+			 function addLeadingZero(numberStr) {
+				 var numberInt = parseInt(numberStr);
+				 if(numberInt < 10) {
+					 return '0' + numberInt;
+				 }
+				 return numberStr;
+			 }
+			 
 			 $('#challengeForm').submit(function(e) {
 				 
 				 if(!$('#allHours').prop('checked')) {
-					 var fromTime = $('#baseAuthFromTimeHour').val() + ':' + $('#baseAuthFromTimeMinute').val() + ':00'; 
-					 var toTime = $('#baseAuthToTimeHour').val() + ':' + $('#baseAuthToTimeMinute').val() + ':00';
+					 var fromTime = addLeadingZero($('#baseAuthFromTimeHour').val()) + ':' + addLeadingZero($('#baseAuthFromTimeMinute').val()) + ':00'; 
+					 var toTime = addLeadingZero($('#baseAuthToTimeHour').val()) + ':' + addLeadingZero($('#baseAuthToTimeMinute').val()) + ':00';
 					 
 					 $('#baseAuthFromTime').val(fromTime);
 					 $('#baseAuthToTime').val(toTime);
 					 
 					 if(fromTime > toTime) {
-						 alert("Start verification time can't be earlier than end verification time.")
+						 alert("Start verification time can't be later than end verification time.")
 						 $('#baseAuthFromTimeHour').focus();
 						 e.preventDefault();
 						 return;

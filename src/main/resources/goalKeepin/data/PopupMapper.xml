@@ -78,7 +78,7 @@
 	<insert id="insertNewPopup" parameterType="Popup">
 		/* insertNewPopup */
 		INSERT INTO POPUP_TB (popup_image_url, popup_tp_cd, popup_target_no, popup_is_on)
-		VALUES (#{popupImgUrl}, #{popupTypeCd}, #{popupTargetNo}, 0)
+		VALUES (#{popupImgUrl}, #{popupTypeCd}, #{popupTargetNo}, 1)
 	</insert>
 	
 	<update id="deactivatePopups" parameterType="map">

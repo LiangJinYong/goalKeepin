@@ -64,7 +64,7 @@ public class CategoryController {
 	@GetMapping("/createNewCategory")
 	public String createNewCategory(Model model) {
 		model.addAttribute("category", new Category());
-		return "category/createCategoryForm";
+		return "category/categoryDetailForm";
 	}
 	
 	@PostMapping("/processCagegoryCreation")
@@ -101,5 +101,12 @@ public class CategoryController {
 			e.printStackTrace();
 			return "500";
 		}
+	}
+	
+	@GetMapping("/showCategoryDetail")
+	public String showCategoryDetail(@RequestParam("categoryNo") Long categoryNo, Model model) {
+		Category category = categoryMapper.selectCategoryDetail(categoryNo);
+		model.addAttribute("category", category);
+		return "category/categoryDetailForm";
 	}
 }

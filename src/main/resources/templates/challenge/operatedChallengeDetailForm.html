@@ -51,11 +51,11 @@ header li {
 			<h1 class="brand pull-left h3">Project details</h1>
 			<ul class="list-inline list-unstyled pull-right">
 				<li th:if="*{participantCount > 0}"><a class="btn btn-primary" id="showParticipantList" th:href="@{/challenge/showParticipantList/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'Participants list(' + participantCount + ')'}"></a></li>
-				<li th:if="*{participantCount == 0}"><a class="btn btn-danger" style="cursor: default;">No participant</a></li>
+				<li th:if="*{participantCount == 0}"><a class="btn btn-danger" style="cursor: default;">No Participant</a></li>
 				<li th:if="*{participantCount > 0 and challengeProofCount > 0}"><a class="btn btn-primary" id="showProofShotList" th:href="@{/challenge/showAllProofShotsByChallenge(operatedNo=*{operatedChallenge.operatedChallengeNo})}" th:text="*{'View verifications(' + challengeProofCount + ')'}"></a></li>
-				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger" style="cursor: default;">No verification</a></li>
+				<li th:if="*{participantCount > 0 and challengeProofCount == 0}"><a class="btn btn-danger" style="cursor: default;">No Verification</a></li>
 				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount > 0}"><a th:href="@{/challenge/showReviewListByChallenge/1(operatedNo=*{operatedChallenge.operatedChallengeNo})}" class="btn btn-primary" th:text="*{'Review List(' + reviewCount + ')'}"></a></li>
-				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger" style="cursor: default;">No review</a></li>
+				<li th:if="*{operatedChallenge.statusCd == 'CH03' and reviewCount == 0}"><a class="btn btn-danger" style="cursor: default;">No Review</a></li>
 				<li th:if="*{operatedChallenge.statusCd == 'CH01'}"><a id="cancelProject" class="btn btn-danger">Cancel</a></li>
 				<li th:if="*{operatedChallenge.statusCd == 'CH02'}"><a id="abortProject" class="btn btn-danger">Abort</a></li>
 			</ul>

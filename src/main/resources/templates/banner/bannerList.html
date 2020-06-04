@@ -48,7 +48,7 @@ img {
 			<h1 class="brand pull-left h3">Banner</h1>
 			<ul class="list-inline list-unstyled pull-right">
 				<li><a class="btn btn-primary" id="saveBannerSetting">Save Setting</a></li>
-				<li><a class="btn btn-primary" th:href="@{/banner/createNewBanner}">Create a Banner</a></li>
+				<li><a class="btn btn-primary" th:href="@{/banner/createNewBanner}">Create A Banner</a></li>
 			</ul>
 		</header>
 	</div>
@@ -196,9 +196,9 @@ img {
 						    xhr.setRequestHeader(header, token);
 							}
 						 })
-						 .done(function(json) { 
-							 window.location = '/goalkeepinmanager/banner/showBannerList/1';
-						 });
+					 .done(function(json) {
+						 window.location = '/goalkeepinmanager/banner/showBannerList/1';
+					 });
 				}
 			});
 			

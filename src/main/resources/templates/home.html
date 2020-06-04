@@ -66,7 +66,7 @@
 		<div class="col-md-1" style="border-right: 3px solid lightgrey; background-color: #fff; width: 15vw; height: 91.4vh; overflow: auto;" id="sideMenu">
 			<div class="col-md-offset-2">
 				<ul class="list-unstyled">
-					`<h2 class="h5">Home</h2>
+					<h2 class="h5">Home</h2>
 					<ul class="list-unstyled">
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/dashboard}" target="menuFrame" class="highlight">Dashboard</a></li>
 					</ul>
@@ -115,14 +115,12 @@
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/banner/showBannerList/1}" target="menuFrame">Banner</a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/report/showReportList/1?reportStatus=}" target="menuFrame">Report<span class="badge" th:text="${unprocessedReportCount}" id="unprocessedReportCount">unprocessedReportCount</span></a></li>
 						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/giftSetting/showGiftSettingDetail}" target="menuFrame">Gift Setting</a></li>
+						<li style="list-style-image: url(images/dot.jpeg);"><a th:href="@{/coupon/showCouponList/1}" target="menuFrame">Coupon</a></li>
 					</ul>
 				</ul>
 			</div>
 		</div>
 		<div class="col-md-10">
-			<!-- 
-			<iframe id="menuFrame" name="menuFrame" th:src="@{/report/showReportDetail?reportNo=1}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.3vh;"></iframe>
-	 -->
 			<iframe id="menuFrame" name="menuFrame" th:src="@{/dashboard}" class="col-md-12" frameborder="no" style="width: 82.9vw; height: 91.4vh;"></iframe>
 		</div>
 	</div>

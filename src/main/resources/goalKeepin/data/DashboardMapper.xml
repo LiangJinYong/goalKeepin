@@ -37,7 +37,7 @@
 	
 	<select id="selectRecentOngongProjectList" resultType="hashmap">
 		/* selectRecentOngongProjectList */
-		SELECT oct.challenge_no subProjectId, tt.trans_en projectName, (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = oct.challenge_no) numOfParticipants  
+		SELECT oct.challenge_no projectId, tt.trans_en projectName, (SELECT COUNT(*) FROM CHALLENGE_ENTRY_TB WHERE entry_challenge_no = oct.challenge_no) numOfParticipants  
 		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
 		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no
 		WHERE oct.challenge_st_cd = 'CH02'
@@ -51,6 +51,20 @@
 		FROM CHALLENGE_AUTH_TB cat 
 		WHERE DATE(auth_reg_dt) = CURDATE()
 		ORDER BY auth_reg_dt DESC 
+		LIMIT 5
+	</select>
+	
+	<select id="selectUnpaidRewardList" resultType="hashmap">
+		/* selectUnpaidRewardList */
+		SELECT entry_challenge_no projectId, tt.trans_en projectName, IFNULL(SUM(reward_amt), 0) rewardAmount
+		FROM CHALLENGE_ENTRY_TB cet 
+		INNER JOIN OPERATED_CHALLENGE_TB oct ON cet.entry_challenge_no = oct.challenge_no
+		INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
+		INNER JOIN TRANSLATION_TB tt on bct.base_nm_t_no = tt.trans_no
+		WHERE obtain_reward_by_result = 0
+		AND oct.challenge_st_cd = 'CH03'
+		GROUP BY entry_challenge_no
+		ORDER BY oct.challenge_end_dt
 		LIMIT 5
 	</select>
 </mapper>

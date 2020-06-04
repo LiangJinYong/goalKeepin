@@ -40,7 +40,9 @@ public interface ChallengeMapper {
 
 	int getOperatedChallengeCountByBase(Long baseNo);
 
-	int selectModifiable(Long baseNo);
+	boolean selectModifiable(Long baseNo);
+	
+	boolean selectDeletable(Long baseNo);
 
 	OperatedChallenge selectOperatedChallengeByNo(Long operatedNo);
 	
@@ -87,5 +89,7 @@ public interface ChallengeMapper {
 	void deleteOperatedChallenge(Long operatedChallengeNo);
 
 	void updateChallengeStatus(Map<String, Object> statusMap);
+
+	void updateBaseChallengeStatus(Long baseNo);
 
 }

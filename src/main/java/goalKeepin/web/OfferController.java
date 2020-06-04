@@ -1,6 +1,5 @@
 package goalKeepin.web;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import goalKeepin.config.GoalKeepinProps;
 import goalKeepin.data.OfferMapper;
@@ -86,5 +86,12 @@ public class OfferController {
 		Offer offer = offerMapper.selectOfferDetail(offerNo);
 		model.addAttribute("offer", offer);
 		return "offer/offerDetail";
+	}
+	
+	@PostMapping("/deleteOffer")
+	@ResponseBody 
+	public String deleteOffer(@RequestParam("offerNo") Long offerNo) {
+		offerMapper.deleteOffer(offerNo);
+		return "200";
 	}
 }

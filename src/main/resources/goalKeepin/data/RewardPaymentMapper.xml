@@ -27,18 +27,6 @@
 		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%')
 	</select>
 	
-	<insert id="insertRewardPaymentRecords" parameterType="map">
-		/* insertRewardPaymentRecords */
-		INSERT INTO USER_CASH_REPORT_TB
-		(cash_user_no, report_tp_cd, report_st_cd, report_cash_amt)
-		VALUES
-		<foreach collection="userNoArr" item="userNo" separator=",">
-            (#{userNo}, 'CA02', 'CT02', #{rewardAmount})
-        </foreach>	
-	</insert>
-	
-	
-	<!-- NEW -->
 	<sql id="completedChallengeList">
 		FROM OPERATED_CHALLENGE_TB oct INNER JOIN BASE_CHALLENGE_TB bct ON oct.challenge_base_no = bct.base_no
 		INNER JOIN TRANSLATION_TB tt ON tt.trans_no = bct.base_nm_t_no

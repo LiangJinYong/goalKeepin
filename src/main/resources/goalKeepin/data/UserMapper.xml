@@ -103,7 +103,7 @@
 		UPDATE USER_TB
 		SET user_cash = (
 			CASE
-				WHEN user_cash > (SELECT IFNULL(SUM(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' and report_st_cd='CT02')  then USER_CASH - (select ifnull(sum(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' AND report_st_cd='CT02')
+				WHEN user_cash > (SELECT IFNULL(SUM(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' AND report_st_cd='CT02')  THEN user_cash - (SELECT IFNULL(SUM(report_cash_amt), 0) FROM USER_CASH_REPORT_TB WHERE cash_user_no = #{userNo} AND report_tp_cd = 'CA02' AND report_st_cd='CT02')
 		        ELSE 0
 			END
 		)

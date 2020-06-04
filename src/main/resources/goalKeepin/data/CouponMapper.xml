@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goalKeepin.data.CouponMapper">
+
+	<resultMap type="Coupon" id="Coupon">
+		<id property="couponNo" column="couponNo" />
+ 		<result property="couponCode" column="couponCode" />
+ 		<result property="couponType" column="couponType" />
+ 		<result property="couponName" column="couponName" />
+ 		<result property="couponGiftAmount" column="couponGiftAmount" />
+ 		<result property="couponUseNumber" column="couponUseNumber" />
+ 		<result property="couponMaxUse" column="couponMaxUse" />
+ 		<result property="couponExpiredDate" column="couponExpiredDate" />
+ 		<result property="couponIsOn" column="couponIsOn" />
+ 		<result property="couponRegDate" column="couponRegDate" />
+	</resultMap>
+	
+	<select id="getTotalCouponNum" resultType="int">
+		/* getTotalCouponNum */
+		SELECT COUNT(*)
+		FROM COUPON_TB
+		WHERE coupon_is_on = 1
+	</select>
+	
+	<select id="selectCouponList" parameterType="map" resultMap="Coupon">
+		/* selectCouponList */
+		SELECT coupon_no couponNo, coupon_code couponCode, coupon_tp couponType, coupon_nm couponName, coupon_gift_amt couponGiftAmount, coupon_use_num couponUseNumber, coupon_max_use couponMaxUse, coupon_expired_dt couponExpiredDate, coupon_is_on couponIsOn
+		FROM COUPON_TB
+		WHERE coupon_is_on = 1
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if>
+		coupon_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="selectCurrentCouponCodeList" resultType="string">
+		/* selectCurrentCouponCodeList */
+		SELECT coupon_code FROM COUPON_TB
+	</select>
+	
+	<insert id="insertNewCoupon" parameterType="Coupon">
+		/* insertNewCoupon */
+		INSERT INTO COUPON_TB
+		(coupon_code, coupon_tp, coupon_nm, coupon_gift_amt, coupon_use_num, coupon_max_use, coupon_expired_dt)
+		VALUES
+		(#{couponCode}, #{couponType}, #{couponName}, #{couponGiftAmount}, #{couponUseNumber}, #{couponMaxUse}, #{couponExpiredDate})
+	</insert>
+	
+	<select id="selectCouponDetail" parameterType="long" resultType="Coupon">
+		/* selectCouponDetail */
+		SELECT coupon_no couponNo, coupon_code couponCode, coupon_tp couponType, coupon_nm couponName, coupon_gift_amt couponGiftAmount, coupon_use_num couponUseNumber, coupon_max_use couponMaxUse, coupon_expired_dt couponExpiredDate
+		FROM COUPON_TB
+		WHERE COUPON_NO = #{couponNo}
+	</select>
+	
+	<update id="updateCouponStatus" parameterType="long">
+		/* updateCouponStatus */
+		UPDATE COUPON_TB
+		SET coupon_is_on = 0
+		WHERE coupon_no = #{couponNo}
+	</update>
+	
+	<select id="selectCouponUseList" parameterType="map" resultType="hashmap">
+		/* selectCouponUseList */
+		SELECT ut.user_id userId, ut.user_nickname nickName, DATE_FORMAT(cuht.c_history_reg_dt, '%Y-%m-%d %H:%i:%s') couponUseDate
+		FROM COUPON_USE_HISTORY_TB cuht
+		INNER JOIN USER_TB ut ON cuht.c_history_user_no = ut.user_no
+		WHERE cuht.c_history_coupon_no = #{couponNo}
+		ORDER BY
+		<if test="sortField != null">
+			${sortField} ${sortOrder},
+		</if> 
+		c_history_reg_dt DESC
+		LIMIT ${startIndex}, ${pageSize}
+	</select>
+	
+	<select id="getTotalCouponUseCount" parameterType="map" resultType="int">
+		/* getTotalCouponUseCount */
+		SELECT COUNT(*) totalCouponUseCount
+		FROM COUPON_USE_HISTORY_TB cuht
+		INNER JOIN USER_TB ut ON cuht.c_history_user_no = ut.user_no
+		WHERE cuht.c_history_coupon_no = #{couponNo}
+	</select>
+</mapper>

@@ -183,10 +183,16 @@ table {
 		</div>
 	</div>
 	
+	<script type="text/javascript" th:src="@{/js/numberFormat.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript" th:src="@{/js/userSearchForBalance.js}"></script>
 	<script type="text/javascript">
-		
+		$(function() {
+			$('.card-text').each(function(index, item) {
+				var formatedAmount = $(item).text().format();
+				$(item).text(formatedAmount);
+			});
+		});
 	</script>
 </body>
 </html>

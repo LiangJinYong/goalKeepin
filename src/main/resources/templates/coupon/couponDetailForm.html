@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Coupon Detail Form</title>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
+<style type="text/css">
+header a, header li {
+	margin-top: 10px;
+	color: #777;
+	font-weight: bold;
+}
+
+.row {
+	margin: 15px 0 0 0;
+}
+
+table {
+	border: 1px solid #ccc;
+}
+
+input[type=number], input[type=date], input[type=text] {
+	width: 250px;
+}
+
+input[type=number], input[type=datetime-local] {
+	height: 2.5em;
+	padding: 15px;
+}
+
+h2+span, h2+div {
+	margin-left: 30px;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<header class="col-md-12">
+			<h1 th:if="${coupon.couponNo == null}" class="brand pull-left h3">Create A Coupon</h1>
+			<h1 th:if="${coupon.couponNo != null}" class="brand pull-left h3">Coupon Detail</h1>
+			<ul th:if="${coupon.couponNo != null}" class="list-inline list-unstyled pull-right">
+				<li><a href="#" class="btn btn-primary" id="deleteCoupon">Delete</a></li>
+			</ul>
+		</header>
+	</div>
+
+	<form method="post" th:action="@{/coupon/processCouponCreation}" th:object="${coupon}" id="saveCouponForm">
+		<section id="selectPart">
+			<input type="hidden" name="couponNo" th:field="*{couponNo}" />
+
+			<div class="row">
+				<div class="col-md-2">
+					<label>Coupon Type</label>
+				</div>
+				<div class="col-md-2">
+					<select th:field="*{couponType}">
+						<option value="CASH">Cash</option>
+						<option value="BADGE">Badge</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<h2 class="h5">Coupon Name</h2>
+					<input th:if="${coupon.couponNo == null}" type="text" name="couponName" placeholder="Please enter coupon name" required="required"> <span th:if="${coupon.couponNo != null}" th:text="${coupon.couponName}">Coupon Name</span>
+				</div>
+				<div class="col-md-4" th:if="${coupon.couponNo != null}">
+					<h2 class="h5">Coupon Code</h2>
+					<span th:text="${coupon.couponCode}">Coupon Code</span>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4">
+					<h2 class="h5">Gift Amount</h2>
+					<input th:if="${coupon.couponNo == null}" type="number" name="couponGiftAmount" placeholder="Gift amount" required="required"> <span th:if="${coupon.couponNo != null}" th:text="${coupon.couponGiftAmount}">Gift Amount</span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Use Number</h2>
+					<input th:if="${coupon.couponNo == null}" type="number" name="couponUseNumber" placeholder="Use number" required="required"> <span th:if="${coupon.couponNo != null}" th:text="${coupon.couponUseNumber}">Use Number</span>
+				</div>
+				<div class="col-md-4">
+					<h2 class="h5">Max Use</h2>
+					<input th:if="${coupon.couponNo == null}" type="number" name="couponMaxUse" placeholder="Max use" required="required"> <span th:if="${coupon.couponNo != null}" th:text="${coupon.couponMaxUse}">Max Use</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<h2 class="h5">Expired Date</h2>
+					<input th:if="${coupon.couponNo == null}" type="datetime-local" id="couponExpiredDate" name="couponExpiredDate" placeholder="Please enter coupon name" required="required" /> <span th:if="${coupon.couponNo != null}" th:text="${#dates.format(coupon.couponExpiredDate, 'yyyy-MM-dd HH:mm:ss')}">Expired Date</span>
+				</div>
+			</div>
+		</section>
+		<div class="row text-center" th:if="${coupon.couponNo == null}">
+			<div class="col-md-12">
+				<input th:if="${coupon.couponNo == null}" type="submit" value="Save" class="btn btn-primary">
+			</div>
+		</div>
+	</form>
+	
+	<section th:if="${coupon.couponNo != null}">
+		<div class="row" th:if="${coupon.couponNo != null}">
+			<header class="col-md-12">
+				<h1 class="brand pull-left h3">Coupon Usage History</h1>
+			</header>
+		</div>
+		
+		<div class="row" th:if="${coupon.couponNo != null}">
+			<div class="col-md-12">
+				<table id="couponTable" class="table table-striped table-hover" style="margin-left: -12px;">
+					<thead id="tableHead">
+						<tr>
+							<th>
+								<h2 class="h5 text-center">NO</h2>
+							</th>
+							<th>
+								<h2 class="h5 text-center sortable" id="userId">User ID</h2>
+							</th>
+							<th>
+								<h2 class="h5 text-center sortable" id="nickName">Nickname</h2>
+							</th>
+							<th>
+								<h2 class="h5 text-center sortable" id="couponUseDate">Coupon Use Date</h2>
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody id="couponData">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class="row text-center">
+		<nav aria-label="Page navigation" id="pagingArea">
+			
+		</nav>
+	</div>
+	</section>
+
+	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script th:inline="javascript">
+		var couponNo = /*[[*{coupon.couponNo}]]*/;
+	</script>
+	<script type="text/javascript" th:src="@{/js/couponHistory.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+
+			$(function() {
+				$('#saveCouponForm').submit(function(e) {
+					if (!confirm('Are you sure to save the coupon?')) {
+						e.preventDefault();
+					}
+				});
+			});
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			$('#deleteCoupon').click(function() {
+				if (confirm('Are you sure to delete this coupon?')) {
+					$.ajax({
+						url : '/goalkeepinmanager/coupon/deleteCoupon',
+						data : {
+							couponNo : $('#couponNo').val()
+						},
+						method : "POST",
+						dataType : "text",
+						beforeSend : function(xhr) {
+							xhr.setRequestHeader(header, token);
+						}
+					})
+					.done(function(json) {
+						window.location = '/goalkeepinmanager/coupon/showCouponList/1';
+					})
+					.fail(function() {
+						alert('Error deleting coupon.');
+					});
+				}
+			});
+		});
+	</script>
+</body>
+</html>

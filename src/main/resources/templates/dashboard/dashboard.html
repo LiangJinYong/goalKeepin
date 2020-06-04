@@ -137,7 +137,7 @@ caption a {
 				
 				<tbody>
 					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) > 0}" class="text-center" th:each="recentProject: ${dashboard.recentOngoingProjectList}">
-						<td th:text="${recentProject.subProjectId}">Sub Project Id</td>
+						<td th:text="${recentProject.projectId}">Project Id</td>
 						<td th:text="${recentProject.projectName}">Name of Projects</td>
 						<td th:text="${recentProject.numOfParticipants}">Number of Participants</td>
 					</tr>
@@ -189,7 +189,7 @@ caption a {
 				<thead>
 					<tr>
 						<th>
-							<h2 class="h5 text-center">Sub Project Id</h2>
+							<h2 class="h5 text-center">Project Id</h2>
 						</th>
 						<th>
 							<h2 class="h5 text-center">Name of Projects</h2>
@@ -201,10 +201,10 @@ caption a {
 				</thead>
 				
 				<tbody>
-					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) > 0}" class="text-center" th:each="recentProject: ${dashboard.recentOngoingProjectList}">
-						<td th:text="${recentProject.subProjectId}">Sub Project Id</td>
-						<td th:text="${recentProject.projectName}">Name of Projects</td>
-						<td th:text="${recentProject.numOfParticipants}">Number of Participants</td>
+					<tr th:if="${#lists.size(dashboard.unpaidRewardList) > 0}" class="text-center" th:each="unpaidReward: ${dashboard.unpaidRewardList}">
+						<td th:text="${unpaidReward.projectId}">Project Id</td>
+						<td th:text="${unpaidReward.projectName}">Name of Projects</td>
+						<td th:text="${unpaidReward.rewardAmount}">Reward Amount</td>
 					</tr>
 					<tr th:if="${#lists.size(dashboard.recentOngoingProjectList) == 0}" class="text-center">
 						<td colspan="3" class="text-center">
@@ -216,6 +216,7 @@ caption a {
 		</div>
 	</div>
 	
+	<script type="text/javascript" th:src="@{/js/numberFormat.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
 	<script type="text/javascript">
 		$('#moreProjects').click(function() {
@@ -240,6 +241,11 @@ caption a {
 			 $(highlightElementId).parents('ul').parent('ul').find('a').removeClass('highlight');
 			 $(highlightElementId).addClass('highlight');
 		}
+		
+		$('.card-text').each(function(index, item) {
+			var formatedAmount = $(item).text().format();
+			$(item).text(formatedAmount);
+		});
 	</script>
 </body>
 </html>

@@ -1,10 +1,14 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:log4jdbc:mysql://makeitdbinstance.c0fr6ikoj44t.ap-northeast-2.rds.amazonaws.com:3306/DB_GOALKEEPIN?useSSL=false&characterEncoding=utf8
+      jdbc-url: jdbc:log4jdbc:mysql://makeitdbinstance.c0fr6ikoj44t.ap-northeast-2.rds.amazonaws.com:3306/DB_GOALKEEPIN?useSSL=false&characterEncoding=utf8&allowMultiQueries=true
       username: makeIT
       password: makeit12!
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      #jdbc-url: jdbc:mysql://175.207.13.155/DB_GOALKEEPIN?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+      #username: root
+      #password: apdlzmdlt12!
+      #driver-class-name: com.mysql.jdbc.Driver
     
   servlet:
     multipart:
@@ -28,7 +32,6 @@ goalkeepin:
     challenge-thumbnail: /Users/liangjinyong/Downloads/upload/challengeImage/
     challenge-detail: /Users/liangjinyong/Downloads/upload/challengeDetailImage/
     banner: /Users/liangjinyong/Downloads/upload/bannerImage/
-    
 ---
 spring:
   profiles:

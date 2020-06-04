@@ -45,14 +45,14 @@
 	<insert id="insertNewBanner" parameterType="Banner">
 		/* insertNewBanner */
 		INSERT INTO BANNER_TB (banner_img_url, banner_tp, target, banner_is_on, banner_is_main)
-		VALUES (#{bannerImgUrl}, #{bannerTypeCd}, #{bannerTarget}, 0, #{bannerIsMain})
+		VALUES (#{bannerImgUrl}, #{bannerTypeCd}, #{bannerTarget}, 1, #{bannerIsMain})
 	</insert>
 	
 	<update id="updateBannerActiveStatus" parameterType="map">
 		/* updateBannerActiveStatus */
 		UPDATE BANNER_TB 
 		SET banner_is_on = #{bannerIsOn}
-		WHERE banner_no = #{bannerNo};
+		WHERE banner_no = #{bannerNo}
 	</update>
 	
 	<select id="selectBannerDetail" parameterType="long" resultMap="Banner">
