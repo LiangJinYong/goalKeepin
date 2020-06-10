@@ -70,7 +70,7 @@ header a, header li {
 						<td class="text-center" th:text="${report.reportNo}">NO</td>
 						<td class="text-center" th:text="${report.reporterUserId}">Reporter User Id</td>
 						<td class="text-center" th:text="${report.authType == 'AU01'} ? 'Photo' : 'Voice'">Auth Type</td>
-						<td class="text-center" th:text="*{#dates.format(report.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}">Report Reg Date</td>
+						<td class="text-center" th:text="*{#dates.format(report.reportRegDate, 'MM.dd.yyyy HH:mm:ss')}">Report Reg Date</td>
 						<td class="text-center" th:text="${report.processStatus} ? 'Completed' : 'Waiting'" th:classappend="${report.processStatus} ? 'completed' : 'waiting'">Process Status</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">

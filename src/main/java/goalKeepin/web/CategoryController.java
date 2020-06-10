@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +69,7 @@ public class CategoryController {
 	}
 	
 	@PostMapping("/processCagegoryCreation")
+	@Transactional
 	public String processCagegoryCreation(Category category) {
 		categoryMapper.insertCategoryNmTrans(category);
 		categoryMapper.insertCategoryDescriptionTrans(category);
@@ -91,6 +93,7 @@ public class CategoryController {
 	
 	@PostMapping("/saveCategoryOrders")
 	@ResponseBody
+	@Transactional
 	public String saveCategoryOrders(@RequestBody List<Map<String, Object>> categoryOrders) {
 		try {
 			for(Map<String, Object> categoryOrder : categoryOrders) {
@@ -108,5 +111,11 @@ public class CategoryController {
 		Category category = categoryMapper.selectCategoryDetail(categoryNo);
 		model.addAttribute("category", category);
 		return "category/categoryDetailForm";
+	}
+	
+	@PostMapping("/processCagegoryModification")
+	public String processCagegoryModification(Category category) {
+		categoryMapper.updateCategoryDetail(category);
+		return "redirect:/category/showCategoryList/1";
 	}
 }

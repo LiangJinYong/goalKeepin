@@ -97,4 +97,10 @@
 		FROM CATEGORY_TB ct
         WHERE category_no =  #{categoryNo}
 	</select>
+	
+	<update id="updateCategoryDetail" parameterType="Category">
+		/* updateCategoryDetail */
+		UPDATE TRANSLATION_TB SET trans_en = #{categoryNmEn}, trans_t_cn = #{categoryNmTc}, trans_s_cn = #{categoryNmSc} WHERE trans_no = #{categoryNmTransNo};
+		UPDATE TRANSLATION_TB SET trans_en = #{categoryDescriptionEn}, trans_t_cn = #{categoryDescriptionTc}, trans_s_cn = #{categoryDescriptionSc} WHERE trans_no = #{categoryDescriptionTransNo};
+	</update>
 </mapper>

@@ -122,6 +122,7 @@ h2 + span {
 			<div class="col-md-12">
 				<div class="col-md-4">
 					<a class="btn btn-warning" id="giveYellowCard" th:if="${userDetail.redCardNumber < 2}">Give Yellow Card</a>
+					<a class="btn btn-warning" id="cancelYellowCard" th:if="${userDetail.yellowCardNumber == 1}" style="margin-left: 20px;">Cancel Yellow Card</a>
 				</div>
 				<div class="col-md-4">
 					<a class="btn btn-danger" id="giveRedCard" th:if="${userDetail.redCardNumber < 2}">Give Red Card</a>
@@ -208,6 +209,27 @@ h2 + span {
 					 })
 					 .fail(function() {
 						 alert('Error giving red card.')
+					 });
+				}
+			});
+			
+			$('#cancelYellowCard').click(function() {
+				if(confirm('Are you sure to cancel this yellow card?')) {
+					$.ajax({ url: '/goalkeepinmanager/user/cancelYellowCard',  
+						 data: {
+							userNo: $('#userNo').val() 
+						 },
+						 method: "POST",  
+						 beforeSend : function(xhr) {
+						    xhr.setRequestHeader(header, token);
+							}
+						 })
+					 .done(function() {
+						 alert('Cancelled the yellow card successfully.');
+						 location.reload();
+					 })
+					 .fail(function() {
+						 alert('Error Cancelling yellow card.')
 					 });
 				}
 			});

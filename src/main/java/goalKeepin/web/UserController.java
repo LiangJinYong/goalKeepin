@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,6 +117,7 @@ public class UserController {
 	
 	@PostMapping("/giveYellowCard")
 	@ResponseBody
+	@Transactional
 	public String giveYellowCard(@RequestParam("userNo") Long userNo) {
 		int yellowCardNumber = userMapper.selectYellowCardNumber(userNo);
 		
@@ -140,8 +142,16 @@ public class UserController {
 		return "200";
 	}
 	
+	@PostMapping("/cancelYellowCard")
+	@ResponseBody
+	public String cancelYellowCard(@RequestParam("userNo") Long userNo) {
+		userMapper.decreaseYellowCardNumber(userNo);
+		return "200";
+	}
+	
 	@PostMapping("/giveRedCard")
 	@ResponseBody
+	@Transactional
 	public String giveRedCard(@RequestParam("userNo") Long userNo) {
 			
 		int redCardNumber = userMapper.selectRedCardNumber(userNo);

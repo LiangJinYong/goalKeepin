@@ -19,7 +19,7 @@
 		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_cash userCash
 		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) withdrawAmount
 		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND report_st_cd = 'CT02' AND cash_user_no = ut.user_no), 0) rewardAmount
-		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate
+		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(DATE_FORMAT(r_card_expired_dt, '%m.%d.%Y %h:%i:%s'), '-') redCardExpiredDate
 		FROM USER_TB ut
 		WHERE (user_id LIKE CONCAT('%', #{userSearchText}, '%')
 		OR user_nickname LIKE CONCAT('%', #{userSearchText}, '%'))
@@ -37,7 +37,7 @@
 		SELECT user_no userNo, user_id userId, user_nationality_cd nationalityCd, user_nickname nickName, user_cash userCash
 		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA03' AND cash_user_no = ut.user_no), 0) withdrawAmount
 		, IFNULL((SELECT SUM(report_cash_amt) FROM USER_CASH_REPORT_TB WHERE report_tp_cd = 'CA02' AND cash_user_no = ut.user_no), 0) rewardAmount
-		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate
+		, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(DATE_FORMAT(r_card_expired_dt, '%m.%d.%Y %h:%i:%s'), '-') redCardExpiredDate
 		FROM USER_TB ut
 		WHERE user_nationality_cd = #{nationalityCd}
 		ORDER BY user_no DESC
@@ -45,7 +45,7 @@
 	
 	<select id="selectUserDetail" parameterType="long" resultType="goalKeepin.web.dto.UserDetailDto">
 		/* selectUserDetail */
-		SELECT user_no userNo, user_id userId, user_grade_cd userGrade, CONCAT(user_first_nm, ' ', user_last_nm) username, user_nickname nickname, user_phonenum phoneNumber, user_email email, user_image_url userImageUrl, user_cash userCash, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(r_card_expired_dt, '-') redCardExpiredDate 
+		SELECT user_no userNo, user_id userId, user_grade_cd userGrade, CONCAT(user_first_nm, ' ', user_last_nm) username, user_nickname nickname, user_phonenum phoneNumber, user_email email, user_image_url userImageUrl, user_cash userCash, y_card_num yellowCardNumber, r_card_num redCardNumber, IFNULL(DATE_FORMAT(r_card_expired_dt, '%m.%d.%Y %h:%i:%s'), '-') redCardExpiredDate 
 		FROM USER_TB 
 		WHERE user_no = #{userNo}
 	</select>
@@ -66,6 +66,14 @@
 		SET y_card_num = y_card_num + 1
 		WHERE user_no = #{userNo}
 	</update>
+	
+	<update id="decreaseYellowCardNumber" parameterType="long">
+		/* decreaseYellowCardNumber */
+		UPDATE USER_TB
+		SET y_card_num = 0
+		WHERE user_no = #{userNo}
+	</update>
+	
 	
 	<update id="increaseRedCardNumber" parameterType="long">
 		/* increaseRedCardNumber */
@@ -90,7 +98,7 @@
 	
 	<select id="selectCashReportList" parameterType="map" resultType="hashmap">
 		/* selectCashReportList */
-		SELECT cash_report_no cashReportNo, report_cash_amt reportCashAmt, DATE_FORMAT(report_reg_dt, '%Y-%m-%d %h:%i:%s') cashReportRegDate, report_st_cd reportStatusCd
+		SELECT cash_report_no cashReportNo, report_cash_amt reportCashAmt, DATE_FORMAT(report_reg_dt, '%m.%d.%Y %h:%i:%s') cashReportRegDate, report_st_cd reportStatusCd
 		FROM USER_CASH_REPORT_TB
 		WHERE cash_user_no = #{userNo}
 		AND report_st_cd != 'CT03'

@@ -298,8 +298,8 @@
         , oct.challenge_grade_cd gradeCd
         , oct.challenge_min_fee minFee
         , oct.challenge_max_fee maxFee
-        , oct.challenge_start_dt startDate
-        , oct.challenge_end_dt endDate
+        , DATE_FORMAT(oct.challenge_start_dt, '%m.%d.%Y') startDate
+        , DATE_FORMAT(oct.challenge_end_dt, '%m.%d.%Y') endDate
         , oct.challenge_st_cd statusCd
         , oct.challenge_reg_dt regDate
 		FROM BASE_CHALLENGE_TB bct
@@ -388,7 +388,7 @@
 	
 	<select id="selectAllOperatedChallengeList" parameterType="map" resultMap="OperatedChallenge">
 		/* selectAllOperatedChallengeList */
-		SELECT oct.challenge_no operatedChallengeNo, tt.trans_en baseNmEn, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, oct.challenge_entry_num entryNum
+		SELECT oct.challenge_no operatedChallengeNo, tt.trans_en baseNmEn, DATE_FORMAT(oct.challenge_start_dt, '%m.%d.%Y') startDate, DATE_FORMAT(oct.challenge_end_dt, '%m.%d.%Y') endDate, oct.challenge_entry_num entryNum
 		FROM BASE_CHALLENGE_TB bct
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON bct.base_no = oct.challenge_base_no
         INNER JOIN TRANSLATION_TB tt on tt.trans_no = bct.base_nm_t_no

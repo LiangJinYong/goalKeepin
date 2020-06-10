@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,11 +61,12 @@ public class CouponController {
 	}
 
 	@PostMapping("/processCouponCreation")
+	@Transactional
 	public String processCouponCreation(@RequestParam("couponType") String couponType,
 			@RequestParam("couponName") String couponName, @RequestParam("couponGiftAmount") Integer couponGiftAmount,
 			@RequestParam("couponUseNumber") Integer couponUseNumber,
 			@RequestParam("couponMaxUse") Integer couponMaxUse,
-			@RequestParam("couponExpiredDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date couponExpiredDate) {
+			@RequestParam("couponExpiredDate") @DateTimeFormat(pattern = "MM.dd.yyyy HH:mm:ss") Date couponExpiredDate) {
 
 		Coupon coupon = new Coupon();
 		coupon.setCouponType(couponType);

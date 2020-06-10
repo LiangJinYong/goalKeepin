@@ -25,7 +25,7 @@ public class DashboardController {
 	public String getDashboardData(Model model) {
 		
 		LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd.yyyy HH:mm:ss");
         String currentDatetime = now.format(formatter);
         model.addAttribute("currentDatetime", currentDatetime);
 		

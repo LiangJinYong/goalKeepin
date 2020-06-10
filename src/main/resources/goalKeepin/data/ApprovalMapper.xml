@@ -52,7 +52,7 @@
 	
 	<select id="selectApprovalDetail" parameterType="long" resultType="goalKeepin.web.dto.ApprovalDetailResponseDto">
 		/* selectApprovalDetail */
-		SELECT cat.auth_no authNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, tt.trans_en challengeName, oct.challenge_start_dt startDate, oct.challenge_end_dt endDate, ut.user_id authUserId, ut.user_email authUserEmail, cat.auth_st_cd approvalStatusCd, oct.challenge_st_cd challengeStatusCd 
+		SELECT cat.auth_no authNo, cat.auth_tp_cd challengeAuthType, cat.auth_url challengeAuthUrl, cat.auth_reg_dt authRegDate, tt.trans_en challengeName, DATE_FORMAT(oct.challenge_start_dt, '%m.%d.%Y') startDate, DATE_FORMAT(oct.challenge_end_dt, '%m.%d.%Y') endDate, ut.user_id authUserId, ut.user_email authUserEmail, cat.auth_st_cd approvalStatusCd, oct.challenge_st_cd challengeStatusCd 
 		FROM CHALLENGE_AUTH_TB cat
 		LEFT JOIN USER_TB ut ON cat.auth_user_no = ut.user_no
 		INNER JOIN OPERATED_CHALLENGE_TB oct ON cat.auth_c_no = oct.challenge_no

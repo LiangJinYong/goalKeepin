@@ -44,7 +44,7 @@ textarea {
 				</div>
 				<div class="col-md-6">
 					<h2 class="h5">Registration Date</h2>
-					<span th:text="*{#dates.format(inquiryRegDate, 'yyyy-MM-dd HH:mm:ss')}" style="margin-right: 30px;"></span>
+					<span th:text="*{#dates.format(inquiryRegDate, 'MM.dd.yyyy HH:mm:ss')}" style="margin-right: 30px;"></span>
 					<span th:if="*{inquiryStatusCd == 'IN01'}" th:text="'Waiting'" class="btn btn-danger" style="cursor: default;"></span>
 					<span th:if="*{inquiryStatusCd == 'IN02'}" th:text="'Answer completed'" class="btn btn-info" style="cursor: default;"></span>
 				</div>

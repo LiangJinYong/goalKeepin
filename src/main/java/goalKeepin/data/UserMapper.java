@@ -39,4 +39,6 @@ public interface UserMapper {
 	Double selectCurrentUserCash(long userNo);
 
 	void insertUserReportRecord(Map<String, Object> param);
+
+	void decreaseYellowCardNumber(Long userNo);
 }

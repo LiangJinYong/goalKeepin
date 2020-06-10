@@ -52,7 +52,7 @@ header a, header li {
 					<tr th:if="${page.totalRecordNum > 0}" th:each="notice: ${page.pageData}" style="cursor: pointer;" th:id="${notice.noticeNo}">
 						<td class="text-center" th:text="${notice.noticeNo}">NO</td>
 						<td class="text-center" th:text="${notice.noticeTitleEn}">Notice Title</td>
-						<td class="text-center" th:text="*{#dates.format(notice.noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}">Notice Reg Date</td>
+						<td class="text-center" th:text="*{#dates.format(notice.noticeRegDate, 'MM.dd.yyyy HH:mm:ss')}">Notice Reg Date</td>
 						<td class="text-center" th:if="${notice.noticeIsMain}" th:text="Y" style="color: green;">Notice Is Main</td>
 						<td class="text-center" th:if="${!notice.noticeIsMain}" th:text="N" style="color: red;">Notice Is Main</td>
 					</tr>

@@ -63,7 +63,7 @@ header a, header li {
 						<td class="text-center" th:if="${pushHistory.pushTypeName == 'PS07'}" th:text="${'Reward Payment'}">Push Type</td>
 						<td class="text-center" th:if="${pushHistory.pushTypeName == 'PS08'}" th:text="${'Challenge Cancelled or Aborted'}">Push Type</td>
 						
-						<td class="text-center" th:text="*{#dates.format(pushHistory.pushRegDate, 'yyyy-MM-dd HH:mm:ss')}">Push Reg Date</td>
+						<td class="text-center" th:text="*{#dates.format(pushHistory.pushRegDate, 'MM.dd.yyyy HH:mm:ss')}">Push Reg Date</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
 						<td colspan="6" class="text-center">

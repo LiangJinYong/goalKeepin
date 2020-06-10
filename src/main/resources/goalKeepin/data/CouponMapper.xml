@@ -67,7 +67,7 @@
 	
 	<select id="selectCouponUseList" parameterType="map" resultType="hashmap">
 		/* selectCouponUseList */
-		SELECT ut.user_id userId, ut.user_nickname nickName, DATE_FORMAT(cuht.c_history_reg_dt, '%Y-%m-%d %H:%i:%s') couponUseDate
+		SELECT ut.user_id userId, ut.user_nickname nickName, DATE_FORMAT(cuht.c_history_reg_dt, '%m.%d.%Y %H:%i:%s') couponUseDate
 		FROM COUPON_USE_HISTORY_TB cuht
 		INNER JOIN USER_TB ut ON cuht.c_history_user_no = ut.user_no
 		WHERE cuht.c_history_coupon_no = #{couponNo}

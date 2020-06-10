@@ -100,7 +100,7 @@ textarea {
 				</div>
 				<div th:if="*{noticeNo != null}" class="col-md-6">
 					<h2 class="h5">Registration Date</h2>
-					<span th:text="*{#dates.format(noticeRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					<span th:text="*{#dates.format(noticeRegDate, 'MM.dd.yyyy HH:mm:ss')}"></span>
 				</div>
 			</div>
 			<div class="row">

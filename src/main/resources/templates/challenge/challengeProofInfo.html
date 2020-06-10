@@ -45,7 +45,7 @@ h2 + span {
 			</div>
 			<div class="col-md-5">
 				<h2 class="h5">Registration Date</h2>
-				<span th:text="*{#dates.format(operatedChallenge.regDate, 'yyyy-MM-dd HH:mm:ss')}">Entry Reg Date</span>
+				<span th:text="*{#dates.format(operatedChallenge.regDate, 'MM.dd.yyyy HH:mm:ss')}">Entry Reg Date</span>
 			</div>
 		</div>
 		
@@ -79,7 +79,7 @@ h2 + span {
 				<img th:src="*{proof.proofUrl}" class="proofImage">
 			</div>
 			<div style="margin: 10px 0 20px 0;" class="col-md-12 text-center">
-				<span th:text="*{#dates.format(proof.proofDate, 'yyyy-MM-dd HH:mm:ss')}"></span><br />
+				<span th:text="*{#dates.format(proof.proofDate, 'MM.dd.yyyy HH:mm:ss')}"></span><br />
 				<span th:text="*{proof.userId}"></span>
 			</div>	
 		</div>

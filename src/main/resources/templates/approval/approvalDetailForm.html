@@ -51,7 +51,7 @@ header a, header li {
 							<source th:src="${approvalDetail.challengeAuthUrl}" type="audio/mpeg">
 						</audio>
 					</div>
-					<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+					<div class="h5 text-center" th:text="*{#dates.format(approvalDetail.authRegDate, 'MM.dd.yyyy HH:mm:ss')}"></div>
 				</div>
 			</div>
 		</section>

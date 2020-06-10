@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -129,6 +131,7 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/processChallengeGeneration")
+	@Transactional
 	public String processChallengeGeneration(BaseChallenge baseChallenge, Errors errors, @RequestParam("baseThumbnailUrl") MultipartFile file) {
 		
 		long fileSize = file.getSize();
@@ -166,23 +169,23 @@ public class ChallengeController {
 		int operatedChallengeCount = challengerMapper.getOperatedChallengeCountByBase(baseNo);
 		model.addAttribute("operatedChallengeCount", operatedChallengeCount);
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		LocalDate minStartDate = LocalDate.now().plusDays(1L);
+		Integer minStartYear = minStartDate.getYear();
+		Integer minStartMonth = minStartDate.getMonthValue();
+		Integer minStartDayOfMonth = minStartDate.getDayOfMonth();
 		
-		Date dt = new Date();
-		Calendar c = Calendar.getInstance(); 
-		c.setTime(dt); 
-		c.add(Calendar.DATE, 1);
-		dt = c.getTime();
+		LocalDate minEndDate = minStartDate.plusDays(1);
+		Integer minEndYear = minEndDate.getYear();
+		Integer minEndMonth = minEndDate.getMonthValue();
+		Integer minEndDayOfMonth = minEndDate.getDayOfMonth();
 		
-		String minStartDate = sdf.format(dt);
+		model.addAttribute("minStartYear", minStartYear);
+		model.addAttribute("minStartMonth", minStartMonth);
+		model.addAttribute("minStartDayOfMonth", minStartDayOfMonth);
 		
-		c.add(Calendar.DATE, 1);
-		dt = c.getTime();
-		
-		String minEndDate = sdf.format(dt);
-
-		model.addAttribute("minStartDate", minStartDate);
-		model.addAttribute("minEndDate", minEndDate);
+		model.addAttribute("minEndYear", minEndYear);
+		model.addAttribute("minEndMonth", minEndMonth);
+		model.addAttribute("minEndDayOfMonth", minEndDayOfMonth);
 		
 		String commonUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 		model.addAttribute("commonUrl", commonUrl);
@@ -192,6 +195,7 @@ public class ChallengeController {
 	
 	@PostMapping("/createNewOperatedChallenge")
 	@ResponseBody
+	@Transactional
 	public String createNewChallenge(OperatedChallenge challengeDetail) {
 		
 		String startDate = challengeDetail.getStartDate();
@@ -352,6 +356,7 @@ public class ChallengeController {
 	
 	@PostMapping("/cancelProject")
 	@ResponseBody
+	@Transactional
 	public String cancelProject(@RequestParam("operatedChallengeNo") Long operatedChallengeNo) {
 		
 		try {
@@ -407,6 +412,7 @@ public class ChallengeController {
 
 	@PostMapping("/abortProject")
 	@ResponseBody
+	@Transactional
 	public String abortProject(@RequestParam("operatedChallengeNo") Long operatedChallengeNo) {
 		
 		try {

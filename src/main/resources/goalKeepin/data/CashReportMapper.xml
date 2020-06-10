@@ -25,7 +25,7 @@
 	
 	<select id="selectCashReportList" parameterType="map" resultMap="CashReport">
 		/* selectCashReportList */
-		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder_first_nm reportAccountHolderFirstName, ucrt.report_account_holder_last_nm reportAccountHolderLastName, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, ucrt.report_st_cd reportStatusCd
+		SELECT ucrt.cash_report_no cashReportNo, ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder_first_nm reportAccountHolderFirstName, ucrt.report_account_holder_last_nm reportAccountHolderLastName, ucrt.report_reg_dt reportRegDate, ucrt.report_st_cd reportStatusCd
 		<include refid="cashReport" />
 		ORDER BY
 		<if test="sortField != null">
@@ -48,7 +48,7 @@
 			AND ucrt.report_st_cd = #{reportStatusCd}
 		</if>
 		<if test="reportRegDate != null and reportRegDate != ''">
-			AND DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d') = #{reportRegDate}
+			AND DATE_FORMAT(ucrt.report_reg_dt, '%m.%d.%Y') = #{reportRegDate}
 		</if>
 		<if test="userId != null and userId != ''">
 			AND ut.user_id LIKE CONCAT('%', #{userId}, '%')
@@ -67,7 +67,7 @@
 	
 	<select id="selectCashReportForDownload" parameterType="string" resultType="hashmap">
 		/* selectCashReportForDownload */
-		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder_first_nm reportAccountHolderFirstName, ucrt.report_account_holder_last_nm reportAccountHolderLastName, DATE_FORMAT(ucrt.report_reg_dt, '%Y-%m-%d %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN 'Waiting' ELSE 'Completed' END reportStatusCd
+		SELECT ut.user_id userId, ucrt.report_cash_amt reportCashAmount, ucrt.report_account reportAccount, ucrt.report_bank reportBank, ucrt.report_account_holder_first_nm reportAccountHolderFirstName, ucrt.report_account_holder_last_nm reportAccountHolderLastName, DATE_FORMAT(ucrt.report_reg_dt, '%m.%d.%Y %H:%i:%s') reportRegDate, CASE WHEN ucrt.report_st_cd = 'CT01' THEN 'Waiting' ELSE 'Completed' END reportStatusCd
 		FROM USER_CASH_REPORT_TB ucrt
 		INNER JOIN USER_TB ut ON ucrt.cash_user_no = ut.user_no
 		WHERE ucrt.report_tp_cd = 'CA03'

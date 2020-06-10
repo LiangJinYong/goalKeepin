@@ -66,6 +66,8 @@
 	
 	<delete id="deleteFaq" parameterType="long">
 		/* deleteFaq */
+		DELETE FROM TRANSLATION_TB WHERE trans_no = (SELECT faq_ques_t_no FROM FAQ_TB WHERE faq_no = #{faqNo});
+		DELETE FROM TRANSLATION_TB WHERE trans_no = (SELECT faq_ans_t_no FROM FAQ_TB WHERE faq_no = #{faqNo});
 		DELETE FROM FAQ_TB WHERE faq_no = #{faqNo}
 	</delete>
 	

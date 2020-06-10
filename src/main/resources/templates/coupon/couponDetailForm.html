@@ -6,6 +6,10 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.structure.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.theme.css}">
+<link href="https://cdn.bootcss.com/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
 <style type="text/css">
 header a, header li {
@@ -90,7 +94,7 @@ h2+span, h2+div {
 			<div class="row">
 				<div class="col-md-4">
 					<h2 class="h5">Expired Date</h2>
-					<input th:if="${coupon.couponNo == null}" type="datetime-local" id="couponExpiredDate" name="couponExpiredDate" placeholder="Please enter coupon name" required="required" /> <span th:if="${coupon.couponNo != null}" th:text="${#dates.format(coupon.couponExpiredDate, 'yyyy-MM-dd HH:mm:ss')}">Expired Date</span>
+					<input th:if="${coupon.couponNo == null}" type="text" id="couponExpiredDate" name="couponExpiredDate" placeholder="Please enter coupon name" required="required" /> <span th:if="${coupon.couponNo != null}" th:text="${#dates.format(coupon.couponExpiredDate, 'MM.dd.yyyy HH:mm:ss')}">Expired Date</span>
 				</div>
 			</div>
 		</section>
@@ -142,6 +146,8 @@ h2+span, h2+div {
 	</section>
 
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery-ui.min.js}"></script>
+	<script src="https://cdn.bootcss.com/jquery-ui-timepicker-addon/1.6.1/jquery-ui-timepicker-addon.js"></script>
 	<script th:inline="javascript">
 		var couponNo = /*[[*{coupon.couponNo}]]*/;
 	</script>
@@ -149,12 +155,15 @@ h2+span, h2+div {
 	<script type="text/javascript">
 		$(function() {
 
-			$(function() {
-				$('#saveCouponForm').submit(function(e) {
-					if (!confirm('Are you sure to save the coupon?')) {
-						e.preventDefault();
-					}
-				});
+			$('#saveCouponForm').submit(function(e) {
+				if (!confirm('Are you sure to save the coupon?')) {
+					e.preventDefault();
+				}
+			});
+			
+			$('#couponExpiredDate').datetimepicker({
+				dateFormat : 'mm.dd.yy',
+				timeFormat : 'hh:mm:ss',
 			});
 
 			var token = $("meta[name='_csrf']").attr("content");

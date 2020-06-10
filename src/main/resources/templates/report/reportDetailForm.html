@@ -75,7 +75,7 @@ textarea{
 						    <source th:src="${reportDetail.challengeAuthUrl}" type="audio/mpeg">
 						</audio>
 					</div>
-					<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+					<div class="h5 text-center" th:text="*{#dates.format(reportDetail.authRegDate, 'MM.dd.yyyy HH:mm:ss')}"></div>
 				</div>
 				
 				<div class="col-md-6">
@@ -111,7 +111,7 @@ textarea{
 			<div class="col-md-6">
 				<div>
 					<span class="h5">Report Content</span>
-					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportDetail.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportDetail.reportRegDate, 'MM.dd.yyyy HH:mm:ss')}"></span></span>
 				</div>
 				<textarea rows="6" cols="6" readonly="readonly" th:text="${reportDetail.reportContent}" style="margin-top: 20px;"></textarea>
 			</div>
@@ -137,7 +137,7 @@ textarea{
 			<div class="col-md-6">
 				<div>
 					<span class="h5">Report Content</span>
-					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportingUser.reportRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+					<span class="h5 pull-right" style="margin-top: 0;">Report time: <span th:text="${#dates.format(reportingUser.reportRegDate, 'MM.dd.yyyy HH:mm:ss')}"></span></span>
 				</div>
 				<textarea rows="6" cols="6" readonly="readonly" th:text="${reportingUser.reportContent}" style="margin-top: 20px;"></textarea>
 			</div>

@@ -54,8 +54,8 @@
 						<td th:text="${operatedChallenge.operatedChallengeNo}">NO</td>
 						<td th:text="${'no.' + operatedChallenge.operatedChallengeNo}">Operated No</td>
 						<td th:text="*{baseChallengeNmEn}">Challenge Name</td>
-						<td th:text="${operatedChallenge.startDate}">Start Date</td>
-						<td th:text="${operatedChallenge.endDate}">End Date</td>
+						<td th:text="${#dates.format(operatedChallenge.startDate, 'MM.dd.yyyy')}">Start Date</td>
+						<td th:text="${#dates.format(operatedChallenge.endDate, 'MM.dd.yyyy')}">End Date</td>
 						<td th:text="${operatedChallenge.entryNum}">Entry Number</td>
 						<td th:if="${operatedChallenge.statusCd == 'CH01'}" style="color: blue;">Recruiting</td>
 						<td th:if="${operatedChallenge.statusCd == 'CH02'}" style="color: green;">Ongoing</td>

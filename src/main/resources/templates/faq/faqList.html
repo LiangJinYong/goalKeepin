@@ -49,7 +49,7 @@ header a, header li {
 					<tr th:if="${page.totalRecordNum > 0}" th:each="faq: ${page.pageData}" style="cursor: pointer;" th:id="${faq.faqNo}">
 						<td class="text-center" th:text="${faq.faqNo}">NO</td>
 						<td class="text-center" th:text="${faq.faqQuestionEn}">Faq Question</td>
-						<td class="text-center" th:text="*{#dates.format(faq.faqRegDate, 'yyyy-MM-dd HH:mm:ss')}">aq Reg Date</td>
+						<td class="text-center" th:text="*{#dates.format(faq.faqRegDate, 'MM.dd.yyyy HH:mm:ss')}">aq Reg Date</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
 						<td colspan="3" class="text-center">

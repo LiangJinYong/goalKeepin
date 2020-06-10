@@ -27,4 +27,6 @@ public interface CategoryMapper {
 	Integer selectNextCategoryOrder();
 
 	Category selectCategoryDetail(Long categoryNo);
+
+	void updateCategoryDetail(Category category);
 }

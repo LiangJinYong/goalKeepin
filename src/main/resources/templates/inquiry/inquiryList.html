@@ -71,7 +71,7 @@ header li {
 						<td th:text="${inquiry.inquiryNo}">NO</td>
 						<td th:text="${inquiry.inquiryUser.userId}">User Id</td>
 						<td th:text="${inquiry.inquiryContentShort}">Inquiry Content</td>
-						<td th:text="*{#dates.format(inquiry.inquiryRegDate, 'yyyy-MM-dd HH:mm:ss')}" title="aaa">Inquiry Reg Date</td>
+						<td th:text="*{#dates.format(inquiry.inquiryRegDate, 'MM.dd.yyyy HH:mm:ss')}" title="aaa">Inquiry Reg Date</td>
 						<td th:if="*{inquiry.inquiryStatusCd == 'IN01'}" class="waiting" th:text="'Waiting'"></td>
 						<td th:if="*{inquiry.inquiryStatusCd == 'IN02'}" class="replied" th:text="'Answer completed'"></td>
 					</tr>

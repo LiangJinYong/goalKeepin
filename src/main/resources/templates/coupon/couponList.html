@@ -85,7 +85,7 @@ img {
 						<td th:text="${coupon.couponGiftAmount}">Gift Amount</td>
 						<td th:text="${coupon.couponUseNumber}">Use Number</td>
 						<td th:text="${coupon.couponMaxUse}">Max Use</td>
-						<td th:text="${#dates.format(coupon.couponExpiredDate, 'yyyy-MM-dd HH:mm:ss')}">Expired Date</td>
+						<td th:text="${#dates.format(coupon.couponExpiredDate, 'MM.dd.yyyy HH:mm:ss')}">Expired Date</td>
 					</tr>
 					<tr th:if="${page.totalRecordNum == 0}">
 						<td colspan="8" class="text-center">

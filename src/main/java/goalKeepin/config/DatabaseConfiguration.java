@@ -1,34 +1,30 @@
 package goalKeepin.config;
 
+
 import javax.sql.DataSource;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.context.annotation.PropertySource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-@Configuration
-public class RepoConfiguration {
+//@Configuration
+//@PropertySource("classpath:/application.yml")
+public class DatabaseConfiguration {
 
 	@Bean
-	@ConfigurationProperties(prefix = "spring.datasource.hikari")
+	@ConfigurationProperties(prefix="spring.datasource.hikari")
 	public HikariConfig hikariConfig() {
 		return new HikariConfig();
 	}
-
+	
 	@Bean
-	public DataSource dataSource() throws Exception {
+	public DataSource dataSource() {
 		DataSource dataSource = new HikariDataSource(hikariConfig());
-		System.out.println("@" + dataSource.toString());
+		System.out.println(dataSource.toString());
 		return dataSource;
-	}
-
-	@Bean
-	public PlatformTransactionManager transactionManager() throws Exception {
-		return new DataSourceTransactionManager(dataSource());
 	}
 }

@@ -101,7 +101,7 @@ header a, header li {
 							<td class="text-center" th:text="${approval.authNo}">NO</td>
 							<td class="text-center" th:text="${approval.authTypeCd == 'AU01'} ? 'Photo' : 'Voice'">Verification Type</td>
 							<td class="text-center" th:text="${approval.baseNmEn}">Name of Project</td>
-							<td class="text-center" th:text="*{#dates.format(approval.authRegDate, 'yyyy-MM-dd HH:mm:ss')}">aq Reg Date</td>
+							<td class="text-center" th:text="*{#dates.format(approval.authRegDate, 'MM.dd.yyyy HH:mm:ss')}">Reg Date</td>
 							<td class="text-center waiting" th:if="${approval.approvalStatusCd == 'AS01'}" th:text="Waiting">Verification Type</td>
 							<td class="text-center approved" th:if="${approval.approvalStatusCd == 'AS02'}" th:text="Approved">Verification Type</td>
 							<td class="text-center denied" th:if="${approval.approvalStatusCd == 'AS03'}" th:text="Denied">Verification Type</td>

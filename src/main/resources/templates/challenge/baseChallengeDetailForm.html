@@ -6,6 +6,9 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.structure.css}">
+<link rel="stylesheet" th:href="@{/css/jquery-ui.theme.css}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.15/dist/summernote-lite.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" th:href="@{/css/global.css}">
@@ -87,7 +90,7 @@ input[type=text] {
 			<ul th:if="*{baseChallenge != null and baseChallenge.baseNo != null}" class="list-inline list-unstyled pull-right" id="headerBtn">
 				<li th:if="*{operatedChallengeCount > 0}"><a class="btn btn-primary" th:text="${'Project List (' + operatedChallengeCount + ')'}" id="showOperatedChallengeList" href="#">Project List</a></li>
 				<li><a class="btn btn-primary" id="startRecruiting" href="#">Start A Project</a></li>
-				<li th:if="*{modifiable}"><a class="btn btn-primary" href="#" id="modifyChallengeDetail">Edit</a></li>
+				<li><a class="btn btn-primary" href="#" id="modifyChallengeDetail">Edit</a></li>
 				<li th:if="*{deletable}"><a class="btn btn-danger" href="#" id="deleteBaseChallenge">Delete</a></li>
 			</ul>
 		</header>
@@ -112,7 +115,7 @@ input[type=text] {
 				</div>
 				<div class="col-md-3" th:if="*{baseNo != null}">
 					<h3 class="h5">Registration Date</h3>
-					<span th:text="*{#dates.format(baseRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					<span th:text="*{#dates.format(baseRegDate, 'MM.dd.yyyy HH:mm:ss')}"></span>
 				</div>
 			</div>
 
@@ -190,11 +193,11 @@ input[type=text] {
 				<div class="row">
 					<div class="col-md-4">
 						<h3 class="h5">Start date</h3>
-						<input type="date" name="startDate" id="startDate" style="width: 280px;" />
+						<input type="text" name="startDate" id="startDate" style="width: 280px;" placeholder="Please select start date" />
 					</div>
 					<div class="col-md-4">
 						<h3 class="h5">End date</h3>
-						<input type="date" name="endDate" id="endDate" style="width: 280px;" />
+						<input type="text" name="endDate" id="endDate" style="width: 280px;" placeholder="Please select end date" />
 					</div>
 				</div>
 			</section>
@@ -391,6 +394,7 @@ input[type=text] {
 	</form>
 
 	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery-ui.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/summernote-lite.min.js}"></script>
 	<script th:inline="javascript" th:if="*{baseChallenge != null}">
     	var baseHabitTypeCd = /*[[*{baseChallenge.baseHabitTypeCd}]]*/ null;
@@ -398,8 +402,14 @@ input[type=text] {
     	var baseDetailTc = /*[[*{baseChallenge.baseDetailTc}]]*/ null;
     	var baseDetailSc = /*[[*{baseChallenge.baseDetailSc}]]*/ null;
     	var categoryCount = /*[[*{categoryList.size()}]]*/ 0;
-    	var minStartDate = /*[[*{minStartDate}]]*/ null;
-    	var minEndDate = /*[[*{minEndDate}]]*/ null;
+    	
+    	var minStartYear = /*[[*{minStartYear}]]*/ null;
+    	var minStartMonth = /*[[*{minStartMonth}]]*/ null;
+    	var minStartDayOfMonth = /*[[*{minStartDayOfMonth}]]*/ null;
+    	
+    	var minEndYear = /*[[*{minEndYear}]]*/ null;
+    	var minEndMonth = /*[[*{minEndMonth}]]*/ null;
+    	var minEndDayOfMonth = /*[[*{minEndDayOfMonth}]]*/ null;
     	
     	var baseAuthMethodCd = /*[[*{baseChallenge.baseAuthMethodCd}]]*/ null;
 		var commonUrl = /*[[*{commonUrl}]]*/ null;
@@ -414,6 +424,25 @@ input[type=text] {
 		$(function() {
 			 var token = $("meta[name='_csrf']").attr("content");
 			 var header = $("meta[name='_csrf_header']").attr("content");
+			 
+			 var minStartDate = new Date(minStartYear, minStartMonth - 1, minStartDayOfMonth);
+			 var minEndDate = new Date(minEndYear, minEndMonth - 1, minEndDayOfMonth)
+			 
+			 $('#startDate').datepicker({
+				 changeYear: true,
+				 changeMonth: true,
+				 showOtherMonths: true,
+				 dateFormat: "mm.dd.yy",
+				 minDate: minStartDate
+			 });
+			 
+			 $('#endDate').datepicker({
+				 changeYear: true,
+				 changeMonth: true,
+				 showOtherMonths: true,
+				 dateFormat: "mm.dd.yy",
+				 minDate: minEndDate
+			 });
 			 
 			 $('.summernote').summernote({
 			        placeholder: 'Please enter project details',
@@ -558,9 +587,6 @@ input[type=text] {
 	                reader.readAsDataURL(input.files[0]);
 	            }
 	         }
-			 
-			 $('#startDate').attr('min', minStartDate);
-			 $('#endDate').attr('min', minEndDate);
 			 
 			 // 챌린지 정보 수정하기 버튼 처리
 			 $('#modifyChallengeDetail').click(function() {
@@ -761,10 +787,6 @@ input[type=text] {
 			 // 하단 모집 시작하기 버튼 처리
 			 $('#createChallengeDetail').click(function(e) {
 				 
-				 if(!validateCheck($('#minFee'), 'Please enter minimum fee.')) {
-					 return false;
-				 }
-				 
 				 if(!validateCheck($('#maxFee'), 'Please enter maximum fee.')) {
 					 return false;
 				 }
@@ -777,14 +799,7 @@ input[type=text] {
 					 return false;
 				 }
 				 
-				 var minFee = parseInt($('#minFee').val());
 				 var maxFee = parseInt($('#maxFee').val().replace(/,/g, ''));
-				 
-				 if(minFee < 0) {
-					 alert("Minimum participation fee can't be negative value.");
-					 $('#minFee').focus();
-					 return false;
-				 }
 				 
 				 if(maxFee < 0) {
 					 alert("Maximum participation fee can't be negative value.");
@@ -798,9 +813,8 @@ input[type=text] {
 					 return false;
 				 }
 				 
-				 var startDateVal = $('#startDate').val();
-				 var endDateVal = $('#endDate').val();
-				 
+				 var startDateVal = $('#startDate').datepicker('getDate');
+				 var endDateVal = $('#endDate').datepicker('getDate');
 				 
 				 if(startDateVal < minStartDate) {
 					 alert('Start date is invalid.');
@@ -820,6 +834,9 @@ input[type=text] {
 					 return false;
 				 }
 				 
+				 var startDateYmd = convert2Ymd($("#startDate").datepicker().val());
+				 var endDateYmd = convert2Ymd($("#endDate").datepicker().val());
+				 
 				 if(confirm('Are you sure to start a project?')) {
 					 $.ajax({ url: '/goalkeepinmanager/challenge/createNewOperatedChallenge',  
 						 data: {
@@ -828,8 +845,8 @@ input[type=text] {
 							 gradeCd: $('#gradeCd').val(),
 							 minFee: $('#minFee').val(),
 							 maxFee: $('#maxFee').val().replace(/,/g, ''),
-							 startDate: $('#startDate').val(),
-							 endDate: $('#endDate').val(),
+							 startDate: startDateYmd,
+							 endDate: endDateYmd,
 							 baseAuthDateCd: $('input[name=baseAuthDateCd]:checked').val(),
 							 baseAuthFrequency: $('#baseAuthFrequency').val(),
 							 baseAuthNumDaily: $('#baseAuthNumDaily').val()
@@ -845,6 +862,12 @@ input[type=text] {
 						 });
 				 	}
 				 });
+			 
+			 // convert from mm.dd.yyyy to yyyy-mm-dd
+			 function convert2Ymd(date) {
+				 
+				 return date.substring(6) + '-' + date.substring(0, 2) + '-' + date.substring(3, 5);
+			 }
 
 			 // 등록한 챌린지 목록 버튼 처리
 			 $('#showOperatedChallengeList').click(function() {

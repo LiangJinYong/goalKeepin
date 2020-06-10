@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class BadgeGiftController {
 
 	@PostMapping("/sendingBadgeGift")
 	@ResponseBody
+	@Transactional
 	public String sendingBadgeGift(@RequestParam("userNos") String userNos) throws JSONException {
 		String[] userNoArr = userNos.split(",");
 		Map<String, Object> paramMap = new HashMap<>();

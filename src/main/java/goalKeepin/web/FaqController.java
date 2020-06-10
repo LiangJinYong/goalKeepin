@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,16 +70,12 @@ public class FaqController {
 	@ResponseBody
 	public String deleteFaq(@RequestParam("faqNo") Long faqNo) {
 		
-		try {
-			faqMapper.deleteFaq(faqNo);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "500";
-		}
+		faqMapper.deleteFaq(faqNo);
 		return "200";
 	}
 	
 	@PostMapping("/processFaqDetail")
+	@Transactional
 	public String processFaqDetail(Faq faq) {
 		faqMapper.insertOrUpdateFaqQuestion(faq);
 		faqMapper.insertOrUpdateFaqAnswer(faq);

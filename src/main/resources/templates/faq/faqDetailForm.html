@@ -68,7 +68,7 @@ textarea{
 				</div>
 				<div th:if="*{faqNo != null}" class="col-md-3">
 					<h2 class="h5">Registration Date</h2>
-					<span th:text="*{#dates.format(faqRegDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					<span th:text="*{#dates.format(faqRegDate, 'MM.dd.yyyy HH:mm:ss')}"></span>
 				</div>
 			</div>
 			<div class="row">
